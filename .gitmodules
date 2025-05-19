@@ -1,0 +1,3 @@
+[submodule "c-semantics"]
+	path = c-semantics
+	url = https://github.com/kframework/c-semantics.git
