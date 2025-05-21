@@ -36,7 +36,8 @@ Follow the steps below to set up and use the semantics with minimal hassle.
     # Set up the environment (if necessary)
     eval $(opam config env)
     eval $(perl -I "~/perl5/lib/perl5" -Mlocal::lib)
-    make -j4 --output-sync=line
+    export PATH=$K_BIN:$PATH
+    make
     ```
 
     - This will build the semantics with the latest source.
