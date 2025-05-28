@@ -1,0 +1,17 @@
+-O[0123sg]?
+-Ofast
+-fpic
+-fPIC
+-m64
+-m32
+-soname=.*
+-rpath=.*
+-pedantic
+-W[^l].*
+-f(no-)?omit-frame-pointer
+-g[0123]?
+-rdynamic
+-pipe
+-ftrapv
+-s
+-pg

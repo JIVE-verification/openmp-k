@@ -1,0 +1,6 @@
+j027b.c:2:2: error: missing terminating " character [-Werror]
+  "x
+  ^
+compilation terminated due to -Wfatal-errors.
+cc1: all warnings being treated as errors
+Translation failed (kcc_config dumped). To repeat, run this command in directory unit-fail-compilation:

@@ -1,0 +1,74 @@
+{-|
+Copyright   : (c) Runtime Verification, 2019
+License     : NCSA
+
+-}
+
+{-# LANGUAGE TemplateHaskell #-}
+
+module Kore.Syntax.Forall
+    ( Forall (..)
+    ) where
+
+import           Control.DeepSeq
+                 ( NFData (..) )
+import qualified Data.Deriving as Deriving
+import           Data.Hashable
+import qualified Data.Text.Prettyprint.Doc as Pretty
+import qualified Generics.SOP as SOP
+import qualified GHC.Generics as GHC
+
+import Kore.Debug
+import Kore.Sort
+import Kore.Syntax.Variable
+import Kore.Unparser
+
+{-|'Forall' corresponds to the @\forall@ branches of the @object-pattern@ and
+@meta-pattern@ syntactic categories from the Semantics of K,
+Section 9.1.4 (Patterns).
+
+'forallSort' is both the sort of the operands and the sort of the result.
+
+-}
+data Forall sort variable child = Forall
+    { forallSort     :: !sort
+    , forallVariable :: !variable
+    , forallChild    :: child
+    }
+    deriving (Eq, Functor, Foldable, GHC.Generic, Ord, Show, Traversable)
+
+Deriving.deriveEq1 ''Forall
+Deriving.deriveOrd1 ''Forall
+Deriving.deriveShow1 ''Forall
+
+instance
+    (Hashable sort, Hashable variable, Hashable child) =>
+    Hashable (Forall sort variable child)
+
+instance
+    (NFData sort, NFData variable, NFData child) =>
+    NFData (Forall sort variable child)
+
+instance SOP.Generic (Forall sort variable child)
+
+instance SOP.HasDatatypeInfo (Forall sort variable child)
+
+instance
+    (Debug sort, Debug variable, Debug child) =>
+    Debug (Forall sort variable child)
+
+instance
+    (SortedVariable variable, Unparse variable, Unparse child) =>
+    Unparse (Forall Sort variable child)
+  where
+    unparse Forall { forallSort, forallVariable, forallChild } =
+        "\\forall"
+        <> parameters [forallSort]
+        <> arguments' [unparse forallVariable, unparse forallChild]
+
+    unparse2 Forall { forallVariable, forallChild } =
+        Pretty.parens (Pretty.fillSep
+            [ "\\forall"
+            , unparse2SortedVariable forallVariable
+            , unparse2 forallChild
+            ])
