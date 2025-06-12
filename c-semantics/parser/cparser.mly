@@ -36,7 +36,7 @@
  *
  **)
 (**
-** 1.0	3.22.99	Hugues Cassé	First version.
+** 1.0	3.22.99	Hugues Cassï¿½	First version.
 ** 2.0  George Necula 12/12/00: Practically complete rewrite.
 *)
 */
@@ -274,6 +274,13 @@ let trd3 (_, _, result) = result
 %token<string * Cabs.cabsloc> PRAGMA_LINE
 %token<Cabs.cabsloc> PRAGMA
 %token PRAGMA_EOL
+
+/*(*My custom pragmas*)*/
+%token <string> SHARP_PRAGMA_OMP
+%token <string> PARALLEL_KW
+%token <string> MY_PRAGMA_EOL
+%token CONCAT_SLASH
+
 
 %token<Cabs.cabsloc> BEGINANNOTATION ENDANNOTATION
 %token<Cabs.cabsloc> PROPERTY
@@ -1300,6 +1307,8 @@ attribute:
 
 /** (* PRAGMAS and ATTRIBUTES *) ***/
 pragma: 
+| SHARP_PRAGMA_OMP PARALLEL_KW MY_PRAGMA_EOL {print_endline "#pragma omp parallel detected";
+                    PARALLEL_KW("parallel");}
 | PRAGMA attr PRAGMA_EOL		{ PRAGMA ($2, $1) }
 | PRAGMA attr SEMICOLON PRAGMA_EOL	{ PRAGMA ($2, $1) }
 | PRAGMA_LINE                           { PRAGMA (VARIABLE (fst $1), 

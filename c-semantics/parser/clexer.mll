@@ -37,7 +37,7 @@
  *)
 (* FrontC -- lexical analyzer
 **
-** 1.0	3.22.99	Hugues Cassé	First version.
+** 1.0	3.22.99	Hugues Cassï¿½	First version.
 ** 2.0  George Necula 12/12/00: Many extensions
 *)
 {
@@ -60,6 +60,7 @@ let addComment c =
 
 (* track whitespace for the current token *)
 let white = ref ""  
+let continueParsingPragma : bool ref = ref false
 let addWhite lexbuf = if not !Whitetrack.enabled then
     let w = Lexing.lexeme lexbuf in 
     white := !white ^ w
@@ -422,6 +423,8 @@ let floatnum = (decfloat | hexfloat) floatsuffix?
 
 let ident = (letter|'_'|'$')(letter|decdigit|'_'|'$')* 
 let blank = [' ' '\t' '\012' '\r']+
+let myblank = [' ' '\t']+
+let myblank2 = (myblank)('\\')*(blank)*
 let escape = '\\' _
 let hex_escape = '\\' ['x' 'X'] hexdigit+
 let oct_escape = '\\' octdigit octdigit? octdigit? 
@@ -443,6 +446,8 @@ rule initial =
                                           addWhite lexbuf;
                                           initial lexbuf
                                            }
+
+                        
 |		blank			{ addWhite lexbuf; initial lexbuf}
 |               '\n'                    { E.newline ();
                                           if !pragmaLine then
@@ -458,7 +463,10 @@ rule initial =
                                           E.newline ();
                                           initial lexbuf
                                         }
-|		'#'			{ addWhite lexbuf; hash lexbuf}
+|   "#pragma" {print_endline "found pragma omp!"; SHARP_PRAGMA_OMP("#pragma omp"); addWhite lexbuf; openmp_directives lexbuf; openmp_directives lexbuf}
+|   "#"  myblank  "pragma" myblank2 "omp" {print_endline "found pragma omp!!!"; SHARP_PRAGMA_OMP("#pragma omp"); addWhite lexbuf; openmp_directives lexbuf}
+|		'#'			{addWhite lexbuf; hash lexbuf}
+
 |               "_Pragma" 	        { PRAGMA (currentLoc ()) }
 |		'\''			{ CST_CHAR (chr lexbuf, currentLoc ())}
 |		"L'"			{ CST_WCHAR (chr lexbuf, currentLoc ()) }
@@ -594,9 +602,43 @@ and matchingpars = parse
                  }
 | _              { addWhite lexbuf; matchingpars lexbuf }
 
+and openmp_directives = parse
+
+|  '\n'	{ if !continueParsingPragma then begin
+              continueParsingPragma := false;
+              print_endline "my_pragma_EOL!";
+              MY_PRAGMA_EOL("\n");
+              initial lexbuf
+              
+          end else begin
+            PRAGMA_EOL;
+            continueParsingPragma := true;
+            openmp_directives lexbuf
+          end
+        }
+|   '\\' blank {if !continueParsingPragma then begin 
+                  continueParsingPragma := false;
+                  CONCAT_SLASH;
+                  openmp_directives lexbuf
+               end else begin 
+                  CONCAT_SLASH;
+                  openmp_directives lexbuf
+               end
+               }
+
+| "parallel" blank {PARALLEL_KW("parallel"); print_endline "parallel!!"; openmp_directives lexbuf}
+| 	_			{addWhite lexbuf; endline lexbuf}
 (* # <line number> <file name> ... *)
 and hash = parse
-  '\n'		{ addWhite lexbuf; E.newline (); initial lexbuf}
+
+|  '\n'	{ 
+            print_endline "my_pragma_EOL?";
+            addWhite lexbuf; 
+            E.newline (); 
+            initial lexbuf
+         
+        }
+
 | blank		{ addWhite lexbuf; hash lexbuf}
 | intnum	{ addWhite lexbuf; (* We are seeing a line number. This is the number for the 
                    * next line *)
@@ -614,8 +656,8 @@ and hash = parse
 | "line"        { addWhite lexbuf; hash lexbuf } (* MSVC line number info *)
                 (* For pragmas with irregular syntax, like #pragma warning, 
                  * we parse them as a whole line. *)
-| "pragma" blank
-                { addWhite lexbuf; hash lexbuf }
+
+| "pragma" blank {addWhite lexbuf; hash lexbuf }
 | _	        { addWhite lexbuf; endline lexbuf}
 
 and file =  parse 
