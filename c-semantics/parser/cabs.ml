@@ -185,12 +185,6 @@ and definition =
  | ONLYTYPEDEF of specifier * cabsloc
  | GLOBASM of string * cabsloc
  | PRAGMA of expression * cabsloc
- (*my defs*)
- | SHARP_PRAGMA_OMP of string
- | PARALLEL_KW of string 
- | MY_PRAGMA_EOL of string
- | CONCAT_SLASH 
- (*end of my defs*)
  | LINKAGE of string * cabsloc * definition list (* extern "C" { ... } *)
  (* toplevel form transformer, from the first definition to the *)
  (* second group of definitions *)
@@ -252,6 +246,9 @@ and statement =
    (** MS SEH *)
  | TRY_EXCEPT of block * expression * block * cabsloc
  | TRY_FINALLY of block * block * cabsloc
+  (*my defs*)
+ | PARALLEL_KW of cabsloc
+ (*end of my defs*)
  
 and for_clause = 
    FC_EXP of expression
