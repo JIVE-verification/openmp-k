@@ -125,6 +125,7 @@ let dbgToken (t: token) =
 (*
 ** Keyword hashtable
 *)
+
 let lexicon = H.create 211
 let init_lexicon _ =
   H.clear lexicon;
@@ -158,7 +159,7 @@ let init_lexicon _ =
       ("return", fun loc -> dbgToken (RETURN loc));
       ("short", fun loc -> SHORT loc);
       ("signed", fun loc -> SIGNED loc);
-
+      ("parallel", fun loc -> print_endline "pragma found"; SHARP_PRAGMA_OMP loc);
       ("static", fun loc -> STATIC loc);
       ("struct", fun loc -> STRUCT loc);
       ("switch", fun loc -> dbgToken (SWITCH loc));
@@ -449,23 +450,15 @@ rule initial =
 
                         
 |		blank			{ addWhite lexbuf; initial lexbuf}
-|               '\n'                    { E.newline ();
-                                          if !pragmaLine then
-                                            begin
-                                              pragmaLine := false;
-                                              PRAGMA_EOL
-                                            end
-                                          else begin
+|               '\n'                    { 
                                             addWhite lexbuf;
                                             initial lexbuf
-                                          end}
+                                          }
 |               '\\' '\r' * '\n'        { addWhite lexbuf;
                                           E.newline ();
                                           initial lexbuf
                                         }
-|   "#pragma" {print_endline "found pragma omp!"; SHARP_PRAGMA_OMP("#pragma omp"); addWhite lexbuf; openmp_directives lexbuf; openmp_directives lexbuf}
-|   "#"  myblank  "pragma" myblank2 "omp" {print_endline "found pragma omp!!!"; SHARP_PRAGMA_OMP("#pragma omp"); addWhite lexbuf; openmp_directives lexbuf}
-|		'#'			{addWhite lexbuf; hash lexbuf}
+|		'#'			{addWhite lexbuf; hash lexbuf} 
 
 |               "_Pragma" 	        { PRAGMA (currentLoc ()) }
 |		'\''			{ CST_CHAR (chr lexbuf, currentLoc ())}
@@ -602,43 +595,20 @@ and matchingpars = parse
                  }
 | _              { addWhite lexbuf; matchingpars lexbuf }
 
-and openmp_directives = parse
-
-|  '\n'	{ if !continueParsingPragma then begin
-              continueParsingPragma := false;
-              print_endline "my_pragma_EOL!";
-              MY_PRAGMA_EOL("\n");
-              initial lexbuf
-              
-          end else begin
-            PRAGMA_EOL;
-            continueParsingPragma := true;
-            openmp_directives lexbuf
-          end
-        }
-|   '\\' blank {if !continueParsingPragma then begin 
-                  continueParsingPragma := false;
-                  CONCAT_SLASH;
-                  openmp_directives lexbuf
-               end else begin 
-                  CONCAT_SLASH;
-                  openmp_directives lexbuf
-               end
-               }
-
-| "parallel" blank {PARALLEL_KW("parallel"); print_endline "parallel!!"; openmp_directives lexbuf}
-| 	_			{addWhite lexbuf; endline lexbuf}
 (* # <line number> <file name> ... *)
 and hash = parse
 
 |  '\n'	{ 
-            print_endline "my_pragma_EOL?";
+            print_endline "my_pragma_EOL";
+            MY_PRAGMA_EOL;
             addWhite lexbuf; 
             E.newline (); 
             initial lexbuf
          
         }
 
+(* | "parallel" {PARALLEL_KW; print_endline "parallel"; hash lexbuf}
+| "for" {print_endline "parfor"; PARFOR; hash lexbuf} *)
 | blank		{ addWhite lexbuf; hash lexbuf}
 | intnum	{ addWhite lexbuf; (* We are seeing a line number. This is the number for the 
                    * next line *)
@@ -658,6 +628,10 @@ and hash = parse
                  * we parse them as a whole line. *)
 
 | "pragma" blank {addWhite lexbuf; hash lexbuf }
+| "pragma" myblank "omp" { MY_PRAGMA_EOL;
+            addWhite lexbuf; 
+            E.newline (); 
+            initial lexbuf}
 | _	        { addWhite lexbuf; endline lexbuf}
 
 and file =  parse 

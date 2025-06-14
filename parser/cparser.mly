@@ -276,9 +276,10 @@ let trd3 (_, _, result) = result
 %token PRAGMA_EOL
 
 /*(*My custom pragmas*)*/
-%token <string> SHARP_PRAGMA_OMP
-%token <string> PARALLEL_KW
-%token <string> MY_PRAGMA_EOL
+%token  <Cabs.cabsloc> SHARP_PRAGMA_OMP
+%token  PARALLEL_KW
+%token  MY_PRAGMA_EOL
+%token  PARFOR
 %token CONCAT_SLASH
 
 
@@ -449,6 +450,8 @@ primary_expression:                     /*(* 6.5.1. *)*/
 |               AT_EXPR LPAREN IDENT RPAREN         /* expression pattern variable */
                          { EXPR_PATTERN(fst $3), $1 }
 |		generic_selection { $1 }
+
+
 ;
 
 postfix_expression:                     /*(* 6.5.2 *)*/
@@ -819,6 +822,7 @@ block_element_list:
 |   IDENT COLON	                         { [ LABEL (fst $1, NOP (snd $1),
                                                     snd $1)] }
 |   pragma block_element_list            { $2 }
+
 ;
 
 local_labels:
@@ -888,6 +892,7 @@ statement:
                           TRY_FINALLY (b, h, (*handleLoc*) $1) }
 
 |   error location   SEMICOLON   { (NOP $2)}
+| SHARP_PRAGMA_OMP { PARALLEL_KW($1)}
 ;
 
 
@@ -1305,10 +1310,10 @@ attribute:
 |   ATOMIC                 { SpecCV(CV_ATOMIC), $1 }
 ;
 
+
+
 /** (* PRAGMAS and ATTRIBUTES *) ***/
 pragma: 
-| SHARP_PRAGMA_OMP PARALLEL_KW MY_PRAGMA_EOL {print_endline "#pragma omp parallel detected";
-                    PARALLEL_KW("parallel");}
 | PRAGMA attr PRAGMA_EOL		{ PRAGMA ($2, $1) }
 | PRAGMA attr SEMICOLON PRAGMA_EOL	{ PRAGMA ($2, $1) }
 | PRAGMA_LINE                           { PRAGMA (VARIABLE (fst $1), 
