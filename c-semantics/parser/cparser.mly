@@ -36,7 +36,7 @@
  *
  **)
 (**
-** 1.0	3.22.99	Hugues Cassé	First version.
+** 1.0	3.22.99	Hugues Cassï¿½	First version.
 ** 2.0  George Necula 12/12/00: Practically complete rewrite.
 *)
 */
@@ -274,6 +274,15 @@ let trd3 (_, _, result) = result
 %token<string * Cabs.cabsloc> PRAGMA_LINE
 %token<Cabs.cabsloc> PRAGMA
 %token PRAGMA_EOL
+
+
+%token OMP
+%token PARALLEL
+%token PAR_FOR
+%token PRIVATE
+%token REDUCTION
+%token FIRST_PRIVATE
+%token LAST_PRIVATE
 
 %token<Cabs.cabsloc> BEGINANNOTATION ENDANNOTATION
 %token<Cabs.cabsloc> PROPERTY

@@ -37,7 +37,7 @@
  *)
 (* FrontC -- lexical analyzer
 **
-** 1.0	3.22.99	Hugues Cassé	First version.
+** 1.0	3.22.99	Hugues Cassï¿½	First version.
 ** 2.0  George Necula 12/12/00: Many extensions
 *)
 {
@@ -49,6 +49,8 @@ module E = Errormsg
 module H = Hashtbl
 
 let matchingParsOpen = ref 0
+
+
 
 let currentLoc () = Cabshelper.currentLoc ()
 
@@ -420,8 +422,16 @@ let hexfloat = hexprefix hexfraction binexponent
 let floatsuffix = ['f' 'F' 'l' 'L']
 let floatnum = (decfloat | hexfloat) floatsuffix?
 
+
 let ident = (letter|'_'|'$')(letter|decdigit|'_'|'$')* 
+
 let blank = [' ' '\t' '\012' '\r']+
+let myblank = (' '| '\t'| '\012' |'\r')*
+(* let defaultDataShareParen = ('(')(ident|blank|',')+(')') *)
+let ompReductionIdentifier = ('+'|'-'| '*' | '&' | '|' | '^' | "&&" | "||" | "max" | "min")
+(* let ompReductionParen = '(' myblank ompReductionIdentifier myblank ':' myblank  (ident|blank|',')+ ')' *)
+
+
 let escape = '\\' _
 let hex_escape = '\\' ['x' 'X'] hexdigit+
 let oct_escape = '\\' octdigit octdigit? octdigit? 
@@ -458,8 +468,14 @@ rule initial =
                                           E.newline ();
                                           initial lexbuf
                                         }
-|		'#'			{ addWhite lexbuf; hash lexbuf}
+| "#" [' ' '\t']* "pragma" {print_endline "#pragma";
+                            PRAGMA(currentLoc());
+                            openmp lexbuf}
+
+|		'#'		{print_endline "called #"; addWhite lexbuf; hash lexbuf}
 |               "_Pragma" 	        { PRAGMA (currentLoc ()) }
+
+
 |		'\''			{ CST_CHAR (chr lexbuf, currentLoc ())}
 |		"L'"			{ CST_WCHAR (chr lexbuf, currentLoc ()) }
 |		'"'			{ addLexeme lexbuf; (* '"' *)
@@ -570,6 +586,7 @@ and comment =
 | 		_ 			{ addWhite lexbuf; lex_comment comment lexbuf }
 
 
+
 and onelinecomment = parse
     '\n'|eof    {addWhite lexbuf; []}
 |   _           {addWhite lexbuf; lex_comment onelinecomment lexbuf }
@@ -593,6 +610,33 @@ and matchingpars = parse
                   matchingpars lexbuf
                  }
 | _              { addWhite lexbuf; matchingpars lexbuf }
+
+(* add support for multi-lined pragma *)
+and openmp = parse
+'\n'		{ addWhite lexbuf; print_endline "pragma_eol"; E.newline (); initial lexbuf}
+| "omp" {print_endline "omp"; OMP; openmp lexbuf}
+| blank		{addWhite lexbuf; openmp lexbuf} 
+| "parallel" {print_endline "parallel"; PARALLEL; openmp lexbuf}
+| "for" {print_endline "parallel-for"; PAR_FOR; openmp lexbuf}
+| "reduction" myblank "("  {print_endline "reduction"; REDUCTION; openmp_data_sharing_clause lexbuf}
+| "private" myblank "(" {print_endline "private"; PRIVATE; openmp_data_sharing_clause lexbuf}
+| "lastprivate" myblank "(" {print_endline "lastprivate"; LAST_PRIVATE; openmp_data_sharing_clause lexbuf}
+| "firstprivate" myblank "(" {print_endline "firstprivate"; FIRST_PRIVATE; openmp_data_sharing_clause lexbuf}
+
+| _	        { print_endline "unknown char"; addWhite lexbuf; endline lexbuf}
+
+(* add multi-lined support later *)
+(* assume no parenthesis inside of parenthesis for now *)
+and openmp_data_sharing_clause = parse
+| ")"         {openmp lexbuf}
+| ident      { scan_ident (Lexing.lexeme lexbuf);  let s = Lexing.lexeme lexbuf in
+              print_endline ("Matched IDENT: " ^ s); openmp_data_sharing_clause lexbuf}
+| blank       {[]; openmp_data_sharing_clause lexbuf}
+| ':'         {[]; openmp_data_sharing_clause lexbuf}
+| ','         {[]; openmp_data_sharing_clause lexbuf}
+| ompReductionIdentifier  {[]; let s = Lexing.lexeme lexbuf in
+              print_endline ("Reduction operator: " ^ s); openmp_data_sharing_clause lexbuf}
+| _	        {print_endline "unknown char in openmp_data_sharing_clause"; addWhite lexbuf; endline lexbuf}
 
 (* # <line number> <file name> ... *)
 and hash = parse
