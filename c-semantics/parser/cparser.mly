@@ -36,7 +36,7 @@
  *
  **)
 (**
-** 1.0	3.22.99	Hugues Cassé	First version.
+** 1.0	3.22.99	Hugues CassÃ©	First version.
 ** 2.0  George Necula 12/12/00: Practically complete rewrite.
 *)
 */
@@ -237,7 +237,7 @@ let trd3 (_, _, result) = result
 
 %token<Cabs.cabsloc> SIZEOF ALIGNOF
 
-%token EQ PLUS_EQ MINUS_EQ STAR_EQ SLASH_EQ PERCENT_EQ
+%token EQ PLUS_EQ MINUS_EQ STAR_EQ SLASH_EQ PERCENT_EQ SPRAGMA REDUCTION PRIVATE FIRSTPRIVATE LASTPRIVATE
 %token AND_EQ PIPE_EQ CIRC_EQ INF_INF_EQ SUP_SUP_EQ
 %token ARROW DOT
 
