@@ -422,7 +422,6 @@ and expression =
     | LOCEXP (exp, loc)                                          -> expression exp
     | UNARY (op, exp1)                                           -> unary_expression op exp1
     | BINARY (op, exp1, exp2)                                    -> binary_expression op exp1 exp2
-    
     | NOTHING                                                    -> kapply0 KItem "NothingExpression"
     | UNSPECIFIED                                                -> kapply0 RValue "UnspecifiedSizeExpression"
     | PAREN (exp1)                                               -> expression exp1
@@ -495,7 +494,7 @@ and definition : definition -> csort -> unit printer =
   let init_name_group (a, b)     = kapply KItem "InitNameGroup" [specifier a KItem; list_of init_name b KItem] in
   let name_group (a, b)          = kapply KItem "NameGroup" [specifier a KItem; list_of name b KItem] in
   function
-    | FUNDEF (a, b, c, d)     -> print_endline "function declared"; definition_loc_range (kapply KItem "FunctionDefinition" [single_name a KItem; block b KItem]) c d
+    | FUNDEF (a, b, c, d)     -> definition_loc_range (kapply KItem "FunctionDefinition" [single_name a KItem; block b KItem]) c d
     | DECDEF (a, b)           -> definition_loc (kapply KItem "DeclarationDefinition" [init_name_group a KItem]) b
     | TYPEDEF (a, b)          -> definition_loc (kapply KItem "Typedef" [name_group a KItem]) b
     | ONLYTYPEDEF (a, b)      -> definition_loc (kapply KItem "OnlyTypedef" [specifier a KItem]) b
@@ -503,8 +502,7 @@ and definition : definition -> csort -> unit printer =
     | PRAGMA (a, b)           -> definition_loc (kapply KItem "Pragma" [expression a KItem]) b
     | LINKAGE (a, b, c)       -> definition_loc (kapply KItem "Linkage" [ktoken_string a; list_of definition c KItem]) b
     | STATIC_ASSERT (a, b, c) -> definition_loc (kapply KItem "StaticAssert" [expression a K; constant b KItem]) c
-    
-    
+
 and statement =
   let block_statement blk = kapply KItem "BlockStatement" [block blk KItem] in
   let new_block_statement s = block_statement { blabels = []; battrs = []; bstmts = [s] } in
@@ -514,6 +512,9 @@ and statement =
   let statement_loc s l = kapply KItem "StatementLoc" [s KItem; cabs_loc l CabsLoc] in
   let for_statement fc1 exp2 exp3 stat sort = new_counter >>= fun counter ->
     kapply KItem "For5" [ktoken_int counter; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in
+  let omp_for_statement fc1 exp2 exp3 stat sort = new_counter >>= fun counter ->
+    kapply KItem "OMPFor5" [ktoken_int counter; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in
+  
   let switch exp stat sort = push_switch >>= fun id ->
     kapply KItem "Switch" [ktoken_int id; expression exp K; new_block_statement stat K] sort
     >> pop_switch in
@@ -528,7 +529,8 @@ and statement =
     | IF (exp, s1, s2, loc)             -> statement_loc (kapply KItem "IfThenElse" [expression exp K; new_block_statement s1 K; new_block_statement s2 K]) loc
     | WHILE (exp, stat, loc)            -> statement_loc (kapply KItem "While" [expression exp K; new_block_statement stat K]) loc
     | DOWHILE (exp, stat, loc, wloc)    -> statement_loc (kapply KItem "DoWhile3" [expression exp K; new_block_statement stat KItem; cabs_loc wloc CabsLoc]) loc
-    | FOR (fc1, exp2, exp3, stat, loc)  -> print_endline "hit for-loop"; statement_loc (for_statement fc1 exp2 exp3 stat) loc
+    | FOR (fc1, exp2, exp3, stat, loc)  -> statement_loc (for_statement fc1 exp2 exp3 stat) loc
+    | OMPFOR (fc1, exp2, exp3, stat, loc)  -> statement_loc (omp_for_statement fc1 exp2 exp3 stat) loc
     | BREAK loc                         -> statement_loc (kapply0 KItem "Break") loc
     | CONTINUE loc                      -> statement_loc (kapply0 KItem "Continue") loc
     | RETURN (exp, loc)                 -> statement_loc (kapply KItem "Return" [expression exp K]) loc
@@ -539,12 +541,8 @@ and statement =
     | LABEL (str, stat, loc)            -> statement_loc (kapply KItem "Label" [identifier str CId; statement stat K]) loc
     | GOTO (name, loc)                  -> statement_loc (kapply KItem "Goto" [identifier name CId]) loc
     | COMPGOTO (exp, loc)               -> statement_loc (kapply KItem "CompGoto" [expression exp KItem]) loc (* GCC's "goto *exp" *)
-        (* my def *)
-    | PARALLEL_KW loc -> print_endline "hit pragma123"; statement_loc (kapply0 KItem "Continue") loc
-    
     | DEFINITION d                      -> definition d
     | _                                 -> kapply0 KItem "OtherStatement"
-
 
 let translation_unit (filename : string) (defs : definition list) (s : printer_state) =
   (* Finangling here to extract string literals. *)

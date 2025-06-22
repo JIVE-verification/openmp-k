@@ -228,6 +228,7 @@ and statement =
  | WHILE of expression * statement * cabsloc
  | DOWHILE of expression * statement * cabsloc * cabsloc
  | FOR of for_clause * expression * expression * statement * cabsloc
+ | OMPFOR of for_clause * expression * expression * statement * cabsloc
  | BREAK of cabsloc
  | CONTINUE of cabsloc
  | RETURN of expression * cabsloc
@@ -246,9 +247,6 @@ and statement =
    (** MS SEH *)
  | TRY_EXCEPT of block * expression * block * cabsloc
  | TRY_FINALLY of block * block * cabsloc
-  (*my defs*)
- | PARALLEL_KW of cabsloc
- (*end of my defs*)
  
 and for_clause = 
    FC_EXP of expression

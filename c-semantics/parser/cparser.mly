@@ -36,7 +36,7 @@
  *
  **)
 (**
-** 1.0	3.22.99	Hugues Cass�	First version.
+** 1.0	3.22.99	Hugues Cassé	First version.
 ** 2.0  George Necula 12/12/00: Practically complete rewrite.
 *)
 */
@@ -237,7 +237,7 @@ let trd3 (_, _, result) = result
 
 %token<Cabs.cabsloc> SIZEOF ALIGNOF
 
-%token EQ PLUS_EQ MINUS_EQ STAR_EQ SLASH_EQ PERCENT_EQ
+%token EQ PLUS_EQ MINUS_EQ STAR_EQ SLASH_EQ PERCENT_EQ SPRAGMA REDUCTION PRIVATE FIRSTPRIVATE LASTPRIVATE
 %token AND_EQ PIPE_EQ CIRC_EQ INF_INF_EQ SUP_SUP_EQ
 %token ARROW DOT
 
@@ -274,14 +274,6 @@ let trd3 (_, _, result) = result
 %token<string * Cabs.cabsloc> PRAGMA_LINE
 %token<Cabs.cabsloc> PRAGMA
 %token PRAGMA_EOL
-
-/*(*My custom pragmas*)*/
-%token  <Cabs.cabsloc> SHARP_PRAGMA_OMP
-%token  PARALLEL_KW
-%token  MY_PRAGMA_EOL
-%token  PARFOR
-%token CONCAT_SLASH
-
 
 %token<Cabs.cabsloc> BEGINANNOTATION ENDANNOTATION
 %token<Cabs.cabsloc> PROPERTY
@@ -450,8 +442,6 @@ primary_expression:                     /*(* 6.5.1. *)*/
 |               AT_EXPR LPAREN IDENT RPAREN         /* expression pattern variable */
                          { EXPR_PATTERN(fst $3), $1 }
 |		generic_selection { $1 }
-
-
 ;
 
 postfix_expression:                     /*(* 6.5.2 *)*/
@@ -822,7 +812,6 @@ block_element_list:
 |   IDENT COLON	                         { [ LABEL (fst $1, NOP (snd $1),
                                                     snd $1)] }
 |   pragma block_element_list            { $2 }
-
 ;
 
 local_labels:
@@ -851,6 +840,9 @@ statement:
 	        	{WHILE (smooth_expression (fst $2), $3, (*handleLoc*) $1)}
 |   DO statement WHILE paren_comma_expression SEMICOLON
 	        	         {DOWHILE (smooth_expression (fst $4), $2, (*handleLoc*) $1, $3)}
+|   SPRAGMA FOR LPAREN for_clause opt_expression
+	        SEMICOLON opt_expression RPAREN statement
+	                         {OMPFOR ($4, $5, $7, $9, (*handleLoc*) $2)}
 |   FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
 	                         {FOR ($3, $4, $6, $8, (*handleLoc*) $1)}
@@ -892,7 +884,6 @@ statement:
                           TRY_FINALLY (b, h, (*handleLoc*) $1) }
 
 |   error location   SEMICOLON   { (NOP $2)}
-| SHARP_PRAGMA_OMP { PARALLEL_KW($1)}
 ;
 
 
@@ -1309,8 +1300,6 @@ attribute:
 |   VOLATILE               { SpecCV CV_VOLATILE, $1 }
 |   ATOMIC                 { SpecCV(CV_ATOMIC), $1 }
 ;
-
-
 
 /** (* PRAGMAS and ATTRIBUTES *) ***/
 pragma: 

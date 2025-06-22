@@ -37,7 +37,7 @@
  *)
 (* FrontC -- lexical analyzer
 **
-** 1.0	3.22.99	Hugues Cass�	First version.
+** 1.0	3.22.99	Hugues Cassé	First version.
 ** 2.0  George Necula 12/12/00: Many extensions
 *)
 {
@@ -60,7 +60,6 @@ let addComment c =
 
 (* track whitespace for the current token *)
 let white = ref ""  
-let continueParsingPragma : bool ref = ref false
 let addWhite lexbuf = if not !Whitetrack.enabled then
     let w = Lexing.lexeme lexbuf in 
     white := !white ^ w
@@ -125,7 +124,6 @@ let dbgToken (t: token) =
 (*
 ** Keyword hashtable
 *)
-
 let lexicon = H.create 211
 let init_lexicon _ =
   H.clear lexicon;
@@ -159,7 +157,7 @@ let init_lexicon _ =
       ("return", fun loc -> dbgToken (RETURN loc));
       ("short", fun loc -> SHORT loc);
       ("signed", fun loc -> SIGNED loc);
-      ("parallel", fun loc -> print_endline "pragma found"; SHARP_PRAGMA_OMP loc);
+
       ("static", fun loc -> STATIC loc);
       ("struct", fun loc -> STRUCT loc);
       ("switch", fun loc -> dbgToken (SWITCH loc));
@@ -424,8 +422,6 @@ let floatnum = (decfloat | hexfloat) floatsuffix?
 
 let ident = (letter|'_'|'$')(letter|decdigit|'_'|'$')* 
 let blank = [' ' '\t' '\012' '\r']+
-let myblank = [' ' '\t']+
-let myblank2 = (myblank)('\\')*(blank)*
 let escape = '\\' _
 let hex_escape = '\\' ['x' 'X'] hexdigit+
 let oct_escape = '\\' octdigit octdigit? octdigit? 
@@ -447,19 +443,22 @@ rule initial =
                                           addWhite lexbuf;
                                           initial lexbuf
                                            }
-
-                        
 |		blank			{ addWhite lexbuf; initial lexbuf}
-|               '\n'                    { 
+|               '\n'                    { E.newline ();
+                                          if !pragmaLine then
+                                            begin
+                                              pragmaLine := false;
+                                              PRAGMA_EOL
+                                            end
+                                          else begin
                                             addWhite lexbuf;
                                             initial lexbuf
-                                          }
+                                          end}
 |               '\\' '\r' * '\n'        { addWhite lexbuf;
                                           E.newline ();
                                           initial lexbuf
                                         }
-|		'#'			{addWhite lexbuf; hash lexbuf} 
-
+|		'#'			{ addWhite lexbuf; hash lexbuf}
 |               "_Pragma" 	        { PRAGMA (currentLoc ()) }
 |		'\''			{ CST_CHAR (chr lexbuf, currentLoc ())}
 |		"L'"			{ CST_WCHAR (chr lexbuf, currentLoc ()) }
@@ -485,6 +484,11 @@ rule initial =
 |		octnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		intnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		"!quit!"		{EOF}
+|              "#pragma omp parallel for"                {SPRAGMA}
+|               "reduction"       {REDUCTION}
+|               "private"               {PRIVATE}
+|               "firstprivate"               {FIRSTPRIVATE}
+|               "lastprivate"               {LASTPRIVATE}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}
@@ -597,18 +601,7 @@ and matchingpars = parse
 
 (* # <line number> <file name> ... *)
 and hash = parse
-
-|  '\n'	{ 
-            print_endline "my_pragma_EOL";
-            MY_PRAGMA_EOL;
-            addWhite lexbuf; 
-            E.newline (); 
-            initial lexbuf
-         
-        }
-
-(* | "parallel" {PARALLEL_KW; print_endline "parallel"; hash lexbuf}
-| "for" {print_endline "parfor"; PARFOR; hash lexbuf} *)
+  '\n'		{ addWhite lexbuf; E.newline (); initial lexbuf}
 | blank		{ addWhite lexbuf; hash lexbuf}
 | intnum	{ addWhite lexbuf; (* We are seeing a line number. This is the number for the 
                    * next line *)
@@ -626,12 +619,8 @@ and hash = parse
 | "line"        { addWhite lexbuf; hash lexbuf } (* MSVC line number info *)
                 (* For pragmas with irregular syntax, like #pragma warning, 
                  * we parse them as a whole line. *)
-
-| "pragma" blank {addWhite lexbuf; hash lexbuf }
-| "pragma" myblank "omp" { MY_PRAGMA_EOL;
-            addWhite lexbuf; 
-            E.newline (); 
-            initial lexbuf}
+| "pragma" blank
+                { addWhite lexbuf; hash lexbuf }
 | _	        { addWhite lexbuf; endline lexbuf}
 
 and file =  parse 
