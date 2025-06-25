@@ -250,6 +250,7 @@ module C-ABSTRACT-SYNTAX
      */
      syntax KItem ::= DoWhile(K, KItem, CabsLoc)  [klabel(DoWhile3), symbol]
      syntax KItem ::= For(Int, KItem, K, K, K)  [klabel(For5), symbol]
+     syntax KItem ::= OMPFor(Int, KItem, K, K, K)  [klabel(OMPFor5), symbol]
 
      // gcc extension
      syntax KItem ::= CaseRange(KItem, KItem, KItem) [symbol]
@@ -400,6 +401,7 @@ module C-ABSTRACT-SYNTAX
      | FC_DECL of definition
      */
      syntax KItem ::= ForClauseExpression(KItem) [symbol]
+     syntax Kitem ::= OMPForClauseExpression(KItem) [symbol]
 
      syntax KItem ::= Conditional(KItem, KItem, KItem) [symbol]
 

@@ -80,6 +80,7 @@ module C-SYNTAX
      syntax KItem ::= DoWhile(K, K)
      // Condition, post expression, body
      syntax KItem ::= For(K, K, K)
+     syntax KItem ::= OMPFor(K,K,K)
      /*
      | BREAK of cabsloc
      | CONTINUE of cabsloc

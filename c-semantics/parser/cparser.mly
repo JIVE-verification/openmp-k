@@ -36,7 +36,7 @@
  *
  **)
 (**
-** 1.0	3.22.99	Hugues Cass�	First version.
+** 1.0	3.22.99	Hugues Cassé	First version.
 ** 2.0  George Necula 12/12/00: Practically complete rewrite.
 *)
 */
@@ -237,7 +237,7 @@ let trd3 (_, _, result) = result
 
 %token<Cabs.cabsloc> SIZEOF ALIGNOF
 
-%token EQ PLUS_EQ MINUS_EQ STAR_EQ SLASH_EQ PERCENT_EQ
+%token EQ PLUS_EQ MINUS_EQ STAR_EQ SLASH_EQ PERCENT_EQ SPRAGMA REDUCTION PRIVATE FIRSTPRIVATE LASTPRIVATE
 %token AND_EQ PIPE_EQ CIRC_EQ INF_INF_EQ SUP_SUP_EQ
 %token ARROW DOT
 
@@ -274,15 +274,6 @@ let trd3 (_, _, result) = result
 %token<string * Cabs.cabsloc> PRAGMA_LINE
 %token<Cabs.cabsloc> PRAGMA
 %token PRAGMA_EOL
-
-
-%token OMP
-%token PARALLEL
-%token PAR_FOR
-%token PRIVATE
-%token REDUCTION
-%token FIRST_PRIVATE
-%token LAST_PRIVATE
 
 %token<Cabs.cabsloc> BEGINANNOTATION ENDANNOTATION
 %token<Cabs.cabsloc> PROPERTY
@@ -849,6 +840,9 @@ statement:
 	        	{WHILE (smooth_expression (fst $2), $3, (*handleLoc*) $1)}
 |   DO statement WHILE paren_comma_expression SEMICOLON
 	        	         {DOWHILE (smooth_expression (fst $4), $2, (*handleLoc*) $1, $3)}
+|   SPRAGMA FOR LPAREN for_clause opt_expression
+	        SEMICOLON opt_expression RPAREN statement
+	                         {OMPFOR ($4, $5, $7, $9, (*handleLoc*) $2)}
 |   FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
 	                         {FOR ($3, $4, $6, $8, (*handleLoc*) $1)}
