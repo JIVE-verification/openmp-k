@@ -4,7 +4,9 @@ module C-STMT-LOOP
      imports C-SYNTAX
      imports C-DYNAMIC-SYNTAX
      imports C-TYPING-SYNTAX
-
+     imports LIBC-THREADS
+     imports LIBC-THREADS-SYNTAX
+     imports LIBC-STDIO
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.2}{1}}}{
      The statement
      \cdisplay{for ( $\textit{clause-1}$ ; $\textit{expression-2}$ ;
@@ -24,6 +26,10 @@ module C-STMT-LOOP
      Both $\textit{clause-1}$ and $\textit{expression-3}$ can be omitted. An
      omitted $\textit{expression-2}$ is replaced by a nonzero constant.
      }*/
+
+     syntax KItem ::= "ompforThread1" "(" K "," K "," K ")"
+     syntax KItem ::= "ompforThread2" "(" K "," K "," K ")"
+     syntax KItem ::= "joinOmpForThread" "(" Int ")"
 
      //  fixme fishy interaction with continue i think
      rule [for-mark]:
@@ -47,6 +53,144 @@ module C-STMT-LOOP
           ...</k>
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
+
+     rule [ompfor-mark]:
+          <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
+               => loopMarked
+               ~> OMPFor((#if Control =/=K emptyValue
+                    #then Control
+                    #else tv(1, utype(int)) #fi),
+                    Post, S)
+               ~> popLoop
+          </k>
+          <block-history> ListItem(Num:Int) ...</block-history>
+          <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
+          [structural]
+
+     rule [ompforThread1]:
+          <thread>...
+                    <thread-id> 1 </thread-id>
+                    <k> ompforThread1(Control:K , Post:K , S:K)
+                    => IfThenElse(Control,
+                         (S ~> Computation(Post) ~> loopMarked
+                         ~> OMPFor(Control, Post, S)), Nop())
+                    ...</k>
+                    <block-history> ListItem(Num:Int) ...</block-history>
+                    <next-thread-id> 2 </next-thread-id>
+                    <curr-tu> Tu:String </curr-tu>
+                    <buffer> .List </buffer>
+                    <env> Env:Map </env>
+               ...</thread>
+               <genv> Env:Map </genv>
+               <thread-status>
+                    Status:Map => Status[1 <- threadRunning]
+               </thread-status>
+          requires notBool hasLint
+          [large, ndthread, structural]
+
+     rule [ompforThread2]:
+          <thread>...
+                    <thread-id> 1 </thread-id>
+                    <k> ompforThread2(Control:K , Post:K , S:K)
+                    => IfThenElse(Control,
+                         (S ~> Computation(Post) ~> loopMarked
+                         ~> OMPFor(Control, Post, S)), Nop())
+                    ...</k>
+                    <block-history> ListItem(Num:Int) ...</block-history>
+                    <next-thread-id> 3 </next-thread-id>
+                    <curr-tu> Tu:String </curr-tu>
+                    <buffer> .List </buffer>
+                    <env> Env:Map </env>
+               ...</thread>
+               <genv> Env:Map </genv>
+               <thread-status>
+                    Status:Map => Status[2 <- threadRunning]
+               </thread-status>
+          requires notBool hasLint
+          [large, ndthread, structural]
+     
+     
+
+     rule [joinOmpForThread]:
+          <thread>...
+               <k> joinOmpForThread(ThId:Int)
+                    => Computation(V)
+                    ~> success
+               ...</k>
+               <thread-id> ThisThread:Int </thread-id>
+               <buffer> .List </buffer>
+          ...</thread>
+          <thread-status>
+               Status:Map => Status[ThId <- threadJoined]
+          </thread-status>
+          (<thread>...
+               <k> V:KResult </k>
+               <thread-id> ThId </thread-id>
+          ...</thread> => .Bag)
+          requires (ThId in_keys(Status))
+               andBool (Status[ThId] =/=K threadJoined)
+               andBool ThId =/=K ThisThread
+     [ndthread]
+
+
+     rule [ompfor]:
+          <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)
+               =>
+               ompforThread1(Control, Post, S)
+               ~> ompforThread2(Control, Post, S)
+               ~> joinOmpForThread(1)  
+               ~> joinOmpForThread(2)
+          ...</k>
+          //<next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+          //<block-history> ListItem(_:Int) ...</block-history>
+          [structural] 
+
+
+          //      <thread>...
+          //           <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K, Int)
+          //           => IfThenElse(Control,
+          //                (S ~> Computation(Post) ~> loopMarked
+          //                ~> OMPFor(Control, Post, S)), Nop())
+          //           ...</k>
+          //           <block-history> ListItem(Num:Int) ...</block-history>
+          //           <next-thread-id> 1 </next-thread-id>
+          //           <curr-tu> Tu:String </curr-tu>
+          //           <buffer> .List </buffer>
+          //      ...</thread>
+          //      <genv> Env:Map </genv>
+          //      <thread-status>
+          //           Status:Map => Status[1 <- threadRunning]
+          //      </thread-status>
+          // requires notBool hasLint
+          // [large, ndthread, structural]
+     //      <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K) 
+     //           => Computation(
+     //           (* ThIdPtr1) := tv(Fresh, utype(cfg:thrdut)))
+     //                ~> spawn-ompfor-aux(Fresh, Control, Post, S)
+
+     //           ~>Computation(
+     //           (* ThIdPtr2) := tv(Fresh +Int 1, utype(cfg:thrdut)))
+     //           ~> spawn-ompfor-aux(Fresh, Control, Post, S)
+     //      ...</k>
+     //      <block-history> ListItem(Num:Int) ...</block-history>
+     //      <next-thread-id> Fresh:Int => Fresh +Int 2 </next-thread-id>    
+     //      [structural]
+
+          //original kcell for ompfor-sequential
+          // <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)
+          //      =>   /*builtin("thrd_create",
+          //                thrd-busy,
+          //                thrd-busy,
+          //                thrd-busy)*/
+          //           IfThenElse(Control,
+          //           (S ~> Computation(Post) ~> loopMarked
+          //           ~> OMPFor(Control, Post, S)), Nop())
+          //           ~>Computation(tv(Fresh, utype(cfg:thrdut)))
+          //           ~> spawn-aux(Fresh, thrd-busy, thrd-busy)     
+          // ...</k>
+          //<next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+          //<block-history> ListItem(_:Int) ...</block-history>
+          //[structural] // rule so that looping programs see repetition
 
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.1}{1}}}{
      The evaluation of the controlling expression takes place before each

@@ -13,12 +13,12 @@ module C-STMT-LOOP
           => Block(Tag, list(ListItem(E1) ListItem(For(E2, E3, B))))
 
      rule OMPFor(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
-          => Block(Tag, list(ListItem(E1) ListItem(For(E2, E3, B))))
+          => Block(Tag, list(ListItem(E1) ListItem(OMPFor(E2, E3, B))))
      
      // This is the first child of the for if it's not a declaration.
      rule ForClauseExpression(K:KItem) => Computation(K)
 
-     rule OMPForClauseExpression(K:KItem) => Computation(K)
+     rule OMPForClauseExpression(K:KItem) => OMPComputation(K)
 
      context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
      context OMPFor((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
@@ -35,17 +35,21 @@ module C-STMT-LOOP
           => #for(Post, S)
 
      rule <k> OMPFor(Control:RValue, Post:RValue, S:K)
-               => #for(simplifyTruth(Control), Post, S, L)
+               => #ompfor(simplifyTruth(Control), Post, S, L)
           ...</k>
           <curr-program-loc> L::CabsLoc </curr-program-loc>
           requires Control =/=K emptyValue
      rule OMPFor(emptyValue, Post:RValue, S:K)
-          => #for(Post, S)
+          => #ompfor(Post, S)
      
 
      syntax KItem ::= #for(K, RValue, K, CabsLoc) [klabel(#for4)]
                     | #for(RValue, K)             [klabel(#for2)]
      context #for((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
+
+     syntax KItem ::= #ompfor(K, RValue, K, CabsLoc) [klabel(#for4)]
+                    | #ompfor(RValue, K)             [klabel(#for2)]
+     context #ompfor((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
 
      
      rule (.K => elaborate(S)) ~> #for(_:RValue, _, S:K, _)
