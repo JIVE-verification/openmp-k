@@ -140,6 +140,7 @@ module C-STMT-LOOP
                ~> ompforThread2(Control, Post, S)
                ~> joinOmpForThread(1)  
                ~> joinOmpForThread(2)
+               
           ...</k>
           //<next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
           //<block-history> ListItem(_:Int) ...</block-history>
