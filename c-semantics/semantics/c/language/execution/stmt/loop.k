@@ -7,6 +7,10 @@ module C-STMT-LOOP
      imports LIBC-THREADS
      imports LIBC-THREADS-SYNTAX
      imports LIBC-STDIO
+
+
+
+     
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.2}{1}}}{
      The statement
      \cdisplay{for ( $\textit{clause-1}$ ; $\textit{expression-2}$ ;
@@ -30,7 +34,7 @@ module C-STMT-LOOP
      syntax KItem ::= "ompforThread1" "(" K "," K "," K ")"
      syntax KItem ::= "ompforThread2" "(" K "," K "," K ")"
      syntax KItem ::= "joinOmpForThread" "(" Int ")"
-
+     
      //  fixme fishy interaction with continue i think
      rule [for-mark]:
           <k> For(Control:K, Post:K, S:K) ~> K:K
@@ -69,45 +73,59 @@ module C-STMT-LOOP
 
      rule [ompforThread1]:
           <thread>...
-                    <thread-id> 1 </thread-id>
-                    <k> ompforThread1(Control:K , Post:K , S:K)
-                    => IfThenElse(Control,
-                         (S ~> Computation(Post) ~> loopMarked
-                         ~> OMPFor(Control, Post, S)), Nop())
-                    ...</k>
-                    <block-history> ListItem(Num:Int) ...</block-history>
-                    <next-thread-id> 2 </next-thread-id>
-                    <curr-tu> Tu:String </curr-tu>
-                    <buffer> .List </buffer>
-                    <env> Env:Map </env>
-               ...</thread>
-               <genv> Env:Map </genv>
-               <thread-status>
-                    Status:Map => Status[1 <- threadRunning]
-               </thread-status>
+               <k>  ompforThread1(Control:K , Post:K , S:K)
+                    => success
+               ...</k>
+               <curr-tu> Tu:String </curr-tu>
+               <buffer> .List </buffer>
+          ...</thread>
+          <genv> Env:Map </genv>
+          <thread-status>
+               Status:Map => Status[1 <- threadRunning]
+          </thread-status>
+          (.Bag =>
+          <thread>...
+               <duration> threadLocal(1) </duration>
+               <thread-id> 1 </thread-id>
+               <k> 
+               IfThenElse(Control,
+                    (S ~> Computation(Post) ~> loopMarked
+                    ~> OMPFor(Control, Post, S)), Nop())
+               </k>
+               <env> Env:Map </env>
+               <curr-tu> Tu:String </curr-tu>
+          ...</thread>)
           requires notBool hasLint
-          [large, ndthread, structural]
+          [large, ndthread]
+
+     
 
      rule [ompforThread2]:
           <thread>...
-                    <thread-id> 1 </thread-id>
-                    <k> ompforThread2(Control:K , Post:K , S:K)
-                    => IfThenElse(Control,
-                         (S ~> Computation(Post) ~> loopMarked
-                         ~> OMPFor(Control, Post, S)), Nop())
-                    ...</k>
-                    <block-history> ListItem(Num:Int) ...</block-history>
-                    <next-thread-id> 3 </next-thread-id>
-                    <curr-tu> Tu:String </curr-tu>
-                    <buffer> .List </buffer>
-                    <env> Env:Map </env>
-               ...</thread>
-               <genv> Env:Map </genv>
-               <thread-status>
-                    Status:Map => Status[2 <- threadRunning]
-               </thread-status>
+               <k>  ompforThread2(Control:K , Post:K , S:K)
+                    => success
+               ...</k>
+               <curr-tu> Tu:String </curr-tu>
+               <buffer> .List </buffer>
+          ...</thread>
+          <genv> Env:Map </genv>
+          <thread-status>
+               Status:Map => Status[2 <- threadRunning]
+          </thread-status>
+          (.Bag =>
+          <thread>...
+               <duration> threadLocal(2) </duration>
+               <thread-id> 2 </thread-id>
+               <k> 
+               IfThenElse(Control,
+                    (S ~> Computation(Post) ~> loopMarked
+                    ~> OMPFor(Control, Post, S)), Nop())
+               </k>
+               <env> Env:Map </env>
+               <curr-tu> Tu:String </curr-tu>
+          ...</thread>)
           requires notBool hasLint
-          [large, ndthread, structural]
+          [large, ndthread]
      
      
 
@@ -117,7 +135,7 @@ module C-STMT-LOOP
                     => Computation(V)
                     ~> success
                ...</k>
-               <thread-id> ThisThread:Int </thread-id>
+               <thread-id> ThId </thread-id>
                <buffer> .List </buffer>
           ...</thread>
           <thread-status>
@@ -125,11 +143,11 @@ module C-STMT-LOOP
           </thread-status>
           (<thread>...
                <k> V:KResult </k>
-               <thread-id> ThId </thread-id>
+               <thread-id>  ThId </thread-id>
           ...</thread> => .Bag)
           requires (ThId in_keys(Status))
                andBool (Status[ThId] =/=K threadJoined)
-               andBool ThId =/=K ThisThread
+               
      [ndthread]
 
 
