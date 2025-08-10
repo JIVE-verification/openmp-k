@@ -70,6 +70,9 @@ module C-CONFIGURATION
      // setjmp.h support.
      <jmp-bufs> .Map </jmp-bufs>
 
+     //threading support?
+     <thrd-bufs> .Map </thrd-bufs>
+
      <open-files> .Map </open-files>
 
      <files color="lightgray">
