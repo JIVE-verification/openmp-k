@@ -840,6 +840,9 @@ statement:
 	        	{WHILE (smooth_expression (fst $2), $3, (*handleLoc*) $1)}
 |   DO statement WHILE paren_comma_expression SEMICOLON
 	        	         {DOWHILE (smooth_expression (fst $4), $2, (*handleLoc*) $1, $3)}
+|   SPRAGMA FOR LPAREN for_clause opt_expression
+	        SEMICOLON opt_expression RPAREN statement
+	                         {OMPFOR ($4, $5, $7, $9, (*handleLoc*) $2)}
 |   FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
 	                         {FOR ($3, $4, $6, $8, (*handleLoc*) $1)}

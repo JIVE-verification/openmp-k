@@ -484,8 +484,8 @@ rule initial =
 |		octnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		intnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		"!quit!"		{EOF}
-|              "#pragma"                {SPRAGMA}
-|               "reduction"             {REDUCTION}
+|              "#pragma omp parallel for"                {SPRAGMA}
+|               "reduction"       {REDUCTION}
 |               "private"               {PRIVATE}
 |               "firstprivate"               {FIRSTPRIVATE}
 |               "lastprivate"               {LASTPRIVATE}

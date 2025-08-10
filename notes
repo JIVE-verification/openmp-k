@@ -1,0 +1,28 @@
+/home/user/mounted/dist/profiles/x86-gcc-limited-libc/c-translation-kompiled/c-translation-kompiled/interpreter/home/user/mounted/dist/profiles/x86-gcc-limited-libc/c-translation-kompiled/c-translation-kompiled/realdef.cmadummy
+--output-file .tmp-kcc-af9rY/kast-QKnaQ -cOPTIONS `.Set`(.KList)text
+
+
+$cTransDef
+/home/user/mounted/dist/profiles/x86-gcc-limited-libc/c-translation-kompiled
+
+-translation-
+/home/user/mounted/dist/profiles/x86-gcc-limited-libc/c-cpp-linking-kompiled/c-cpp-linking-kompiled/interpreter /home/user/mounted/dist/profiles/x86-gcc-limited-libc/c-cpp-linking-kompiled/c-cpp-linking-kompiled/realdef.cma .tmp-kcc-vYPd1/syms-A9SeD --output-file .tmp-kcc-vYPd1/conf-ZYXJE -c OPTIONS '`_Set_`(`SetItem`(`Link`(.KList)), `.Set`(.KList))' text -c JSON '#token("\"{\\\"suppressions\\\": [],\\\"message_length\\\": 80,\\\"format\\\": \\\"Console\\\",\\\"previous_errors\\\": [],\\\"fatal_errors\\\": false,\\\"rv_error\\\": \\\"\\\"}\"", "String")' text -c UUID '#token("\"763aa57a-5189-11f0-a06f-f373d5b4d1f0\"", "String")' text -c OBJS .tmp-kcc-vYPd1/all-objs-6DOlT binaryfile -c PGM .K text
+
+--the wrapper for krun--
+dist/profiles/x86-gcc-limited-libc/c-cpp-linking-kompiled/c-cpp-linking-kompiled/run.ml
+
+
+
+-execution-
+'krun' '--output' 'kast' '--no-sort-collections' '--no-alpha-renaming' '-d' '/home/user/mounted/dist/profiles/x86-gcc-limited-libc/c-cpp-kompiled' '-cARGV=`ListItem`(#token("\"./example-exec\"", "String"))' '-pARGV=printf %s' '-w' 'none' '--parser' 'cat' '<path to .tmp/conf-HASH>' '--verbose' '--native-libraries' '-lstdc++ -lmpfr -lgmp -lffi -lm -ldl <path to .tmp/obj-HASH>' '--smt' 'none' '--output-file' '<path to .tmp/kast-txt-HASH>' '-cOPTIONS=`.Set`(.KList)' '-pOPTIONS=printf %s' '-cJSON=#token("\"{\\\"suppressions\\\": [],\\\"message_length\\\": 80,\\\"format\\\": \\\"Console\\\",\\\"previous_errors\\\": [],\\\"fatal_errors\\\": false,\\\"rv_error\\\": \\\"\\\"}\"", "String")' '-pJSON=printf %s'
+
+-e.g.-
+'krun' '--output' 'kast' '--no-sort-collections' '--no-alpha-renaming' '-d' '/home/user/mounted/dist/profiles/x86-gcc-limited-libc/c-cpp-kompiled' '-cARGV=`ListItem`(#token("\"./example-exec\"", "String"))' '-pARGV=printf %s' '-w' 'none' '--parser' 'cat' '.tmp-kcc-YMR_p/conf-dCW1C' '--verbose' '--native-libraries' '-lstdc++ -lmpfr -lgmp -lffi -lm -ldl .tmp-kcc-YMR_p/obj-5iY2U' '--smt' 'none' '--output-file' '.tmp-kcc-YMR_p/kast-txt-G9bgg' '-cOPTIONS=`.Set`(.KList)' '-pOPTIONS=printf %s' '-cJSON=#token("\"{\\\"suppressions\\\": [],\\\"message_length\\\": 80,\\\"format\\\": \\\"Console\\\",\\\"previous_errors\\\": [],\\\"fatal_errors\\\": false,\\\"rv_error\\\": \\\"\\\"}\"", "String")' '-pJSON=printf %s'
+
+--splitting kcc objects--
+/home/user/mounted/dist/split-kcc-obj /home/user/mounted/dist/profiles/x86-gcc-limited-libc/lib/libc.so \
+libc.so-obj libc.so-kast libc.so-trampolines 
+
+--Creating Syms file--
+/home/user/mounted/dist/gccsymdump /home/user/mounted/dist/profiles/x86-gcc-limited-libc/cc /home/user/mounted/dist/profiles/x86-gcc-limited-libc/native/builtins.o \
+-lmpfr-lgmp-lffi-lm-ldl-Wl --unresolved-symbols=ignore-all -Wl --no-as-needed -u __rvmatch_main -no-pie .tmp-kcc-p9_zW/libc.so-obj-Fs56z .tmp-kcc-p9_zW/merge-6mvGX-obj-Vo_fZ

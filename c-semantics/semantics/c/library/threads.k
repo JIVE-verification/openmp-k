@@ -1,14 +1,18 @@
 module LIBC-THREADS-SYNTAX
      imports INT-SYNTAX
      imports C-DYNAMIC-SORTS
+     
 
      syntax RValue ::= "thrd-error" [function]
                      | "thrd-timeout" [function]
                      | "thrd-busy" [function]
                      | "thrd-nomem" [function]
 
+     //syntax ompRValue ::= "Control" | "Post" | "S"
+
      syntax KItem ::= "threadRunning" | "threadJoined"
      syntax KItem ::= "spawn-aux" "(" Int "," RValue "," RValue ")"
+     //syntax KItem ::= "spawn-ompfor-aux" "(" Int "," K "," K "," K ")"
 endmodule
 
 module LIBC-THREADS
@@ -26,6 +30,12 @@ module LIBC-THREADS
      imports LIBC-THREADS-SYNTAX
      imports SYMLOC-SYNTAX
 
+     //added for debugging
+     imports C-CONFIGURATION
+     imports K-REFLECTION
+     imports C-SYNTAX
+     imports C-DYNAMIC-SYNTAX
+     imports C-TYPING-SYNTAX
      ////////////////////////////--
      // Threads
      ////////////////////////////--
@@ -113,6 +123,7 @@ module LIBC-THREADS
                andBool (Status[ThId] =/=K threadJoined)
                andBool ThId =/=K ThisThread
           [ndthread]
+          
      rule <k> (.K => UNDEF("THREADS1", "'thrd_join' or 'pthread_join' called for an invalid or already-joined thread."))
                ~> join-aux(ThId:Int, _)
           ...</k>
