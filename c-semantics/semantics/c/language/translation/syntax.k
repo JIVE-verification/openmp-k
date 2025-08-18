@@ -401,7 +401,7 @@ module C-ABSTRACT-SYNTAX
      | FC_DECL of definition
      */
      syntax KItem ::= ForClauseExpression(KItem) [symbol]
-     syntax Kitem ::= OMPForClauseExpression(KItem) [symbol]
+     syntax KItem ::= OMPForClauseExpression(KItem) [symbol]
 
      syntax KItem ::= Conditional(KItem, KItem, KItem) [symbol]
 
