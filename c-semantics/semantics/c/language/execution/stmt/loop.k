@@ -8,7 +8,8 @@ module C-STMT-LOOP
      imports LIBC-THREADS-SYNTAX
      imports LIBC-STDIO
 
-
+     syntax KItem ::= "spawn-aux-ompfor" "(" Int "," K "," K "," K ")"
+     syntax K ::= placeContext(Map)
 
      
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.2}{1}}}{
@@ -38,13 +39,12 @@ module C-STMT-LOOP
      //fixme fishy interaction with continue i think
      rule [for-mark]:
           <k> For(Control:K, Post:K, S:K) ~> K:K
-               => .
-               // loopMarked
-               // ~> For((#if Control =/=K emptyValue
-               //      #then Control
-               //      #else tv(1, utype(int)) #fi),
-               //      Post, S)
-               // ~> popLoop
+               => loopMarked
+               ~> For((#if Control =/=K emptyValue
+                    #then Control
+                    #else tv(1, utype(int)) #fi),
+                    Post, S)
+               ~> popLoop
           </k>
           <block-history> ListItem(Num:Int) ...</block-history>
           <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
@@ -52,17 +52,69 @@ module C-STMT-LOOP
      //this later
      rule [for]:
           <k> loopMarked ~> For(Control:K, Post:K, S:K)
-                => .
-               //  IfThenElse(Control,
-               //           (S ~> Computation(Post) ~> loopMarked
-               //      ~> For(Control, Post, S)), Nop())
+                =>IfThenElse(Control,
+                         (S ~> Computation(Post) ~> loopMarked
+                    ~> For(Control, Post, S)), Nop())
           ...</k>
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
+     
+     // rule [ompfor-mark]:
+     //      <thread-id> ThId:Int </thread-id>
+     //      <thread-status>
+     //           Status:Map => Status[ThId <- threadRunning]
+     //      </thread-status>
+     //      <thread>...
+     //           <k> 
+     //           OMPFor(Control:K, Post:K, S:K) ~> K:K
+     //           => loopMarked
+     //           ~> OMPFor((#if Control =/=K emptyValue
+     //                #then Control
+     //                #else tv(1, utype(int)) #fi),
+     //                Post, S)
+     //           ~> popLoop
+     //           </k>
+     //           <block-history> ListItem(Num:Int) ...</block-history>
+     //           <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
+     //      ...</thread>
+     rule [tempSave]:
+          <k> placeContext(Rho:Map)</k> <env> _ => Rho </env> [structural]
+
+     rule [thrd-create-ompfor]:
+          <genv> GEnv:Map </genv>
+          <env> Env:Map </env>
+          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+          <thread>...
+          <k> spawn-aux-ompfor(ThId:Int, Control:K, Post:K, S:K)
+               => success
+          ...</k>
+          <curr-tu> Tu:String </curr-tu>
+          <buffer>.List </buffer>
+          ...</thread>
+          
+          <thread-status>
+               Status:Map => Status[ThId <- threadRunning]
+          </thread-status>
+          (.Bag =>
+          <thread>...
+               <duration> threadLocal(ThId:Int) </duration>
+               <thread-id> ThId:Int </thread-id>
+               <genv> GEnv </genv>
+               <env> Env </env>
+               <curr-tu>Tu</curr-tu>
+               <k> 
+                    Computation(IfThenElse(Control,
+                         (S ~> Computation(Post) ~> loopMarked
+                    ~> OMPFor(Control, Post, S)), Nop()))
+               </k>
+               
+          ...</thread>)
+          requires notBool hasLint
+          [large, ndthread]
 
      rule [ompfor-mark]:
      <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
-               => loopMarked
+               =>loopMarked
                ~> OMPFor((#if Control =/=K emptyValue
                     #then Control
                     #else tv(1, utype(int)) #fi),
@@ -75,9 +127,13 @@ module C-STMT-LOOP
 
      rule [ompfor]:
      <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)
-                =>IfThenElse(Control,
-                         (S ~> Computation(Post) ~> loopMarked
-                    ~> OMPFor(Control, Post, S)), Nop())
+               =>Computation(spawn-aux-ompfor(0, Control, Post, S))
+               // => IfThenElse(Control,
+               //      (S ~> Computation(Post) ~> loopMarked
+               //      ~> OMPFor(Control, Post, S)), Nop())
+               // ~> IfThenElse(Control,
+               //      (S ~> Computation(Post) ~> loopMarked
+               //      ~> OMPFor(Control, Post, S)), Nop())
           ...</k>
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
