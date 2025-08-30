@@ -14,7 +14,6 @@ Follow the steps below to set up and use the semantics with minimal hassle.
     ```bash
     git clone https://github.com/JIVE-verification/openmp-k.git
     cd openmp-k
-    git submodule update --init --recursive
     cd c-semantics
     ```
 
