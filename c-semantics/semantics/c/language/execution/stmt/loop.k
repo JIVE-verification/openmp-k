@@ -11,6 +11,7 @@ module C-STMT-LOOP
     
      syntax KItem ::= "spawn-aux-omp" "(" Int "," K "," K "," K  ")"
      syntax KItem ::= "OMPForInnerThread" "(" K "," K "," K")"
+     syntax KItem ::= "join-aux-omp" "(" Int ")"
      syntax K ::= placeContext(Map)
 
      
@@ -64,7 +65,7 @@ module C-STMT-LOOP
      
      rule [omp-for-mark]:
           <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
-               => spawn-aux-omp(Fresh, Control, Post, S)
+               => .K ~> spawn-aux-omp(Fresh, Control, Post, S) ~> join-aux-omp(Fresh)
           </k>
           <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
           [structural]
@@ -92,7 +93,7 @@ module C-STMT-LOOP
           <thread>...
                <duration> threadLocal(ThId:Int) </duration>
                <thread-id> ThId:Int </thread-id>
-               <k> OMPForInnerThread(Control, Post, S) ~> Control
+               <k> Computation(OMPForInnerThread(Control, Post, S))
                </k>
                <env> Env </env>
                <block-history> SomeList </block-history>
@@ -123,10 +124,27 @@ module C-STMT-LOOP
                     (S ~> Computation(Post) ~> loopMarked
                ~> OMPForInnerThread(Control, Post, S)), Nop())
      ...</k>
-     <block-history> ListItem(_:Int) ...</block-history>
      [structural] // rule so that looping programs see repetition
 
-     
+     rule [omp-join]:
+     <thread>...
+               <k> join-aux-omp(ThId:Int)
+                    => V 
+               ...</k>
+               <thread-id> ThisThread:Int </thread-id>
+               <buffer> .List </buffer>
+          ...</thread>
+          <thread-status>
+               Status:Map => Status[ThId <- threadJoined]
+          </thread-status>
+          (<thread>...
+               <k> V:KResult </k>
+               <thread-id> ThId </thread-id>
+          ...</thread> => .Bag)
+          requires (ThId in_keys(Status))
+               andBool (Status[ThId] =/=K threadJoined)
+               andBool ThId =/=K ThisThread
+          [ndthread]
 
      // rule [omp-for]:
      // <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)
