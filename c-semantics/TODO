@@ -1,2 +1,17 @@
 find the wrapper that wraps the identifier
     -> 1 step before the thread creation || at declaration
+
+    Translation
+    // processlabel.k 
+    // loop.k
+    // Configuration
+    // Configuration::GotoMap (specify which thread it belongs to)
+    //  Do not touch goto-calc, gotomap.
+    //But modify For 
+    // add thread id to goto-calc (goto-id). For all unrelated thread --> keep it sequential
+    // process-label.k:: ompfor (main thing is to target process-label).
+
+    // OpenMP for we know we have thread-id (line-46)
+
+    Launch the threads in the translation semantics (launch the threads & join the threads)
+    thread.k:: thread can also call a block instead of a function.

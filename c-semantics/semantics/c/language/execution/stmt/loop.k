@@ -62,10 +62,9 @@ module C-STMT-LOOP
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
      
-     
      rule [omp-for-mark]:
           <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
-               => .K ~> spawn-aux-omp(Fresh, Control, Post, S) ~> join-aux-omp(Fresh)
+               => spawn-aux-omp(Fresh, Control, Post, S) //~> join-aux-omp(Fresh)
           </k>
           <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
           [structural]
@@ -79,12 +78,8 @@ module C-STMT-LOOP
                ...</k>
                <curr-tu> Tu:String </curr-tu>
                <buffer> .List </buffer>
-               <block-history>SomeList:List</block-history>
-               <loop-stack> LoopStack:List </loop-stack>
-               <env> Env:Map </env>
           ...</thread>
-          <genv> GEnv:Map </genv>
-          <mem> Mem:Map </mem>
+          <genv> Env:Map </genv>
           
           <thread-status>
                Status:Map => Status[ThId <- threadRunning]
@@ -93,36 +88,29 @@ module C-STMT-LOOP
           <thread>...
                <duration> threadLocal(ThId:Int) </duration>
                <thread-id> ThId:Int </thread-id>
-               <k> Computation(OMPForInnerThread(Control, Post, S))
+               <k> OMPForInnerThread(Control, Post, S)
                </k>
-               <env> Env </env>
-               <block-history> SomeList </block-history>
-               <curr-tu> Tu</curr-tu>
-               <loop-stack> LoopStack </loop-stack>
-               <mem>Mem</mem>
+               <env> Env:Map </env>
+               <curr-tu> Tu:String </curr-tu>
           ...</thread>)
           requires notBool hasLint
           [large, ndthread]
 
 
-     rule [for-mark-omp-inner-thread]:
-     <k> OMPForInnerThread(Control:K, Post:K, S:K) ~> K:K
-          => loopMarked
-          ~> OMPForInnerThread((#if Control =/=K emptyValue
-               #then Control
-               #else tv(1, utype(int)) #fi),
-               Post, S)
-          ~> popLoop
-     </k>
-     <block-history> ListItem(Num:Int) ...</block-history>
-     <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
-     [structural]
+     // rule [for-mark-omp-inner-thread]:
+     // <k> OMPForInnerThread(Control:K, Post:K, S:K)
+     //      => //loopMarked
+     //      //~> 
+     //      OMPForInnerThread(Control,Post, S)
+     //      //~> popLoop
+     // ...</k>
+     // <block-history> ListItem(Num:Int) ...</block-history>
+     // // <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
+     // [structural]
 
      rule [omp-for-inner-thrd]:
-     <k> loopMarked ~> OMPForInnerThread(Control:K, Post:K, S:K)
-               =>IfThenElse(Control,
-                    (S ~> Computation(Post) ~> loopMarked
-               ~> OMPForInnerThread(Control, Post, S)), Nop())
+     <k> OMPForInnerThread(Control:K, Post:K, S:K)
+               =>  S ~> Computation(Post)
      ...</k>
      [structural] // rule so that looping programs see repetition
 
@@ -145,6 +133,7 @@ module C-STMT-LOOP
                andBool (Status[ThId] =/=K threadJoined)
                andBool ThId =/=K ThisThread
           [ndthread]
+
 
      // rule [omp-for]:
      // <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)
