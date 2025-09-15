@@ -271,7 +271,9 @@ module C-SYNTAX
      | CALL of expression * expression list
      */
      syntax KItem ::= Call(K, K) [symbol]
+     syntax KItem ::= Call(K, K, Int) [symbol]
      context Call((HOLE:KItem => reval(HOLE)), _) [ndheat, result(RValue)]
+     context Call((HOLE:KItem => reval(HOLE)), _, _) [ndheat, result(RValue)]
      /*
      | MEMBEROF of expression * string
      */

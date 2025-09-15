@@ -64,6 +64,7 @@ module C-STMT-LOOP
      
      rule [omp-for-mark]:
           <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
+<<<<<<< HEAD
                => spawn-aux-omp(Fresh, Control, Post, S) //~> join-aux-omp(Fresh)
           </k>
           <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
@@ -81,22 +82,48 @@ module C-STMT-LOOP
           ...</thread>
           <genv> Env:Map </genv>
           
+=======
+               => success 
+          </k>
+          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+          <env> Env:Map </env>
+          <curr-tu> Tu:String</curr-tu>
+          <types> Type:Map </types>
+>>>>>>> c8e5fa3 (s)
           <thread-status>
-               Status:Map => Status[ThId <- threadRunning]
+               Status:Map => Status[Fresh <- threadRunning]
           </thread-status>
           (.Bag =>
           <thread>...
+<<<<<<< HEAD
                <duration> threadLocal(ThId:Int) </duration>
                <thread-id> ThId:Int </thread-id>
                <k> OMPForInnerThread(Control, Post, S)
                </k>
                <env> Env:Map </env>
                <curr-tu> Tu:String </curr-tu>
+=======
+               <duration> auto(0) </duration>
+               <thread-id> Fresh:Int </thread-id>
+               <k> 
+               loopMarked
+               ~> For((#if Control =/=K emptyValue
+                    #then Control
+                    #else tv(1, utype(int)) #fi),
+                    Post, S)
+               ~> popLoop
+               </k>
+               <env> Env:Map </env>
+               <curr-tu> Tu:String</curr-tu>
+               <types> Type:Map </types>
+>>>>>>> c8e5fa3 (s)
           ...</thread>)
           requires notBool hasLint
           [large, ndthread]
 
+     
 
+<<<<<<< HEAD
      // rule [for-mark-omp-inner-thread]:
      // <k> OMPForInnerThread(Control:K, Post:K, S:K)
      //      => //loopMarked
@@ -134,6 +161,10 @@ module C-STMT-LOOP
                andBool ThId =/=K ThisThread
           [ndthread]
 
+=======
+   
+     
+>>>>>>> c8e5fa3 (s)
 
      // rule [omp-for]:
      // <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)

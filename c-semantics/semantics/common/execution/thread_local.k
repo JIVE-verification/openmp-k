@@ -11,7 +11,7 @@ module COMMON-THREAD-LOCAL
   configuration
   <thread-local>
        <buffer color="lightgray"> .List </buffer>
-       <duration color="black"> auto(0) </duration>
+       <duration color="black">  auto(0) </duration>
 
        // Used for verifying the aliasing restrictions on
        // restrict-qualified pointers.
