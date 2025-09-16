@@ -85,7 +85,7 @@ module C-SYNTAX
      syntax KItem ::= For(K, K, K)
      syntax KItem ::= For1(K, K, K)
      syntax KItem ::= For2(K, K, K)
-     syntax KItem ::= OMPFork(K,K,K)
+     syntax KItem ::= OMPFork(K,K,K,K)
      syntax KItem ::= OMPFor(K,K,K)
      /*
      | BREAK of cabsloc

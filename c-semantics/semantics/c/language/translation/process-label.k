@@ -149,13 +149,10 @@ module C-PROCESS-LABEL
                <goto-calc>
                     <computation> S </computation>
                     <computation-tail>
-                         Computation(Post)
-                         ~> loopMarked
-                         ~> OMPFor((#if Control =/=K emptyValue
-                              #then Control
-                              #else tv(1, utype(int))
-                              #fi), Post, S)
-                         ~> popLoop
+                         // Computation(Post)
+                         // ~> loopMarked
+                         OMPFor(Control,Post,S)
+                         // ~> popLoop
                          ~> K
                          ~> Tail
                     </computation-tail>
@@ -169,6 +166,7 @@ module C-PROCESS-LABEL
                     </goto-loop-stack>
                </goto-calc>
           )
+           
 
      rule <k> waitingOnGotoMap ...</k>
           <computation>

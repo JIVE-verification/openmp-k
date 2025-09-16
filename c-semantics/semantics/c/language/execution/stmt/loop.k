@@ -62,109 +62,52 @@ module C-STMT-LOOP
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
      
-     rule [omp-for-mark]:
-          <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
-<<<<<<< HEAD
-               => spawn-aux-omp(Fresh, Control, Post, S) //~> join-aux-omp(Fresh)
-          </k>
-          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
-          [structural]
+     // rule [omp-for-mark]:
+     //      <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
+     //           => loopMarked
+     //           ~> OMPFor((#if Control =/=K emptyValue
+     //                #then Control
+     //                #else tv(1, utype(int)) #fi),
+     //                Post, S)
+     //           ~> popLoop
+     //      </k>
+     //      <block-history> ListItem(Num:Int) ...</block-history>
+     //      <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
+     //      [structural]
 
      
 
-     rule [thrd-create-omp-for]:
+     rule [ompfork]:
           <thread>...
-               <k> spawn-aux-omp(ThId:Int, Control:K, Post:K, S:K)
+               <k> OMPFor(
+                         Control:K, Post:K, S:K)
                     => success
                ...</k>
                <curr-tu> Tu:String </curr-tu>
                <buffer> .List </buffer>
           ...</thread>
           <genv> Env:Map </genv>
-          
-=======
-               => success 
-          </k>
-          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
-          <env> Env:Map </env>
-          <curr-tu> Tu:String</curr-tu>
-          <types> Type:Map </types>
->>>>>>> c8e5fa3 (s)
+          <next-thread-id> ThId:Int => ThId +Int 1 </next-thread-id>
           <thread-status>
-               Status:Map => Status[Fresh <- threadRunning]
+               Status:Map => Status[ThId <- threadRunning]
           </thread-status>
           (.Bag =>
           <thread>...
-<<<<<<< HEAD
                <duration> threadLocal(ThId:Int) </duration>
                <thread-id> ThId:Int </thread-id>
-               <k> OMPForInnerThread(Control, Post, S)
+               <k>
+                         Computation(Post)
+                         ~> loopMarked
+                         ~> For(Control,Post,S)
+                         ~> popLoop
+                         // ~> Tail
                </k>
                <env> Env:Map </env>
                <curr-tu> Tu:String </curr-tu>
-=======
-               <duration> auto(0) </duration>
-               <thread-id> Fresh:Int </thread-id>
-               <k> 
-               loopMarked
-               ~> For((#if Control =/=K emptyValue
-                    #then Control
-                    #else tv(1, utype(int)) #fi),
-                    Post, S)
-               ~> popLoop
-               </k>
-               <env> Env:Map </env>
-               <curr-tu> Tu:String</curr-tu>
-               <types> Type:Map </types>
->>>>>>> c8e5fa3 (s)
           ...</thread>)
           requires notBool hasLint
           [large, ndthread]
-
      
-
-<<<<<<< HEAD
-     // rule [for-mark-omp-inner-thread]:
-     // <k> OMPForInnerThread(Control:K, Post:K, S:K)
-     //      => //loopMarked
-     //      //~> 
-     //      OMPForInnerThread(Control,Post, S)
-     //      //~> popLoop
-     // ...</k>
-     // <block-history> ListItem(Num:Int) ...</block-history>
-     // // <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
-     // [structural]
-
-     rule [omp-for-inner-thrd]:
-     <k> OMPForInnerThread(Control:K, Post:K, S:K)
-               =>  S ~> Computation(Post)
-     ...</k>
-     [structural] // rule so that looping programs see repetition
-
-     rule [omp-join]:
-     <thread>...
-               <k> join-aux-omp(ThId:Int)
-                    => V 
-               ...</k>
-               <thread-id> ThisThread:Int </thread-id>
-               <buffer> .List </buffer>
-          ...</thread>
-          <thread-status>
-               Status:Map => Status[ThId <- threadJoined]
-          </thread-status>
-          (<thread>...
-               <k> V:KResult </k>
-               <thread-id> ThId </thread-id>
-          ...</thread> => .Bag)
-          requires (ThId in_keys(Status))
-               andBool (Status[ThId] =/=K threadJoined)
-               andBool ThId =/=K ThisThread
-          [ndthread]
-
-=======
-   
-     
->>>>>>> c8e5fa3 (s)
 
      // rule [omp-for]:
      // <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)
