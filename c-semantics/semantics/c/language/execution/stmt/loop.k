@@ -9,7 +9,7 @@ module C-STMT-LOOP
      imports LIBC-STDIO
 
     
-     syntax KItem ::= "spawn-aux-omp" "(" Int "," K "," K "," K  ")"
+     syntax KItem ::= "spawn-aux-omp" "("K "," K "," K  ")"
      syntax KItem ::= "OMPForInnerThread" "(" K "," K "," K")"
      syntax KItem ::= "join-aux-omp" "(" Int ")"
      syntax K ::= placeContext(Map)
@@ -85,8 +85,10 @@ module C-STMT-LOOP
                ...</k>
                <curr-tu> Tu:String </curr-tu>
                <buffer> .List </buffer>
+               <env> Env:Map</env>
+               <types> Type:Map </types>
           ...</thread>
-          <genv> Env:Map </genv>
+          <genv> GEnv:Map </genv>
           <next-thread-id> ThId:Int => ThId +Int 1 </next-thread-id>
           <thread-status>
                Status:Map => Status[ThId <- threadRunning]
@@ -100,9 +102,9 @@ module C-STMT-LOOP
                          ~> loopMarked
                          ~> For(Control,Post,S)
                          ~> popLoop
-                         // ~> Tail
                </k>
-               <env> Env:Map </env>
+               <env> updateMap(GEnv, Env) </env>
+               <types> Type:Map </types>
                <curr-tu> Tu:String </curr-tu>
           ...</thread>)
           requires notBool hasLint
