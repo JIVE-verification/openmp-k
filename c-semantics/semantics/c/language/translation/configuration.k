@@ -16,7 +16,10 @@ module C-CONFIGURATION
      <final-computation multiplicity="?" color="lightgray">
           .K
      </final-computation>
-
+     
+     // <for-loop-limit> 0 </for-loop-limit>
+     // <for-loop-counter> 0 </for-loop-counter>
+     
      <goto-map-calc color="cyan">
           <goto-calc multiplicity="*" color="cyan" type="Set">
                <saved-env> .Map </saved-env>
@@ -30,6 +33,7 @@ module C-CONFIGURATION
                <goto-block-history color="cyan">
                     .List
                </goto-block-history>
+               <for-loop-unroll> .List </for-loop-unroll>
                <goto-loop-stack color="cyan">
                     .List
                </goto-loop-stack>

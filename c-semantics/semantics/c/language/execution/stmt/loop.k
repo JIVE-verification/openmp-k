@@ -7,11 +7,16 @@ module C-STMT-LOOP
      imports LIBC-THREADS
      imports LIBC-THREADS-SYNTAX
      imports LIBC-STDIO
-
+     imports SYMLOC-SYNTAX
+     imports SYMLOC
     
      syntax KItem ::= "spawn-aux-omp" "("K "," K "," K  ")"
      syntax KItem ::= "OMPForInnerThread" "(" K "," K "," K")"
      syntax KItem ::= "join-aux-omp" "(" Int ")"
+     syntax KItem ::= "update-identifier" "(" Int ")"
+      syntax KItem ::= "update-mem" "(" Int "," Int "," Duration ")"
+     // syntax KItem ::= "obj" "(" Int "," Int "," K ")"
+     syntax Stmt ::= "updateEnv"
      syntax K ::= placeContext(Map)
 
      
@@ -75,13 +80,42 @@ module C-STMT-LOOP
      //      <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
      //      [structural]
 
-     
+     rule [updateIndentifier]:
+     <thread>...
+               <k> update-identifier(ThId:Int)
+               => Env[Identifier("i")] ~> updateEnv
+               ...</k>
+               <env> Env:Map </env>
+               <thread-id> ThId:Int </thread-id>
+     ...</thread>
+
+     rule [updateMem]:
+     <thread>...
+          <k> update-mem(Loc1:Int, Loc2:Int, Dur:Duration) => .K ...</k>
+     ...</thread>
+     <mem> Mem:Map => Mem[obj (Loc1,Loc2, threadLocal(1)) <- Mem[obj(Loc1,Loc2,Dur)] ] </mem>
+
+     rule [updateIndentifierHelper]:
+     <thread>...
+          <k> obj(Loc1:Int, Loc2:Int, Dur:Duration) ~> updateEnv => update-mem(Loc1, Loc2, Dur) ...</k>
+          <env> Env:Map => Env[Identifier("i") <- obj (Loc1,Loc2, threadLocal(1))] </env>
+     ...</thread>
+
+     rule [ompfork2]:
+          <thread>...
+               <k> RUNONTHREAD(Post:K)
+                    => Computation(Post)
+               ...</k>
+               <thread-id> ThId:Int </thread-id>
+          ...</thread>
+          requires ThId =/=Int 0
+          [large, ndthread]
+
 
      rule [ompfork]:
           <thread>...
-               <k> OMPFor(
-                         Control:K, Post:K, S:K)
-                    => success
+               <k> RUNONTHREAD(Post:K)
+                    => .K
                ...</k>
                <curr-tu> Tu:String </curr-tu>
                <buffer> .List </buffer>
@@ -97,17 +131,14 @@ module C-STMT-LOOP
           <thread>...
                <duration> threadLocal(ThId:Int) </duration>
                <thread-id> ThId:Int </thread-id>
-               <k>
-                         Computation(Post)
-                         ~> loopMarked
-                         ~> For(Control,Post,S)
-                         ~> popLoop
+               <k>       
+                    Computation(Post)
                </k>
                <env> updateMap(GEnv, Env) </env>
                <types> Type:Map </types>
                <curr-tu> Tu:String </curr-tu>
           ...</thread>)
-          requires notBool hasLint
+          requires ThId ==Int 0
           [large, ndthread]
      
 
