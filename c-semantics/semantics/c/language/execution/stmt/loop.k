@@ -17,6 +17,7 @@ module C-STMT-LOOP
       syntax KItem ::= "update-mem" "(" Int "," Int "," Duration ")"
      // syntax KItem ::= "obj" "(" Int "," Int "," K ")"
      syntax Stmt ::= "updateEnv"
+     syntax Stmt ::= "continueForLoop"
      syntax K ::= placeContext(Map)
 
      
@@ -67,18 +68,27 @@ module C-STMT-LOOP
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
      
-     // rule [omp-for-mark]:
-     //      <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
-     //           => loopMarked
-     //           ~> OMPFor((#if Control =/=K emptyValue
-     //                #then Control
-     //                #else tv(1, utype(int)) #fi),
-     //                Post, S)
-     //           ~> popLoop
-     //      </k>
-     //      <block-history> ListItem(Num:Int) ...</block-history>
-     //      <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
-     //      [structural]
+     rule [omp-for-mark]:
+          <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
+               => loopMarked
+               ~> OMPFor((#if Control =/=K emptyValue
+                    #then Control
+                    #else tv(1, utype(int)) #fi),
+                    Post, S)
+               ~> popLoop
+          </k>
+          <block-history> ListItem(Num:Int) ...</block-history>
+          <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
+          [structural]
+
+     rule [omp-for]:
+     <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)
+               =>IfThenElse(Control,
+                    (S ~> Computation(Post) ~> loopMarked
+               ~> OMPFor(Control, Post, S)), Nop())
+     ...</k>
+     <block-history> ListItem(_:Int) ...</block-history>
+     [structural] // rule so that looping programs see repetition
 
      rule [updateIndentifier]:
      <thread>...
@@ -101,26 +111,50 @@ module C-STMT-LOOP
           <env> Env:Map => Env[Identifier("i") <- obj (Loc1,Loc2, threadLocal(1))] </env>
      ...</thread>
 
-     rule [ompfork2]:
+     rule [ompfork3]:
+          <increment-op>... Post:K ...</increment-op>
+          <forloop-block-op>... S:K ...</forloop-block-op>
           <thread>...
-               <k> RUNONTHREAD(Post:K)
-                    => Computation(Post)
+               <k>... 
+                   continueForLoop 
+                    => Computation(S)
+                    ~> Computation(Post) ~> continueForLoop
                ...</k>
                <thread-id> ThId:Int </thread-id>
           ...</thread>
-          requires ThId =/=Int 0
-          [large, ndthread]
+     requires (ThId ==Int 1) andBool (Post =/=K .K) andBool (S =/=K .K)
+     [large, ndthread]
+
+     rule [ompfork2]:
+          <thread>...
+               <k> RUNONTHREAD(Control:K, Post:K, S:K)
+                    => success
+               ...</k>
+               <thread-id> MasterThreadId:Int </thread-id>
+          ...</thread>
+          <next-thread-id> ThId:Int </next-thread-id>
+          <increment-op>... _ => Post ...</increment-op>
+          <forloop-block-op>... _ => S ...</forloop-block-op>
+     requires (ThId ==Int 2) andBool (MasterThreadId ==Int 0)
+     [large, ndthread]
+
+     rule [poplooponthread]:
+          <k> POPLOOPONTHREAD(A:Int) => .K
+          ...</k>
+          <increment-op>... _ => .K ...</increment-op>
+          <forloop-block-op>... _ => .K ...</forloop-block-op>
 
 
      rule [ompfork]:
           <thread>...
-               <k> RUNONTHREAD(Post:K)
-                    => .K
+               <k> RUNONTHREAD(Control:K, Post:K, S:K)
+                    => success
                ...</k>
                <curr-tu> Tu:String </curr-tu>
                <buffer> .List </buffer>
                <env> Env:Map</env>
                <types> Type:Map </types>
+               <thread-id> MasterThreadId:Int </thread-id>
           ...</thread>
           <genv> GEnv:Map </genv>
           <next-thread-id> ThId:Int => ThId +Int 1 </next-thread-id>
@@ -132,13 +166,16 @@ module C-STMT-LOOP
                <duration> threadLocal(ThId:Int) </duration>
                <thread-id> ThId:Int </thread-id>
                <k>       
-                    Computation(Post)
+                    .K ~> update-identifier(ThId) 
+                    ~> Computation(S)
+                    ~> Computation(Post)
+                    ~> .K
                </k>
                <env> updateMap(GEnv, Env) </env>
                <types> Type:Map </types>
                <curr-tu> Tu:String </curr-tu>
           ...</thread>)
-          requires ThId ==Int 0
+          requires (ThId ==Int 1) andBool (MasterThreadId ==Int 0)
           [large, ndthread]
      
 

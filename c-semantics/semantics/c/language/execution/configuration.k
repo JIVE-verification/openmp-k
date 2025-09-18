@@ -23,7 +23,9 @@ module C-CONFIGURATION
      <extensions-global/>
 
      <next-thread-id color="black"> 1 </next-thread-id>
-
+     // <curr-exec-thread-id color="black"> 0 </curr-exec-thread-id>
+     <increment-op> .K </increment-op>
+     <forloop-block-op> .K </forloop-block-op>
      <compile-time-evaluation> true </compile-time-evaluation>
 
      <thread-info color="yellow">

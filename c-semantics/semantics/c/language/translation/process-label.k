@@ -138,7 +138,7 @@ module C-PROCESS-LABEL
           <goto-calc>
                <computation>
                     (OMPFor(Control:K, Post:K, S:K) => .K)
-                    ~> K:K
+                    ~> RUNONTHREAD(Control,Post,S) ~> K:K
                </computation>
                <computation-tail> Tail:K </computation-tail>
                B::Bag
@@ -155,11 +155,12 @@ module C-PROCESS-LABEL
                          // RUNONTHREAD(Post)
                          Computation(Post)
                          ~> loopMarked
-                         ~>For((#if Control =/=K emptyValue
+                         ~>OMPFor((#if Control =/=K emptyValue
                               #then Control
                               #else tv(1, utype(int))
                               #fi), Post, S)
                          ~> popLoop
+                         ~> POPLOOPONTHREAD(1)
                          ~> K
                          ~> Tail
                     </computation-tail>

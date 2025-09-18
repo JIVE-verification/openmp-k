@@ -87,7 +87,8 @@ module C-SYNTAX
      syntax KItem ::= For2(K, K, K)
      syntax KItem ::= OMPFork(K)
      syntax KItem ::= OMPFor(K,K,K)
-     syntax KItem ::= RUNONTHREAD(K)
+     syntax KItem ::= RUNONTHREAD(K,K,K)
+     syntax KItem ::= POPLOOPONTHREAD(Int)
      /*
      | BREAK of cabsloc
      | CONTINUE of cabsloc
