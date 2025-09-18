@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
 
     // thrd_create(&thr1,func,(void *) v);
     // thrd_create(&thr2,func,(void *) v);
-    #pragma omp parallel for
+    // #pragma omp parallel for
     for(int i = 0; i < 10; i++){
         printf("%d\n",i);
     }

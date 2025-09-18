@@ -106,7 +106,7 @@ module C-PROCESS-LABEL
                     ListItem(Num::Int) OldBlockHistory::List
                </goto-block-history>
                <goto-loop-stack> OldLoopStack::List </goto-loop-stack>
-               // <for-loop-unroll> Unroll::List </for-loop-unroll>
+              
           </goto-calc>
           (.Bag =>
                <goto-calc>
@@ -146,29 +146,14 @@ module C-PROCESS-LABEL
                     ListItem(Num::Int) OldBlockHistory::List
                </goto-block-history>
                <goto-loop-stack> OldLoopStack::List </goto-loop-stack>
-               <for-loop-unroll> Unroll::List </for-loop-unroll>
+               
           </goto-calc>
-
-          // exclusive
-          // <for-loop-limit> CurLim:Int => CurLim +Int 4 </for-loop-limit>
-          // <for-loop-counter> CurCount:Int => CurCount +Int 4 </for-loop-counter>
-          // <for-loop-unroll> Unrolled:Map => 
-          // Unrolled[CurCount -> S]
-          // ~>  Unrolled[CurCount -> Computation(Post)]
-          // ~>  Unrolled[CurCount +Int 1 -> loopMarked]
-          // ~>  Unrolled[CurCount +Int 2 -> For((#if Control =/=K emptyValue
-          //                     #then Control
-          //                     #else tv(1, utype(int))
-          //                     #fi), Post, S) ]
-          // ~>  Unrolled[CurCount +Int 3 -> popLoop]
-          // // ~>  Unrolled[CurCount +Int 4 -> K]
-          // </for-loop-unroll>
           (.Bag =>
                <goto-calc>
                     <computation> S </computation>
                     <computation-tail>
                          // RUNONTHREAD(Post)
-                         ~>Computation(Post)
+                         Computation(Post)
                          ~> loopMarked
                          ~>For((#if Control =/=K emptyValue
                               #then Control
@@ -186,10 +171,6 @@ module C-PROCESS-LABEL
                          ListItem(kpair(Num, (K ~> Tail)))
                          OldLoopStack
                     </goto-loop-stack>
-                    <for-loop-unroll> 
-                         ListItem(kpair(Num, (K ~> Tail)))
-                         Unroll 
-                    </for-loop-unroll>
                </goto-calc>
           )
            
@@ -276,9 +257,9 @@ module C-PROCESS-LABEL
           ...</goto-loop-stack>
 
      rule <k> waitingOnGotoMap ...</k>
-          <computation> popLoop => ~> .K ...</computation>
+          <computation> popLoop => .K ...</computation>
           <goto-loop-stack> ListItem(_) => .List ...</goto-loop-stack>
-          <for-loop-unroll> .List ...</for-loop-unroll>
+          
           
 
      rule <k> waitingOnGotoMap ...</k>

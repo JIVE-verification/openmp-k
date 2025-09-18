@@ -33,7 +33,6 @@ module C-CONFIGURATION
                <goto-block-history color="cyan">
                     .List
                </goto-block-history>
-               <for-loop-unroll> .List </for-loop-unroll>
                <goto-loop-stack color="cyan">
                     .List
                </goto-loop-stack>
