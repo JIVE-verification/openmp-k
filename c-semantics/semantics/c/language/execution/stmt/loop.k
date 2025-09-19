@@ -112,8 +112,7 @@ module C-STMT-LOOP
      ...</thread>
 
      rule [ompfork3]:
-          <increment-op>... Post:K ...</increment-op>
-          <forloop-block-op>... S:K ...</forloop-block-op>
+          <for-thread-op> FORLOOPINFO(Control:K,Post:K,S:K) => success ...</for-thread-op>
           <thread>...
                <k>... 
                    continueForLoop 
@@ -122,7 +121,7 @@ module C-STMT-LOOP
                ...</k>
                <thread-id> ThId:Int </thread-id>
           ...</thread>
-     requires (ThId ==Int 1) andBool (Post =/=K .K) andBool (S =/=K .K)
+     requires (ThId ==Int 1)
      [large, ndthread]
 
      rule [ompfork2]:
@@ -133,16 +132,13 @@ module C-STMT-LOOP
                <thread-id> MasterThreadId:Int </thread-id>
           ...</thread>
           <next-thread-id> ThId:Int </next-thread-id>
-          <increment-op>... _ => Post ...</increment-op>
-          <forloop-block-op>... _ => S ...</forloop-block-op>
+          <for-thread-op> _ => FORLOOPINFO(Control:K,Post:K,S:K) ...</for-thread-op>
      requires (ThId ==Int 2) andBool (MasterThreadId ==Int 0)
      [large, ndthread]
 
      rule [poplooponthread]:
-          <k> POPLOOPONTHREAD(A:Int) => .K
-          ...</k>
-          <increment-op>... _ => .K ...</increment-op>
-          <forloop-block-op>... _ => .K ...</forloop-block-op>
+          <k> POPLOOPONTHREAD(A:Int) => .K </k>
+          <for-thread-op>... _ => success ...</for-thread-op>
 
 
      rule [ompfork]:
