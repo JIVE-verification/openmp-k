@@ -21,7 +21,7 @@ module C-STMT-LOOP
      rule OMPForClauseExpression(K:KItem) => Computation(K)
 
      context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-     context OMPFor((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+     context OMPFor((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)] //special rule. Creating 2 rules (Hearting/cooling) Hole wrapped in reval
 
      context OMPFor(_, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]
      context For(_, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]

@@ -15,3 +15,12 @@ find the wrapper that wraps the identifier
 
     Launch the threads in the translation semantics (launch the threads & join the threads)
     thread.k:: thread can also call a block instead of a function.
+
+    create a script for depth
+    Don't create other modules
+    We need to know what the for gotomap evals to in a heating rule.
+    SOLVVE DATASET
+
+
+
+fIRST figure out how for-loop handles goto computation.
