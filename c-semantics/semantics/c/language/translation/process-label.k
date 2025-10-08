@@ -106,6 +106,7 @@ module C-PROCESS-LABEL
                     ListItem(Num::Int) OldBlockHistory::List
                </goto-block-history>
                <goto-loop-stack> OldLoopStack::List </goto-loop-stack>
+              
           </goto-calc>
           (.Bag =>
                <goto-calc>
@@ -129,8 +130,51 @@ module C-PROCESS-LABEL
                          ListItem(kpair(Num, (K ~> Tail)))
                          OldLoopStack
                     </goto-loop-stack>
+
                </goto-calc>
           )
+
+     rule <k> waitingOnGotoMap ...</k>
+          <goto-calc>
+               <computation>
+                    (OMPFor(Control:K, Post:K, S:K) => .K)
+                    ~> RUNONTHREAD(Control,Post,S) ~> K:K
+               </computation>
+               <computation-tail> Tail:K </computation-tail>
+               B::Bag
+               <goto-block-history>
+                    ListItem(Num::Int) OldBlockHistory::List
+               </goto-block-history>
+               <goto-loop-stack> OldLoopStack::List </goto-loop-stack>
+               
+          </goto-calc>
+          (.Bag =>
+               <goto-calc>
+                    <computation> S </computation>
+                    <computation-tail>
+                         // RUNONTHREAD(Post)
+                         Computation(Post)
+                         ~> loopMarked
+                         ~>OMPFor((#if Control =/=K emptyValue
+                              #then Control
+                              #else tv(1, utype(int))
+                              #fi), Post, S)
+                         ~> popLoop
+                         ~> POPLOOPONTHREAD(1)
+                         ~> K
+                         ~> Tail
+                    </computation-tail>
+                    B
+                    <goto-block-history>
+                         ListItem(Num) OldBlockHistory
+                    </goto-block-history>
+                    <goto-loop-stack>
+                         ListItem(kpair(Num, (K ~> Tail)))
+                         OldLoopStack
+                    </goto-loop-stack>
+               </goto-calc>
+          )
+           
 
      rule <k> waitingOnGotoMap ...</k>
           <computation>
@@ -216,6 +260,8 @@ module C-PROCESS-LABEL
      rule <k> waitingOnGotoMap ...</k>
           <computation> popLoop => .K ...</computation>
           <goto-loop-stack> ListItem(_) => .List ...</goto-loop-stack>
+          
+          
 
      rule <k> waitingOnGotoMap ...</k>
           <computation> (Label(Target::CId, S:K) => S) ~> K:K </computation>

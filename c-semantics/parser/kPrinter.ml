@@ -512,6 +512,10 @@ and statement =
   let statement_loc s l = kapply KItem "StatementLoc" [s KItem; cabs_loc l CabsLoc] in
   let for_statement fc1 exp2 exp3 stat sort = new_counter >>= fun counter ->
     kapply KItem "For5" [ktoken_int counter; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in
+  let omp_for_clause = function
+    | FC_EXP exp1  -> kapply1 KItem "OMPForClauseExpression" (expression exp1 KItem)
+    | FC_DECL dec1 -> definition dec1 in
+    let statement_loc s l = kapply KItem "StatementLoc" [s KItem; cabs_loc l CabsLoc] in
   let omp_for_statement fc1 exp2 exp3 stat sort = new_counter >>= fun counter ->
     kapply KItem "OMPFor5" [ktoken_int counter; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in
   

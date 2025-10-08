@@ -88,6 +88,43 @@ module C-EXPR-FUNCTION-CALL
           <external-types>... Identifier(S) |-> T::Type ...</external-types>
           <curr-program-loc> CurrLoc::CabsLoc </curr-program-loc>
           [structural]
+     
+
+     context Call(_, (HOLE:KItem => revalParams(HOLE)),  ThId:Int) [ndheat]
+
+     rule (.K => UNDEF("EFNC2", "Invoking a null pointer."))
+          ~> Call(tv(NullPointer, _), _,  ThId:Int)
+
+     // Strip prov.
+     rule Call(tv((loc(Base:SymBase, Offset:Int, _) => loc(Base, Offset)), _),
+               _:KResult,  ThId:Int)
+          [structural]
+
+     // Function call (from C function)
+     rule <k> Call(
+               tv(loc(Base:SymBase, 0), ut(_, pointerType(t(... st: functionType(...)) #as T::Type))),
+               rvlist(L:List),  ThId:Int)
+               => sequencePoint
+               ~> application(CurrLoc, Base, Fun, T, CLinkage, krlist(L))
+          ...</k>
+          <functions>... Base |-> Fun:RValue ...</functions>
+          <curr-program-loc> CurrLoc::CabsLoc </curr-program-loc>
+          [structural]
+     rule <k> Call(tv(loc(obj(0, Align::Int, nativeAddress()) #as Base::SymBase, Address:Int), ut(_, pointerType(t(... st: functionType(...)) #as T::Type))),
+               rvlist(L:List), ThId:Int)
+               => sequencePoint
+               ~> application(CurrLoc, Base, functionObject(nativeFunction(Address), makeNativeDecl(T), .List, .Map), T, CLinkage, krlist(L))
+          ...</k>
+          <curr-program-loc> CurrLoc::CabsLoc </curr-program-loc>
+          [structural]
+     rule <k> Call(tv(loc(obj(0, Align::Int, nativeSymbol(S::String)) #as Base::SymBase, _), ut(_, pointerType(t(... st: functionType(...))))),
+               rvlist(L:List), ThId:Int)
+               => sequencePoint
+               ~> application(CurrLoc, Base, functionObject(Identifier(S), T, .List, .Map), T, CLinkage, krlist(L))
+          ...</k>
+          <external-types>... Identifier(S) |-> T::Type ...</external-types>
+          <curr-program-loc> CurrLoc::CabsLoc </curr-program-loc>
+          [structural]
 
      rule showCId(nativeFunction(Address:Int)) => "<native function at 0x" +String Base2String(Address, 16) +String ">"
 

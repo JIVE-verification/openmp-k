@@ -21,7 +21,7 @@ module C-STMT-LOOP
      rule OMPForClauseExpression(K:KItem) => Computation(K)
 
      context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-     context OMPFor((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+     context OMPFor((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)] //special rule. Creating 2 rules (Hearting/cooling) Hole wrapped in reval
 
      context OMPFor(_, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]
      context For(_, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]
@@ -47,8 +47,8 @@ module C-STMT-LOOP
                     | #for(RValue, K)             [klabel(#for2)]
      context #for((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
 
-     syntax KItem ::= #ompfor(K, RValue, K, CabsLoc) [klabel(#for4)]
-                    | #ompfor(RValue, K)             [klabel(#for2)]
+     syntax KItem ::= #ompfor(K, RValue, K, CabsLoc) [klabel(#ompfor4)]
+                    | #ompfor(RValue, K)             [klabel(#ompfor2)]
      context #ompfor((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
 
      
@@ -65,6 +65,21 @@ module C-STMT-LOOP
                => lintEmpty(S)
           ...</k>
           <elab>... .K => For(emptyValue, Post, S) </elab>
+
+
+     rule (.K => elaborate(S)) ~> #ompfor(_:RValue, _, S:K, _)
+     rule <k> elaborateDone(S:K)
+               ~> #ompfor(Control:RValue, Post:RValue, _, L::CabsLoc)
+               => lintZero(Control) ~> lintEmpty(S)
+          ...</k>
+          <elab>... .K => OMPFor(compoundExp(L ~> Control), Post, S) </elab>
+
+     rule (.K => elaborate(S)) ~> #ompfor(_, S:K)
+     rule <k> elaborateDone(S:K)
+               ~> #ompfor(Post:RValue, _)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => OMPFor(emptyValue, Post, S) </elab>
 
      context While((HOLE:KItem => reval(HOLE)), _) [result(RValue)]
      rule <k> While(B:RValue, S:K) => #while(simplifyTruth(B), S, L) ...</k>

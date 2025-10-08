@@ -85,8 +85,11 @@ module C-SYNTAX
      syntax KItem ::= For(K, K, K)
      syntax KItem ::= For1(K, K, K)
      syntax KItem ::= For2(K, K, K)
-     syntax KItem ::= OMPFork(K,K,K)
+     syntax KItem ::= OMPFork(K)
      syntax KItem ::= OMPFor(K,K,K)
+     syntax KItem ::= RUNONTHREAD(K,K,K)
+     syntax KItem ::= FORLOOPINFO(K,K,K)
+     syntax KItem ::= POPLOOPONTHREAD(Int)
      /*
      | BREAK of cabsloc
      | CONTINUE of cabsloc
@@ -271,7 +274,9 @@ module C-SYNTAX
      | CALL of expression * expression list
      */
      syntax KItem ::= Call(K, K) [symbol]
+     syntax KItem ::= Call(K, K, Int) [symbol]
      context Call((HOLE:KItem => reval(HOLE)), _) [ndheat, result(RValue)]
+     context Call((HOLE:KItem => reval(HOLE)), _, _) [ndheat, result(RValue)]
      /*
      | MEMBEROF of expression * string
      */

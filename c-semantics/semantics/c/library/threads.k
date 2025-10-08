@@ -1,7 +1,7 @@
 module LIBC-THREADS-SYNTAX
      imports INT-SYNTAX
      imports C-DYNAMIC-SORTS
-     
+     // imports K-REFLECTION
 
      syntax RValue ::= "thrd-error" [function]
                      | "thrd-timeout" [function]
@@ -12,7 +12,8 @@ module LIBC-THREADS-SYNTAX
 
      syntax KItem ::= "threadRunning" | "threadJoined"
      syntax KItem ::= "spawn-aux" "(" Int "," RValue "," RValue ")"
-     //syntax KItem ::= "spawn-ompfor-aux" "(" Int "," K "," K "," K ")"
+     //syntax KItem ::= "spawn-omp-for" "(" Int ","
+     // syntax KItem ::= "spawn-aux-ompfor" "(" Int "," K "," K "," K ")"
 endmodule
 
 module LIBC-THREADS
@@ -29,13 +30,14 @@ module LIBC-THREADS
      imports LIBC-BUILTIN-SYNTAX
      imports LIBC-THREADS-SYNTAX
      imports SYMLOC-SYNTAX
-
+     
      //added for debugging
      imports C-CONFIGURATION
      imports K-REFLECTION
      imports C-SYNTAX
      imports C-DYNAMIC-SYNTAX
      imports C-TYPING-SYNTAX
+     
      ////////////////////////////--
      // Threads
      ////////////////////////////--
@@ -43,6 +45,9 @@ module LIBC-THREADS
      rule thrd-timeout => tv(2, utype(int))
      rule thrd-busy => tv(3, utype(int))
      rule thrd-nomem => tv(4, utype(int))
+
+
+          
 
      rule [thrd-create-start]:
           <k> builtin("thrd_create",

@@ -892,6 +892,8 @@ for_clause:
 |   declaration                  { FC_DECL $1 }
 ;
 
+
+
 declaration:                                /* ISO 6.7.*/
     decl_spec_list init_declarator_list SEMICOLON
                                        { doDeclaration ((*handleLoc*)(snd $1)) (fst $1) $2 }

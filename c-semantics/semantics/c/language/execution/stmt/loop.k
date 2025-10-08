@@ -7,8 +7,18 @@ module C-STMT-LOOP
      imports LIBC-THREADS
      imports LIBC-THREADS-SYNTAX
      imports LIBC-STDIO
-
-
+     imports SYMLOC-SYNTAX
+     imports SYMLOC
+    
+     syntax KItem ::= "spawn-aux-omp" "("K "," K "," K  ")"
+     syntax KItem ::= "OMPForInnerThread" "(" K "," K "," K")"
+     syntax KItem ::= "join-aux-omp" "(" Int ")"
+     syntax KItem ::= "update-identifier" "(" Int ")"
+      syntax KItem ::= "update-mem" "(" Int "," Int "," Duration ")"
+     // syntax KItem ::= "obj" "(" Int "," Int "," K ")"
+     syntax Stmt ::= "updateEnv"
+     syntax Stmt ::= "continueForLoop"
+     syntax K ::= placeContext(Map)
 
      
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.2}{1}}}{
@@ -31,91 +41,152 @@ module C-STMT-LOOP
      omitted $\textit{expression-2}$ is replaced by a nonzero constant.
      }*/
     
-     syntax KItem ::= "ompforThread1" "(" K "," K "," K ")"
-     syntax KItem ::= "ompforThread2" "(" K "," K "," K ")"
-     syntax KItem ::= "joinOmpForThread" "(" Int ")"
+    
      
+     //these are structural, so no computation is done here I think
+     //this first
      //fixme fishy interaction with continue i think
      rule [for-mark]:
           <k> For(Control:K, Post:K, S:K) ~> K:K
-               =>  //loopMarked ~>
-               OMPFork((#if Control =/=K emptyValue
-                    #then Control
-                    #else tv(1, utype(int)) #fi),
-                    Post, S)
-               //~> popLoop
-              
-          </k>
-          <block-history> ListItem(Num:Int) ...</block-history>
-          <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
-          [structural]
-
-     rule [for-mark1]:
-          <k> For1(Control:K, Post:K, S:K) ~> K:K
-               =>loopMarked ~> 
-               For1((#if Control =/=K emptyValue
+               => loopMarked
+               ~> For((#if Control =/=K emptyValue
                     #then Control
                     #else tv(1, utype(int)) #fi),
                     Post, S)
                ~> popLoop
-               
           </k>
           <block-history> ListItem(Num:Int) ...</block-history>
           <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
           [structural]
-
-     rule [for-mark2]:
-          <k> For2(Control:K, Post:K, S:K) ~> K:K
-               =>loopMarked ~> 
-               For2((#if Control =/=K emptyValue
-                    #then Control
-                    #else tv(1, utype(int)) #fi),
-                    Post, S)
-               ~> popLoop
-               
-          </k>
-          <block-history> ListItem(Num:Int) ...</block-history>
-          <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
-          [structural]
-     
-     rule [ompfork-mark]:
-          <k> OMPFork(Control:K, Post:K, S:K) ~> K:K
-               => For((#if Control =/=K emptyValue
-                    #then Control
-                    #else tv(1, utype(int)) #fi),
-                    Post, S) 
-          </k>
-          <block-history> ListItem(Num:Int) ...</block-history>
-          <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
-          [structural]
-
-
-     // rule [for-mark]:
-     //      <k> For(Control:K, Post:K, S:K) ~> K:K
-     //           => loopMarked
-     //           ~> For((#if Control =/=K emptyValue
-     //                #then Control
-     //                #else tv(1, utype(int)) #fi),
-     //                Post, S)
-     //           ~> popLoop
-     //      </k>
-     //      <block-history> ListItem(Num:Int) ...</block-history>
-     //      <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
-     //      [structural]
-
+     //this later
      rule [for]:
           <k> loopMarked ~> For(Control:K, Post:K, S:K)
-               =>IfThenElse(Control,
-                    (S ~> Computation(Post) ~> loopMarked
-                    ~>ompforThread1(Control,Post,S) ~> ompforThread2(Control,Post,S) ), Nop()) 
-               
-               // ompforThread1(Control,Post,S)
-               // ~> ompforThread2(Control,Post,S)
-               // ~> joinOmpForThread(1)
-               // ~> joinOmpForThread(2)
+                =>IfThenElse(Control,
+                         (S ~> Computation(Post) ~> loopMarked
+                    ~> For(Control, Post, S)), Nop())
           ...</k>
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
+     
+     rule [omp-for-mark]:
+          <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
+               => loopMarked
+               ~> OMPFor((#if Control =/=K emptyValue
+                    #then Control
+                    #else tv(1, utype(int)) #fi),
+                    Post, S)
+               ~> popLoop
+          </k>
+          <block-history> ListItem(Num:Int) ...</block-history>
+          <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
+          [structural]
+
+     rule [omp-for]:
+     <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)
+               =>IfThenElse(Control,
+                    (S ~> Computation(Post) ~> loopMarked
+               ~> OMPFor(Control, Post, S)), Nop())
+     ...</k>
+     <block-history> ListItem(_:Int) ...</block-history>
+     [structural] // rule so that looping programs see repetition
+
+     rule [updateIndentifier]:
+     <thread>...
+               <k> update-identifier(ThId:Int)
+               => Env[Identifier("i")] ~> updateEnv
+               ...</k>
+               <env> Env:Map </env>
+               <thread-id> ThId:Int </thread-id>
+     ...</thread>
+
+     rule [updateMem]:
+     <thread>...
+          <k> update-mem(Loc1:Int, Loc2:Int, Dur:Duration) => .K ...</k>
+     ...</thread>
+     <mem> Mem:Map => Mem[obj (Loc1,Loc2, threadLocal(1)) <- Mem[obj(Loc1,Loc2,Dur)] ] </mem>
+
+     rule [updateIndentifierHelper]:
+     <thread>...
+          <k> obj(Loc1:Int, Loc2:Int, Dur:Duration) ~> updateEnv => update-mem(Loc1, Loc2, Dur) ...</k>
+          <env> Env:Map => Env[Identifier("i") <- obj (Loc1,Loc2, threadLocal(1))] </env>
+     ...</thread>
+
+     rule [ompfork3]:
+          <for-thread-op> FORLOOPINFO(Control:K,Post:K,S:K) => success ...</for-thread-op>
+          <thread>...
+               <k>... 
+                   continueForLoop 
+                    => Computation(S)
+                    ~> Computation(Post) ~> continueForLoop
+               ...</k>
+               <thread-id> ThId:Int </thread-id>
+          ...</thread>
+     requires (ThId ==Int 1)
+     [large, ndthread]
+
+     rule [ompfork2]:
+          <thread>...
+               <k> RUNONTHREAD(Control:K, Post:K, S:K)
+                    => success
+               ...</k>
+               <thread-id> MasterThreadId:Int </thread-id>
+          ...</thread>
+          <next-thread-id> ThId:Int </next-thread-id>
+          <for-thread-op> _ => FORLOOPINFO(Control:K,Post:K,S:K) ...</for-thread-op>
+     requires (ThId ==Int 2) andBool (MasterThreadId ==Int 0)
+     [large, ndthread]
+
+     rule [poplooponthread]:
+          <k> POPLOOPONTHREAD(A:Int) => .K </k>
+          <for-thread-op>... _ => success ...</for-thread-op>
+
+
+     rule [ompfork]:
+          <thread>...
+               <k> RUNONTHREAD(Control:K, Post:K, S:K)
+                    => success
+               ...</k>
+               <curr-tu> Tu:String </curr-tu>
+               <buffer> .List </buffer>
+               <env> Env:Map</env>
+               <types> Type:Map </types>
+               <thread-id> MasterThreadId:Int </thread-id>
+          ...</thread>
+          <genv> GEnv:Map </genv>
+          <next-thread-id> ThId:Int => ThId +Int 1 </next-thread-id>
+          <thread-status>
+               Status:Map => Status[ThId <- threadRunning]
+          </thread-status>
+          (.Bag =>
+          <thread>...
+               <duration> threadLocal(ThId:Int) </duration>
+               <thread-id> ThId:Int </thread-id>
+               <k>       
+                    .K ~> update-identifier(ThId) 
+                    ~> Computation(S)
+                    ~> Computation(Post)
+                    ~> .K
+               </k>
+               <env> updateMap(GEnv, Env) </env>
+               <types> Type:Map </types>
+               <curr-tu> Tu:String </curr-tu>
+          ...</thread>)
+          requires (ThId ==Int 1) andBool (MasterThreadId ==Int 0)
+          [large, ndthread]
+     
+
+     // rule [omp-for]:
+     // <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)
+     //           =>IfThenElse(Control,
+     //                (S ~> Computation(Post) ~> loopMarked
+     //           ~> OMPFor(Control, Post, S)), Nop())
+     // ...</k>
+     // <block-history> ListItem(_:Int) ...</block-history>
+     // [structural] // rule so that looping programs see repetition
+
+
+
+    
 
      
 
@@ -129,131 +200,6 @@ module C-STMT-LOOP
           // <block-history> ListItem(_:Int) ...</block-history>
           // [structural] // rule so that looping programs see repetition
 
-          rule [for1]:
-          <k> loopMarked ~> For1(Control:K, Post:K, S:K)
-               => IfThenElse(Control,
-                    (S ~> Computation(Post) ~> loopMarked
-                    ~> For1(Control, Post, S)), Nop())
-          ...</k>
-          <block-history> ListItem(_:Int) ...</block-history>
-          [structural] // rule so that looping programs see repetition
-
-          rule [for2]:
-          <k> loopMarked ~> For2(Control:K, Post:K, S:K)
-               => IfThenElse(Control,
-                    (S ~> Computation(Post) ~> loopMarked
-                    ~> For2(Control, Post, S)), Nop())
-          ...</k>
-          <block-history> ListItem(_:Int) ...</block-history>
-          [structural] // rule so that looping programs see repetition
-
-     rule [joinOmpForThread]:
-          <thread>...
-               <k> joinOmpForThread(ThId:Int)
-                    =>success
-               ...</k>
-               <thread-id> ThisThread:Int </thread-id>
-               <buffer> .List </buffer>
-          ...</thread>
-          <thread-status>
-               Status:Map => Status[ThId <- threadJoined]
-          </thread-status>
-          (<thread>...
-               <k> V:KResult </k>
-               <thread-id> ThId </thread-id>
-          ...</thread> => .Bag)
-          requires (ThId in_keys(Status))
-               andBool (Status[ThId] =/=K threadJoined)
-               andBool ThId =/=K ThisThread
-          [ndthread]
-
-     rule [ompforThread1]:
-          <thread>...
-               <k> ompforThread1(Control:K, Post:K, S:K)
-                    => success
-               ...</k>
-               <curr-tu> Tu:String </curr-tu>
-               <buffer> .List </buffer>
-          ...</thread>
-          <genv> Env:Map </genv>
-          <thread-status>
-               Status:Map => Status[0 <- threadRunning]
-          </thread-status>
-          <next-thread-id> 0 => 1 </next-thread-id>
-          (.Bag =>
-          <thread>...
-               <duration> threadLocal(0) </duration>
-               <thread-id> 0 </thread-id>
-                <k> 
-                    For1((#if Control =/=K emptyValue
-                    #then Control
-                    #else tv(1, utype(int)) #fi),
-                    Post, S) 
-               </k>
-               <env> Env:Map </env>
-               <curr-tu> Tu:String </curr-tu>
-          ...</thread>)
-          requires notBool hasLint
-          [large, ndthread]
-
-     rule [ompforThread2]:
-          <thread>...
-               <k> ompforThread2(Control:K, Post:K, S:K)
-                    => success
-               ...</k>
-               <curr-tu> Tu:String </curr-tu>
-               <buffer> .List </buffer>
-          ...</thread>
-          <genv> Env:Map </genv>
-          <thread-status>
-               Status:Map => Status[1 <- threadRunning]
-          </thread-status>
-          <next-thread-id> 1 => 2 </next-thread-id>
-          (.Bag =>
-          <thread>...
-               <duration> threadLocal(1) </duration>
-               <thread-id> 1 </thread-id>
-               <k> 
-                   Computation(For2((#if Control =/=K emptyValue
-                    #then Control
-                    #else tv(1, utype(int)) #fi),
-                    Post, S))
-               </k>
-               <env> Env:Map </env>
-               <curr-tu> Tu:String </curr-tu>
-          ...</thread>)
-          requires notBool hasLint
-          [large, ndthread]
-
-     rule [ompfor-mark]:
-          <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
-               => loopMarked
-               // ~> ompforThread1(Control,Post,S)
-               // ~> ompforThread2(Control,Post,S)
-               ~> OMPFor((#if Control =/=K emptyValue
-                    #then Control
-                    #else tv(1, utype(int)) #fi),
-                    Post, S)
-               ~> popLoop
-          </k>
-          <block-history> ListItem(Num:Int) ...</block-history>
-          <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
-          [structural]
-
-
-
-     
-
-     rule [ompfor]:
-          <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)
-               => //ompforThread1(Control,Post,S)
-               //~> ompforThread2(Control,Post,S)
-               IfThenElse(Control,
-                    (S ~> Computation(Post) ~> loopMarked
-                    ~> OMPFor(Control, Post, S)), Nop())  
-          ...</k>
-          <block-history> ListItem(_:Int) ...</block-history>
-          [structural] 
 
 
          

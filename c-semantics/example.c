@@ -1,32 +1,23 @@
-//#include <omp.h>
-#include <stdio.h>
-//#include <threads.h>
-#include </home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h>
+#include<stdio.h>
+#include<stdlib.h>
+// #include</home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h>
 
-int myfunc1(void* arg){
-    int v = 0;
-    // for(int i = 0; i < 10; i++){
-    //     v += 1;
-    // }
-    printf("%d\n",v);
-    return 0;
-}
-
+// int func(void * argc){
+//     int* v = (int *) argc;
+//     // *v = 1;
+//     printf("hi\n");
+//     return 0;
+// }
 int main(int argc, char *argv[]){
-    int v = 0;
-    int k = 20;
-    int t = 30;
-    //  thrd_t t1, t2;
-    //  thrd_create(&t1, myfunc1, NULL);
-    //  thrd_create(&t2, myfunc1, NULL);
-    //#pragma omp parallel for
-    for(int i = 0; i < 10; i++){
-       v+=1;
-       printf("%d\n",i);
-    }
-    printf("%d\n",v);
+    // thrd_t thr1, thr2;
+    // int *v = malloc(sizeof(int));
 
-     //thrd_join(t1,NULL);
-     //thrd_join(t2,NULL);
+    // thrd_create(&thr1,func,(void *) v);
+    // thrd_create(&thr2,func,(void *) v);
+    // #pragma omp parallel for
+    for(int i = 0; i < 10; i++){
+        printf("%d\n",i);
+    }
+    printf("hi\n");
     return 0;
 }
