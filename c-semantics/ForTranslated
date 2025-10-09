@@ -1,0 +1,27 @@
+Seems like whatever is in <k> gets pushed to the <elab-stack> where 
+it goes through <elab> in which uses <Computation>
+--depth=2031, within <k>
+ListItem ( 
+    CodeLoc ( 
+        For ( 2 , CodeLoc 
+                ( DeclarationDefinition 
+                    ( InitNameGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "i" ) , JustBase ( ) , list ( .List ) ) , SingleInit ( tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 2 , 9 , false ) 
+                )
+                , Identifier ( "i" ) < tv ( 10 , ut ( SetItem ( IntegerConstant ) , int ) ) 
+                , Identifier ( "i" ) ++ 
+                , BlockStatement ( Block ( 3 , list ( .List ) , list ( ListItem ( CodeLoc ( BlockStatement ( Block ( 4 , list ( .List ) , list ( ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "k" ) , JustBase ( ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 3 , 9 , false ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 2 , 32 , false ) ) ) ) ) 
+                                 ) 
+            ) 
+        ,CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 2 , 5 , false ) 
+    ) 
+)
+
+--depth=2135, within <elab-stack>
+For ( 2 , CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "i" ) , JustBase ( ) , list ( .List ) ) , SingleInit ( tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 14 , 9 , false ) ) , Identifier ( "i" ) < tv ( 10 , ut ( SetItem ( IntegerConstant ) , int ) ) , Identifier ( "i" ) ++ , BlockStatement ( Block ( 3 , list ( .List ) , list ( ListItem ( CodeLoc ( BlockStatement ( Block ( 4 , list ( .List ) , list ( ListItem ( CodeLoc ( Computation ( Call ( Identifier ( "printf" ) , list ( ListItem ( StringLiteral ( "%d\n" ) )
+        ListItem ( Identifier ( "i" ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 15 , 9 , false ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 14 , 32 , false ) ) ) ) ) ) )
+
+--depth=1000000 within <functions>
+For ( compoundExp ( CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 14 , 9 , false ) ~> te ( Identifier ( "i" ) < checkUse ( tv ( 10 , ut ( .Set , int ) ) ) != checkUse ( tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) , ut ( .Set , int ) ) ) , te ( postOp ( Identifier ( "i" ) , te ( LHOLE := RHOLE + checkUse ( tv ( 1 , ut ( .Set , int ) ) ) , ut ( .Set , int ) ) ) , ut ( .Set , int ) ) , pushBlock ( 3 ) ~> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 14 , 32 , false ) ~> pushBlock ( 4 ) ~> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 15 , 9 , false ) ~> Computation ( te ( Call ( checkUse ( tv ( loc ( obj ( 26 , 0 , link ( "example.c21c7d44b-a4cf-11f0-9789-997621e51731" ) ) , 0 , SetItem ( objectType ( dynamicType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , 20 , 25 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , 20 , 25 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , char ) ) ) )
+      ListItem ( variadic ) ) ) ) ) ) ) , ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , 20 , 25 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , 20 , 25 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , char ) ) ) )
+      ListItem ( variadic ) ) ) ) ) ) ) , list ( ListItem ( checkUse ( tv ( loc ( obj ( 0 , 1 , string ( "%d\n" ) ) , 0 , SetItem ( fromArray ( 0 , 4 ) ) ) , ut ( .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , char ) ) ) ) ) )
+      ListItem ( Cast ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "i" ) ) ) ) ) , ut ( .Set , int ) ) ) ~> popBlock ~> popBlock )

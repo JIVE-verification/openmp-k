@@ -64,7 +64,7 @@ def main():
         kcc = Path(found)
 
     out_stem = src.stem
-    cmd = [str(kcc), str(src), "-d", "-o", out_stem]
+    cmd = [str(kcc), str(src), "-d", "-ftranslation-depth", depth, "-o", out_stem]
 
     try:
         proc = subprocess.run(
