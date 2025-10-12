@@ -9,12 +9,8 @@
 //     return 0;
 // }
 int main(int argc, char *argv[]){
-    // thrd_t thr1, thr2;
-    // int *v = malloc(sizeof(int));
-
-    // thrd_create(&thr1,func,(void *) v);
-    // thrd_create(&thr2,func,(void *) v);
-    // #pragma omp parallel for
+   
+   
     for(int i = 0; i < 10; i++){
         printf("%d\n",i);
     }
