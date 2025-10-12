@@ -24,3 +24,5 @@ find the wrapper that wraps the identifier
 
 
 fIRST figure out how for-loop handles goto computation.
+
+Observe pthread function calls (translations semantics and its effect in exec semantics)
