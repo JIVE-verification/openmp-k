@@ -13,8 +13,11 @@ module C-STMT-LOOP
           => Block(Tag, list(ListItem(E1) ListItem(For(E2, E3, B))))
 
      rule OMPFor(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
-          => Block(Tag, list(ListItem(E1) ListItem(OMPFor(E2, E3, B)))) 
-     
+          => Block(Tag, list(ListItem(E1) ListItem(OMPFor(E2, E3, B))))  
+          
+     //      ~> OMPFor2(Tag, E1, E2, E3, B)
+     // rule OMPFor2(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
+     //      => Block(Tag, list(ListItem(E1) ListItem(OMPFor(E2, E3, B))))
      // This is the first child of the for if it's not a declaration.
      rule ForClauseExpression(K:KItem) => Computation(K)
 
