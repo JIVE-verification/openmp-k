@@ -1,0 +1,7 @@
+title: test_requires_unified_shared_memory_heap_is_device_ptr.c
+source_repo_url: https://github.com/SOLLVE/sollve_vv.git
+source_commit: d978684813f46356c68d3d36d8c2fe09e86b3f62
+source_relpath: tests/5.0/requires/test_requires_unified_shared_memory_heap_is_device_ptr.c
+collected_by: unknown
+collected_at: '2025-10-19T17:59:12.057775+00:00'
+license: BSD-3-Clause

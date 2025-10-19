@@ -1,0 +1,7 @@
+title: test_loop_reduction_add.c
+source_repo_url: https://github.com/SOLLVE/sollve_vv.git
+source_commit: d978684813f46356c68d3d36d8c2fe09e86b3f62
+source_relpath: tests/5.0/loop/test_loop_reduction_add.c
+collected_by: unknown
+collected_at: '2025-10-19T17:59:12.223151+00:00'
+license: BSD-3-Clause
