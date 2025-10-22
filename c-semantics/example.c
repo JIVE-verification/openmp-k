@@ -1,19 +1,13 @@
-#include<stdio.h>
-#include<stdlib.h>
-// #include</home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h>
+#include </home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h>
+int myfunc1(void* arg){
+    return 0;
+}
 
-// int func(void * argc){
-//     int* v = (int *) argc;
-//     // *v = 1;
-//     printf("hi\n");
-//     return 0;
-// }
 int main(int argc, char *argv[]){
-   
-   
-    for(int i = 0; i < 10; i++){
-        printf("%d\n",i);
-    }
-    printf("hi\n");
+    thrd_t t1, t2;
+    thrd_create(&t1, myfunc1, NULL);
+    thrd_create(&t2, myfunc1, NULL);
+    thrd_join(t1,NULL);
+    thrd_join(t2,NULL);
     return 0;
 }

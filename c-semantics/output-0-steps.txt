@@ -1,0 +1,300 @@
+<generatedTop>
+  <global>
+    <mem>
+      .Map
+    </mem>
+    <references>
+      .Map
+    </references>
+    <functions>
+      .Map
+    </functions>
+    <goto-map>
+      .Map
+    </goto-map>
+    <main-tu>
+      .Set
+    </main-tu>
+    <global-state>
+      <external-types>
+        .Map
+      </external-types>
+      <external-defs>
+        .Map
+      </external-defs>
+      <odr-defs>
+        .Map
+      </odr-defs>
+      <linkings>
+        .Map
+      </linkings>
+      <function-tus>
+        .Map
+      </function-tus>
+    </global-state>
+    <linking-state>
+      <external-decls>
+        .Map
+      </external-decls>
+      <external-decls-loc>
+        .Map
+      </external-decls-loc>
+      <external-uses>
+        .Map
+      </external-uses>
+      <external-defs-loc>
+        .Map
+      </external-defs-loc>
+      <odr-decls>
+        .Map
+      </odr-decls>
+      <odr-uses>
+        .Set
+      </odr-uses>
+    </linking-state>
+    <tags>
+      .Map
+    </tags>
+    <unnamed-locs>
+      .Map
+    </unnamed-locs>
+    <dynamic-init>
+      .
+    </dynamic-init>
+    <constexpr-symbase>
+      .Set
+    </constexpr-symbase>
+    <translation-units>
+      .TuCellMap
+    </translation-units>
+  </global>
+  <s>
+    #STUCK ( ) ~> ^ regular
+  </s>
+  <result-value>
+    1
+  </result-value>
+  <T>
+    <exec>
+      .FinalComputationCell
+      <goto-map-calc>
+        .GotoCalcCellSet
+      </goto-map-calc>
+      <k>
+        TranslationUnit ( "example.c" , list ( .List ) , list ( ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Long ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "__kcc_va_list" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , 17 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Long ( ) )
+        ListItem ( Unsigned ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "__kcc_size_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , 18 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( OversizedInt ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "__int128_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , 39 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Unsigned ( ) )
+        ListItem ( OversizedInt ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "__uint128_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , 40 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Long ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "ptrdiff_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , 4 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Named ( Identifier ( "__kcc_size_t" ) ) ) ) ) , list ( ListItem ( Name ( Identifier ( "size_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , 5 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Char ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "max_align_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , 6 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "wchar_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , 9 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Signed ( ) )
+        ListItem ( Long ( ) )
+        ListItem ( Long ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "clock_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 8 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Signed ( ) )
+        ListItem ( Long ( ) )
+        ListItem ( Long ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "time_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 9 , 1 , false ) ) )
+        ListItem ( CodeLoc ( OnlyTypedef ( Specifier ( list ( ListItem ( StructDef ( Identifier ( "timespec" ) , list ( ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Named ( Identifier ( "time_t" ) ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "tv_sec" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Long ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "tv_nsec" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) ) ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 11 , 1 , false ) ) )
+        ListItem ( CodeLoc ( OnlyTypedef ( Specifier ( list ( ListItem ( StructDef ( Identifier ( "tm" ) , list ( ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "tm_sec" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "tm_min" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "tm_hour" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "tm_mday" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "tm_mon" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "tm_year" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "tm_wday" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "tm_yday" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "tm_isdst" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) ) ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 15 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Named ( Identifier ( "clock_t" ) ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "clock" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , Name ( #NoName , JustBase ( ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 31 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Double ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "difftime" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "time_t" ) ) ) ) ) , Name ( Identifier ( "time1" ) , JustBase ( ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "time_t" ) ) ) ) ) , Name ( Identifier ( "time0" ) , JustBase ( ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 32 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Named ( Identifier ( "time_t" ) ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "mktime" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( StructRef ( Identifier ( "tm" ) , list ( .List ) ) ) ) ) , Name ( Identifier ( "timeptr" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 33 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Named ( Identifier ( "time_t" ) ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "time" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "time_t" ) ) ) ) ) , Name ( Identifier ( "timer" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 34 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "timespec_get" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( StructRef ( Identifier ( "timespec" ) , list ( .List ) ) ) ) ) , Name ( Identifier ( "ts" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , Name ( Identifier ( "base" ) , JustBase ( ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 35 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Char ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "asctime" ) , PointerType ( Specifier ( list ( .List ) ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Const ( ) )
+        ListItem ( StructRef ( Identifier ( "tm" ) , list ( .List ) ) ) ) ) , Name ( Identifier ( "timeptr" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 36 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Char ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "ctime" ) , PointerType ( Specifier ( list ( .List ) ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Const ( ) )
+        ListItem ( Named ( Identifier ( "time_t" ) ) ) ) ) , Name ( Identifier ( "timer" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 37 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( StructRef ( Identifier ( "tm" ) , list ( .List ) ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "gmtime" ) , PointerType ( Specifier ( list ( .List ) ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Const ( ) )
+        ListItem ( Named ( Identifier ( "time_t" ) ) ) ) ) , Name ( Identifier ( "timer" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 38 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( StructRef ( Identifier ( "tm" ) , list ( .List ) ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "localtime" ) , PointerType ( Specifier ( list ( .List ) ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Const ( ) )
+        ListItem ( Named ( Identifier ( "time_t" ) ) ) ) ) , Name ( Identifier ( "timer" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 39 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Named ( Identifier ( "size_t" ) ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "strftime" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Char ( ) ) ) ) , Name ( Identifier ( "s" ) , PointerType ( Specifier ( list ( ListItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) ) ) , JustBase ( ) ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "size_t" ) ) ) ) ) , Name ( Identifier ( "maxsize" ) , JustBase ( ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Const ( ) )
+        ListItem ( Char ( ) ) ) ) , Name ( Identifier ( "format" ) , PointerType ( Specifier ( list ( ListItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) ) ) , JustBase ( ) ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Const ( ) )
+        ListItem ( StructRef ( Identifier ( "tm" ) , list ( .List ) ) ) ) ) , Name ( Identifier ( "timeptr" ) , PointerType ( Specifier ( list ( ListItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "cnd_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 14 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "thrd_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 15 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "tss_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 16 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( StructDef ( Identifier ( "mtx_t_" ) , list ( ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "id" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "type" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Named ( Identifier ( "thrd_t" ) ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "owner" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "owned" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "flag" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "alive" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) ) ) , list ( .List ) ) ) ) ) , list ( ListItem ( Name ( Identifier ( "mtx_t" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 17 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Void ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "tss_dtor_t" ) , Prototype ( FunctionType ( PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , Name ( #NoName , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 18 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "thrd_start_t" ) , Prototype ( FunctionType ( PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , Name ( #NoName , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 19 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( Name ( Identifier ( "once_flag" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 20 , 1 , false ) ) )
+        ListItem ( CodeLoc ( Typedef ( NameGroup ( Specifier ( list ( ListItem ( SpecTypedef ( ) )
+        ListItem ( StructDef ( Identifier ( "xtime_" ) , list ( ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Named ( Identifier ( "time_t" ) ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "sec" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) )
+        ListItem ( FieldGroup ( Specifier ( list ( ListItem ( Long ( ) ) ) ) , list ( ListItem ( FieldName ( Name ( Identifier ( "nsec" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) ) ) , list ( .List ) ) ) ) ) , list ( ListItem ( Name ( Identifier ( "xtime" ) , JustBase ( ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 23 , 1 , false ) ) )
+        ListItem ( CodeLoc ( OnlyTypedef ( Specifier ( list ( ListItem ( EnumDef ( #NoName , list ( ListItem ( EnumItemInit ( Identifier ( "mtx_plain" ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) )
+        ListItem ( EnumItemInit ( Identifier ( "mtx_recursive" ) , tv ( 1 , ut ( SetItem ( IntegerConstant ) , int ) ) ) )
+        ListItem ( EnumItemInit ( Identifier ( "mtx_timed" ) , tv ( 2 , ut ( SetItem ( IntegerConstant ) , int ) ) ) )
+        ListItem ( EnumItemInit ( Identifier ( "mtx_try" ) , tv ( 4 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 25 , 1 , false ) ) )
+        ListItem ( CodeLoc ( OnlyTypedef ( Specifier ( list ( ListItem ( EnumDef ( #NoName , list ( ListItem ( EnumItemInit ( Identifier ( "thrd_success" ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) )
+        ListItem ( EnumItemInit ( Identifier ( "thrd_error" ) , tv ( 1 , ut ( SetItem ( IntegerConstant ) , int ) ) ) )
+        ListItem ( EnumItemInit ( Identifier ( "thrd_timeout" ) , tv ( 2 , ut ( SetItem ( IntegerConstant ) , int ) ) ) )
+        ListItem ( EnumItemInit ( Identifier ( "thrd_busy" ) , tv ( 3 , ut ( SetItem ( IntegerConstant ) , int ) ) ) )
+        ListItem ( EnumItemInit ( Identifier ( "thrd_nomem" ) , tv ( 4 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) , list ( .List ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 31 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "__test_and_set" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , Name ( Identifier ( "p" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , Name ( Identifier ( "value" ) , JustBase ( ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 44 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "call_once" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "once_flag" ) ) ) ) ) , Name ( Identifier ( "flag" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , Name ( Identifier ( "func" ) , Prototype ( FunctionType ( PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , Name ( #NoName , JustBase ( ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 53 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "mtx_destroy" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "mtx_t" ) ) ) ) ) , Name ( Identifier ( "mtx" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 61 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "mtx_init" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "mtx_t" ) ) ) ) ) , Name ( Identifier ( "mtx" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , Name ( Identifier ( "type" ) , JustBase ( ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 83 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "mtx_lock" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "mtx_t" ) ) ) ) ) , Name ( Identifier ( "mtx" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 94 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "mtx_unlock" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "mtx_t" ) ) ) ) ) , Name ( Identifier ( "mtx" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 103 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Extern ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "thrd_create" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "thrd_t" ) ) ) ) ) , Name ( Identifier ( "thr" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "thrd_start_t" ) ) ) ) ) , Name ( Identifier ( "func" ) , JustBase ( ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , Name ( Identifier ( "arg" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 114 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Extern ( ) )
+        ListItem ( Named ( Identifier ( "thrd_t" ) ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "thrd_current" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , Name ( #NoName , JustBase ( ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 122 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Extern ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "thrd_detach" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "thrd_t" ) ) ) ) ) , Name ( Identifier ( "thr" ) , JustBase ( ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 133 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "thrd_equal" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "thrd_t" ) ) ) ) ) , Name ( Identifier ( "thr0" ) , JustBase ( ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "thrd_t" ) ) ) ) ) , Name ( Identifier ( "thr1" ) , JustBase ( ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 143 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Extern ( ) )
+        ListItem ( Void ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "thrd_exit" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , Name ( Identifier ( "res" ) , JustBase ( ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 151 , 1 , false ) ) )
+        ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Extern ( ) )
+        ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "thrd_join" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Named ( Identifier ( "thrd_t" ) ) ) ) ) , Name ( Identifier ( "thr" ) , JustBase ( ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , Name ( Identifier ( "res" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 163 , 1 , false ) ) )
+        ListItem ( DefinitionLocRange ( FunctionDefinition ( SingleName ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , Name ( Identifier ( "myfunc1" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , Name ( Identifier ( "arg" ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) ) , Block ( 1 , list ( .List ) , list ( ListItem ( CodeLoc ( Return ( tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 3 , 5 , false ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 2 , 1 , false ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 4 , 1 , false ) ) )
+        ListItem ( DefinitionLocRange ( FunctionDefinition ( SingleName ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , Name ( Identifier ( "main" ) , Prototype ( JustBase ( ) , list ( ListItem ( SingleName ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , Name ( Identifier ( "argc" ) , JustBase ( ) , list ( .List ) ) ) )
+        ListItem ( SingleName ( Specifier ( list ( ListItem ( Char ( ) ) ) ) , Name ( Identifier ( "argv" ) , PointerType ( Specifier ( list ( .List ) ) , ArrayType ( JustBase ( ) , emptyValue , Specifier ( list ( .List ) ) ) ) , list ( .List ) ) ) ) ) , false ) , list ( .List ) ) ) , Block ( 2 , list ( .List ) , list ( ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Named ( Identifier ( "thrd_t" ) ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "t1" ) , JustBase ( ) , list ( .List ) ) , NoInit ( ) ) )
+        ListItem ( InitName ( Name ( Identifier ( "t2" ) , JustBase ( ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 7 , 5 , false ) ) )
+        ListItem ( CodeLoc ( Computation ( Call ( Identifier ( "thrd_create" ) , list ( ListItem ( & Identifier ( "t1" ) )
+        ListItem ( Identifier ( "myfunc1" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 8 , 5 , false ) ) )
+        ListItem ( CodeLoc ( Computation ( Call ( Identifier ( "thrd_create" ) , list ( ListItem ( & Identifier ( "t2" ) )
+        ListItem ( Identifier ( "myfunc1" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 9 , 5 , false ) ) )
+        ListItem ( CodeLoc ( Computation ( Call ( Identifier ( "thrd_join" ) , list ( ListItem ( Identifier ( "t1" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 10 , 5 , false ) ) )
+        ListItem ( CodeLoc ( Computation ( Call ( Identifier ( "thrd_join" ) , list ( ListItem ( Identifier ( "t2" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 11 , 5 , false ) ) )
+        ListItem ( CodeLoc ( Return ( tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 12 , 5 , false ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 6 , 1 , false ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 13 , 1 , false ) ) ) ) ) ~> reportSuccess ~> cleanup
+      </k>
+      <elab>
+        .
+      </elab>
+      <elab-stack>
+        .List
+      </elab-stack>
+      <curr-state>
+        <curr-tu>
+          ""
+        </curr-tu>
+        <curr-function>
+          .
+        </curr-function>
+        <curr-scope>
+          fileScope
+        </curr-scope>
+        <curr-eval-context>
+          eval
+        </curr-eval-context>
+        <curr-program-loc>
+          UnknownCabsLoc
+        </curr-program-loc>
+      </curr-state>
+      <block-stack>
+        .List
+      </block-stack>
+      <block-control>
+        <env>
+          .Map
+        </env>
+        <types>
+          .Map
+        </types>
+        <renv>
+          .Map
+        </renv>
+        <local-types>
+          .Set
+        </local-types>
+        <enums>
+          .Map
+        </enums>
+        <block-history>
+          .List
+        </block-history>
+      </block-control>
+      <init-calc>
+        <curr-object>
+          .List
+        </curr-object>
+        <curr-subobject>
+          .List
+        </curr-subobject>
+        <incomplete-length>
+          0
+        </incomplete-length>
+        <saved-init>
+          .
+        </saved-init>
+        <decl-type-holder>
+          .
+        </decl-type-holder>
+      </init-calc>
+    </exec>
+    .ErrorCellCell
+    <annotation>
+      ""
+    </annotation>
+    <generated-annotations>
+      .List
+    </generated-annotations>
+    <status>
+      initializingTu
+    </status>
+    <options>
+      .Set
+    </options>
+    <uuid>
+      "93894a0d-af5c-11f0-a229-ae90abd156b8"
+    </uuid>
+  </T>
+  <json>
+    "{\"suppressions\": [],\"message_length\": 80,\"format\": \"Console\",\"previous_errors\": [],\"fatal_errors\": false,\"rv_error\": \"\"}"
+  </json>
+</generatedTop>

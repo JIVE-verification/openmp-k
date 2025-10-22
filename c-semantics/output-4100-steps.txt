@@ -1,0 +1,831 @@
+<generatedTop>
+  <global>
+    <mem>
+      obj ( 103 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) |-> object ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , Identifier ( "arg" ) ) ) ) ) , 1 , arrayCtor ( "2e8e7f40-4a31-4c1e-88be-cc8b3d81ff48" , 1 , uninit ) )
+      obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) |-> object ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "argc" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) ) ) , Identifier ( "argv" ) ) ) ) ) , 1 , arrayCtor ( "a5c51a2b-93dc-45c7-b08e-b760d84e8458" , 1 , uninit ) )
+    </mem>
+    <references>
+      .Map
+    </references>
+    <functions>
+      obj ( 103 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) |-> functionObject ( Identifier ( "myfunc1" ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , Identifier ( "arg" ) ) ) ) ) , .List , funLabel |-> gotoObject ( .List , pushBlock ( 1 ) ~> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 3 , 5 , false ) ~> Return ( tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ~> popBlock ~> Return ( emptyValue ) , .List , .List ) )
+      obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) |-> functionObject ( Identifier ( "main" ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "argc" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) ) ) , Identifier ( "argv" ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+      ListItem ( t ( quals ( .Set ) , .Set , int ) ) , .Map )
+    </functions>
+    <goto-map>
+      .Map
+    </goto-map>
+    <main-tu>
+      .Set
+    </main-tu>
+    <global-state>
+      <external-types>
+        Identifier ( "__test_and_set" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+        ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+        Identifier ( "asctime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+        Identifier ( "call_once" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+        ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+        Identifier ( "clock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) )
+        Identifier ( "ctime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+        Identifier ( "difftime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , double ) , ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) )
+        ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) )
+        Identifier ( "gmtime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+        Identifier ( "localtime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+        Identifier ( "main" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "argc" ) ) )
+        ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) ) ) , Identifier ( "argv" ) ) ) ) )
+        Identifier ( "mktime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+        Identifier ( "mtx_destroy" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+        Identifier ( "mtx_init" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+        ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+        Identifier ( "mtx_lock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+        Identifier ( "mtx_unlock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+        Identifier ( "myfunc1" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , Identifier ( "arg" ) ) ) ) )
+        Identifier ( "strftime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , unsigned-long-int ) , ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) )
+        ListItem ( t ( quals ( .Set ) , .Set , unsigned-long-int ) )
+        ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , char ) ) ) )
+        ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+        Identifier ( "thrd_create" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+        ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+        ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) )
+        Identifier ( "thrd_current" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) )
+        Identifier ( "thrd_detach" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+        Identifier ( "thrd_equal" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+        ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+        Identifier ( "thrd_exit" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+        Identifier ( "thrd_join" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+        ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) ) ) )
+        Identifier ( "time" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) ) ) )
+        Identifier ( "timespec_get" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "timespec" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+        ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+      </external-types>
+      <external-defs>
+        Identifier ( "main" ) |-> obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+        Identifier ( "myfunc1" ) |-> obj ( 103 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+      </external-defs>
+      <odr-defs>
+        .Map
+      </odr-defs>
+      <linkings>
+        obj ( 102 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) |-> obj ( 103 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+        obj ( 107 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) |-> obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+      </linkings>
+      <function-tus>
+        .Map
+      </function-tus>
+    </global-state>
+    <linking-state>
+      <external-decls>
+        Identifier ( "__test_and_set" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "asctime" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "call_once" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "clock" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "ctime" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "difftime" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "gmtime" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "localtime" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "main" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "mktime" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "mtx_destroy" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "mtx_init" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "mtx_lock" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "mtx_unlock" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "myfunc1" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "strftime" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "thrd_create" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "thrd_current" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "thrd_detach" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "thrd_equal" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "thrd_exit" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "thrd_join" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "time" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+        Identifier ( "timespec_get" ) |-> SetItem ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" )
+      </external-decls>
+      <external-decls-loc>
+        Identifier ( "__test_and_set" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 44 , 1 , false )
+        Identifier ( "asctime" ) |-> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 36 , 1 , false )
+        Identifier ( "call_once" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 53 , 1 , false )
+        Identifier ( "clock" ) |-> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 31 , 1 , false )
+        Identifier ( "ctime" ) |-> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 37 , 1 , false )
+        Identifier ( "difftime" ) |-> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 32 , 1 , false )
+        Identifier ( "gmtime" ) |-> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 38 , 1 , false )
+        Identifier ( "localtime" ) |-> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 39 , 1 , false )
+        Identifier ( "main" ) |-> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 6 , 1 , false )
+        Identifier ( "mktime" ) |-> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 33 , 1 , false )
+        Identifier ( "mtx_destroy" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 61 , 1 , false )
+        Identifier ( "mtx_init" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 83 , 1 , false )
+        Identifier ( "mtx_lock" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 94 , 1 , false )
+        Identifier ( "mtx_unlock" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 103 , 1 , false )
+        Identifier ( "myfunc1" ) |-> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 2 , 1 , false )
+        Identifier ( "strftime" ) |-> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 1 , false )
+        Identifier ( "thrd_create" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 114 , 1 , false )
+        Identifier ( "thrd_current" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 122 , 1 , false )
+        Identifier ( "thrd_detach" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 133 , 1 , false )
+        Identifier ( "thrd_equal" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 143 , 1 , false )
+        Identifier ( "thrd_exit" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 151 , 1 , false )
+        Identifier ( "thrd_join" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 163 , 1 , false )
+        Identifier ( "time" ) |-> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 34 , 1 , false )
+        Identifier ( "timespec_get" ) |-> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 35 , 1 , false )
+      </external-decls-loc>
+      <external-uses>
+        Identifier ( "main" ) |-> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 6 , 1 , false )
+        Identifier ( "myfunc1" ) |-> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 2 , 1 , false )
+        Identifier ( "thrd_create" ) |-> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 8 , 5 , false )
+      </external-uses>
+      <external-defs-loc>
+        Identifier ( "main" ) |-> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 6 , 1 , false )
+        Identifier ( "myfunc1" ) |-> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 2 , 1 , false )
+      </external-defs-loc>
+      <odr-decls>
+        .Map
+      </odr-decls>
+      <odr-uses>
+        .Set
+      </odr-uses>
+    </linking-state>
+    <tags>
+      "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" |-> ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) |-> fieldInfo ( ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "id" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "type" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "owner" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "owned" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "flag" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "alive" ) ) ) , 192 , Identifier ( "alive" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "flag" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "id" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "owned" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "owner" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "type" ) |-> t ( quals ( .Set ) , .Set , int ) , Identifier ( "alive" ) |-> 160
+      Identifier ( "flag" ) |-> 128
+      Identifier ( "id" ) |-> 0
+      Identifier ( "owned" ) |-> 96
+      Identifier ( "owner" ) |-> 64
+      Identifier ( "type" ) |-> 32 , .Set )
+      tag ( Identifier ( "timespec" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) |-> fieldInfo ( ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , long-long-int ) , Identifier ( "tv_sec" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , long-int ) , Identifier ( "tv_nsec" ) ) ) , 128 , Identifier ( "tv_nsec" ) |-> t ( quals ( .Set ) , .Set , long-int )
+      Identifier ( "tv_sec" ) |-> t ( quals ( .Set ) , .Set , long-long-int ) , Identifier ( "tv_nsec" ) |-> 64
+      Identifier ( "tv_sec" ) |-> 0 , SetItem ( 96 )
+      SetItem ( 104 )
+      SetItem ( 112 )
+      SetItem ( 120 ) )
+      tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) |-> fieldInfo ( ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "tm_sec" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "tm_min" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "tm_hour" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "tm_mday" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "tm_mon" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "tm_year" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "tm_wday" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "tm_yday" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "tm_isdst" ) ) ) , 288 , Identifier ( "tm_hour" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "tm_isdst" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "tm_mday" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "tm_min" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "tm_mon" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "tm_sec" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "tm_wday" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "tm_yday" ) |-> t ( quals ( .Set ) , .Set , int )
+      Identifier ( "tm_year" ) |-> t ( quals ( .Set ) , .Set , int ) , Identifier ( "tm_hour" ) |-> 64
+      Identifier ( "tm_isdst" ) |-> 256
+      Identifier ( "tm_mday" ) |-> 96
+      Identifier ( "tm_min" ) |-> 32
+      Identifier ( "tm_mon" ) |-> 128
+      Identifier ( "tm_sec" ) |-> 0
+      Identifier ( "tm_wday" ) |-> 192
+      Identifier ( "tm_yday" ) |-> 224
+      Identifier ( "tm_year" ) |-> 160 , .Set )
+      tag ( Identifier ( "xtime_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) |-> fieldInfo ( ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , long-long-int ) , Identifier ( "sec" ) ) )
+      ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , long-int ) , Identifier ( "nsec" ) ) ) , 128 , Identifier ( "nsec" ) |-> t ( quals ( .Set ) , .Set , long-int )
+      Identifier ( "sec" ) |-> t ( quals ( .Set ) , .Set , long-long-int ) , Identifier ( "nsec" ) |-> 64
+      Identifier ( "sec" ) |-> 0 , SetItem ( 96 )
+      SetItem ( 104 )
+      SetItem ( 112 )
+      SetItem ( 120 ) )
+      tag ( unnamed ( 0 , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) |-> enumInfo ( unsigned-int , 0 |-> Identifier ( "mtx_plain" )
+      1 |-> Identifier ( "mtx_recursive" )
+      2 |-> Identifier ( "mtx_timed" )
+      4 |-> Identifier ( "mtx_try" ) )
+      tag ( unnamed ( 1 , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) |-> enumInfo ( unsigned-int , 0 |-> Identifier ( "thrd_success" )
+      1 |-> Identifier ( "thrd_error" )
+      2 |-> Identifier ( "thrd_timeout" )
+      3 |-> Identifier ( "thrd_busy" )
+      4 |-> Identifier ( "thrd_nomem" ) ) )
+    </tags>
+    <unnamed-locs>
+      unnamed ( 0 , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 25 , 1 , false )
+      unnamed ( 1 , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) |-> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 31 , 1 , false )
+    </unnamed-locs>
+    <dynamic-init>
+      .
+    </dynamic-init>
+    <constexpr-symbase>
+      .Set
+    </constexpr-symbase>
+    <translation-units>
+      <tu>
+        <tu-id>
+          "example.c93262d9c-af65-11f0-8c25-c810e54eadc4"
+        </tu-id>
+        <genv>
+          Identifier ( "__test_and_set" ) |-> obj ( 59 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "asctime" ) |-> obj ( 30 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "call_once" ) |-> obj ( 64 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "clock" ) |-> obj ( 13 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "ctime" ) |-> obj ( 33 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "difftime" ) |-> obj ( 17 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "gmtime" ) |-> obj ( 36 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "localtime" ) |-> obj ( 39 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "main" ) |-> obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "mktime" ) |-> obj ( 20 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "mtx_destroy" ) |-> obj ( 67 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "mtx_init" ) |-> obj ( 71 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "mtx_lock" ) |-> obj ( 74 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "mtx_unlock" ) |-> obj ( 77 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "myfunc1" ) |-> obj ( 103 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "strftime" ) |-> obj ( 45 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "thrd_create" ) |-> obj ( 82 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "thrd_current" ) |-> obj ( 85 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "thrd_detach" ) |-> obj ( 88 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "thrd_equal" ) |-> obj ( 92 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "thrd_exit" ) |-> obj ( 95 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "thrd_join" ) |-> obj ( 99 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "time" ) |-> obj ( 23 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "timespec_get" ) |-> obj ( 27 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+        </genv>
+        <rgenv>
+          .Map
+        </rgenv>
+        <gtypes>
+          Identifier ( "__test_and_set" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          Identifier ( "asctime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "call_once" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+          Identifier ( "clock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) )
+          Identifier ( "ctime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+          Identifier ( "difftime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , double ) , ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) )
+          ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) )
+          Identifier ( "gmtime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+          Identifier ( "localtime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+          Identifier ( "main" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "argc" ) ) )
+          ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) ) ) , Identifier ( "argv" ) ) ) ) )
+          Identifier ( "mktime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "mtx_destroy" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "mtx_init" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          Identifier ( "mtx_lock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "mtx_unlock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "myfunc1" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , Identifier ( "arg" ) ) ) ) )
+          Identifier ( "strftime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , unsigned-long-int ) , ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , unsigned-long-int ) )
+          ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , char ) ) ) )
+          ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "thrd_create" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) )
+          Identifier ( "thrd_current" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) )
+          Identifier ( "thrd_detach" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          Identifier ( "thrd_equal" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+          ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          Identifier ( "thrd_exit" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          Identifier ( "thrd_join" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+          ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) ) ) )
+          Identifier ( "time" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) ) ) )
+          Identifier ( "timespec_get" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "timespec" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          typedef ( Identifier ( "__int128_t" ) ) |-> t ( quals ( .Set ) , .Set , oversized-int )
+          typedef ( Identifier ( "__kcc_size_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-long-int )
+          typedef ( Identifier ( "__kcc_va_list" ) ) |-> t ( quals ( .Set ) , .Set , long-int )
+          typedef ( Identifier ( "__uint128_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-oversized-int )
+          typedef ( Identifier ( "clock_t" ) ) |-> t ( quals ( .Set ) , .Set , long-long-int )
+          typedef ( Identifier ( "cnd_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+          typedef ( Identifier ( "max_align_t" ) ) |-> t ( quals ( .Set ) , .Set , char )
+          typedef ( Identifier ( "mtx_t" ) ) |-> t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) )
+          typedef ( Identifier ( "once_flag" ) ) |-> t ( quals ( .Set ) , .Set , int )
+          typedef ( Identifier ( "ptrdiff_t" ) ) |-> t ( quals ( .Set ) , .Set , long-int )
+          typedef ( Identifier ( "size_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-long-int )
+          typedef ( Identifier ( "thrd_start_t" ) ) |-> t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , #NoName ( 53 ) ) ) ) ) ) )
+          typedef ( Identifier ( "thrd_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+          typedef ( Identifier ( "time_t" ) ) |-> t ( quals ( .Set ) , .Set , long-long-int )
+          typedef ( Identifier ( "tss_dtor_t" ) ) |-> t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , #NoName ( 52 ) ) ) ) ) ) )
+          typedef ( Identifier ( "tss_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+          typedef ( Identifier ( "wchar_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+          typedef ( Identifier ( "xtime" ) ) |-> t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "xtime_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) )
+        </gtypes>
+        <has-restrict>
+          .Set
+        </has-restrict>
+        <local-statics>
+          .Map
+        </local-statics>
+        <tu-linking-state>
+          <externals>
+            Identifier ( "__test_and_set" ) |-> declState ( obj ( 59 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) ) , completed , false )
+            Identifier ( "asctime" ) |-> declState ( obj ( 30 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) ) , completed , false )
+            Identifier ( "call_once" ) |-> declState ( obj ( 64 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) ) , completed , false )
+            Identifier ( "clock" ) |-> declState ( obj ( 13 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) ) , completed , false )
+            Identifier ( "ctime" ) |-> declState ( obj ( 33 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) ) , completed , false )
+            Identifier ( "difftime" ) |-> declState ( obj ( 17 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , double ) , ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) )
+            ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) ) , completed , false )
+            Identifier ( "gmtime" ) |-> declState ( obj ( 36 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) ) , completed , false )
+            Identifier ( "localtime" ) |-> declState ( obj ( 39 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) ) , completed , false )
+            Identifier ( "main" ) |-> declState ( obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "argc" ) ) )
+            ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) ) ) , Identifier ( "argv" ) ) ) ) ) , initialized , false )
+            Identifier ( "mktime" ) |-> declState ( obj ( 20 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) ) , completed , false )
+            Identifier ( "mtx_destroy" ) |-> declState ( obj ( 67 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) ) , completed , false )
+            Identifier ( "mtx_init" ) |-> declState ( obj ( 71 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) ) , completed , false )
+            Identifier ( "mtx_lock" ) |-> declState ( obj ( 74 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) ) , completed , false )
+            Identifier ( "mtx_unlock" ) |-> declState ( obj ( 77 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) ) , completed , false )
+            Identifier ( "myfunc1" ) |-> declState ( obj ( 103 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , Identifier ( "arg" ) ) ) ) ) , initialized , false )
+            Identifier ( "strftime" ) |-> declState ( obj ( 45 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , unsigned-long-int ) , ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , unsigned-long-int ) )
+            ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , char ) ) ) )
+            ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) ) , completed , false )
+            Identifier ( "thrd_create" ) |-> declState ( obj ( 82 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) , completed , false )
+            Identifier ( "thrd_current" ) |-> declState ( obj ( 85 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) ) , completed , false )
+            Identifier ( "thrd_detach" ) |-> declState ( obj ( 88 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) ) , completed , false )
+            Identifier ( "thrd_equal" ) |-> declState ( obj ( 92 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) ) , completed , false )
+            Identifier ( "thrd_exit" ) |-> declState ( obj ( 95 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) ) , completed , false )
+            Identifier ( "thrd_join" ) |-> declState ( obj ( 99 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) ) ) ) , completed , false )
+            Identifier ( "time" ) |-> declState ( obj ( 23 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) ) ) ) , completed , false )
+            Identifier ( "timespec_get" ) |-> declState ( obj ( 27 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "timespec" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) ) , completed , false )
+          </externals>
+          <internals>
+            .Map
+          </internals>
+          <uses>
+            SetItem ( Identifier ( "main" ) )
+            SetItem ( Identifier ( "myfunc1" ) )
+            SetItem ( Identifier ( "thrd_create" ) )
+          </uses>
+          <genums>
+            Identifier ( "mtx_plain" ) |-> 0
+            Identifier ( "mtx_recursive" ) |-> 1
+            Identifier ( "mtx_timed" ) |-> 2
+            Identifier ( "mtx_try" ) |-> 4
+            Identifier ( "thrd_busy" ) |-> 3
+            Identifier ( "thrd_error" ) |-> 1
+            Identifier ( "thrd_nomem" ) |-> 4
+            Identifier ( "thrd_success" ) |-> 0
+            Identifier ( "thrd_timeout" ) |-> 2
+          </genums>
+          <templates>
+            .Map
+          </templates>
+        </tu-linking-state>
+        <next-unnamed>
+          2
+        </next-unnamed>
+        <incomplete-tags>
+          .Set
+        </incomplete-tags>
+        <namespaces>
+          .NsCellMap
+        </namespaces>
+        <classes>
+          .ClassCellMap
+        </classes>
+        <cpp-enums>
+          .CppenumCellMap
+        </cpp-enums>
+        <when-odr-used>
+          .Map
+        </when-odr-used>
+      </tu>
+    </translation-units>
+  </global>
+  <s>
+    #STUCK ( ) ~> ^ regular
+  </s>
+  <result-value>
+    1
+  </result-value>
+  <T>
+    <exec>
+      .FinalComputationCell
+      <goto-map-calc>
+        .GotoCalcCellSet
+      </goto-map-calc>
+      <k>
+        lvalConvert ( loc ( obj ( 82 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , 0 ) , t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+        ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+        ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) , t ( quals ( .Set ) , .Set , no-type ) ) ~> reval ( ) ~> #freezerCall2_ ( list ( ListItem ( & Identifier ( "t1" ) )
+        ListItem ( Identifier ( "myfunc1" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ~> reval ( ) ~> #freezerComputation0_ ( ) ~> CodeLoc ( Computation ( Call ( Identifier ( "thrd_create" ) , list ( ListItem ( & Identifier ( "t2" ) )
+        ListItem ( Identifier ( "myfunc1" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 9 , 5 , false ) ) ~> CodeLoc ( Computation ( Call ( Identifier ( "thrd_join" ) , list ( ListItem ( Identifier ( "t1" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 10 , 5 , false ) ) ~> CodeLoc ( Computation ( Call ( Identifier ( "thrd_join" ) , list ( ListItem ( Identifier ( "t2" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 11 , 5 , false ) ) ~> CodeLoc ( Return ( tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 12 , 5 , false ) ) ~> popBlock ~> popLocals ~> setScope ( blockScope ( Identifier ( "main" ) , obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , 0 ) ) ~> Return ( tv ( 0 , ut ( .Set , int ) ) )
+      </k>
+      <elab>
+        pushBlock ( 2 ) ~> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 7 , 5 , false ) ~> declareInternalVariable ( Identifier ( "t1" ) , t ( quals ( .Set ) , .Set , int ) , initValue ( Identifier ( "t1" ) , t ( quals ( .Set ) , .Set , int ) , . ) ) ~> declareInternalVariable ( Identifier ( "t2" ) , t ( quals ( .Set ) , .Set , int ) , initValue ( Identifier ( "t2" ) , t ( quals ( .Set ) , .Set , int ) , . ) ) ~> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 8 , 5 , false )
+      </elab>
+      <elab-stack>
+        ListItem ( elabFrame ( Label ( funLabel , Block ( 2 , list ( .List ) , list ( ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Named ( Identifier ( "thrd_t" ) ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "t1" ) , JustBase ( ) , list ( .List ) ) , NoInit ( ) ) )
+        ListItem ( InitName ( Name ( Identifier ( "t2" ) , JustBase ( ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 7 , 5 , false ) ) )
+        ListItem ( CodeLoc ( Computation ( Call ( Identifier ( "thrd_create" ) , list ( ListItem ( & Identifier ( "t1" ) )
+        ListItem ( Identifier ( "myfunc1" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 8 , 5 , false ) ) )
+        ListItem ( CodeLoc ( Computation ( Call ( Identifier ( "thrd_create" ) , list ( ListItem ( & Identifier ( "t2" ) )
+        ListItem ( Identifier ( "myfunc1" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 9 , 5 , false ) ) )
+        ListItem ( CodeLoc ( Computation ( Call ( Identifier ( "thrd_join" ) , list ( ListItem ( Identifier ( "t1" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 10 , 5 , false ) ) )
+        ListItem ( CodeLoc ( Computation ( Call ( Identifier ( "thrd_join" ) , list ( ListItem ( Identifier ( "t2" ) )
+        ListItem ( Cast ( Specifier ( list ( ListItem ( Void ( ) ) ) ) , PointerType ( Specifier ( list ( .List ) ) , JustBase ( ) ) , tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 11 , 5 , false ) ) )
+        ListItem ( CodeLoc ( Return ( tv ( 0 , ut ( SetItem ( IntegerConstant ) , int ) ) ) , CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 12 , 5 , false ) ) ) ) ) ~> Return ( tv ( 0 , ut ( .Set , int ) ) ) ) , . ) )
+        ListItem ( elabFrame ( calculateGotoMap ( . ) ~> popLocals ~> setScope ( fileScope ) ~> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 13 , 1 , false ) ~> allocateIncompleteTentatives ~> removeUnusedIdentifiers ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ~> reportSuccess ~> cleanup , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , 17 , 1 , false ) ~> typedef ( Identifier ( "__kcc_va_list" ) , t ( quals ( .Set ) , .Set , long-int ) ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , 18 , 1 , false ) ~> typedef ( Identifier ( "__kcc_size_t" ) , t ( quals ( .Set ) , .Set , unsigned-long-int ) ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , 39 , 1 , false ) ~> typedef ( Identifier ( "__int128_t" ) , t ( quals ( .Set ) , .Set , oversized-int ) ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" , 40 , 1 , false ) ~> typedef ( Identifier ( "__uint128_t" ) , t ( quals ( .Set ) , .Set , unsigned-oversized-int ) ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , 4 , 1 , false ) ~> typedef ( Identifier ( "ptrdiff_t" ) , t ( quals ( .Set ) , .Set , long-int ) ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , 5 , 1 , false ) ~> typedef ( Identifier ( "size_t" ) , t ( quals ( .Set ) , .Set , unsigned-long-int ) ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , 6 , 1 , false ) ~> typedef ( Identifier ( "max_align_t" ) , t ( quals ( .Set ) , .Set , char ) ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" , 9 , 1 , false ) ~> typedef ( Identifier ( "wchar_t" ) , t ( quals ( .Set ) , .Set , int ) ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 8 , 1 , false ) ~> typedef ( Identifier ( "clock_t" ) , t ( quals ( .Set ) , .Set , long-long-int ) ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 9 , 1 , false ) ~> typedef ( Identifier ( "time_t" ) , t ( quals ( .Set ) , .Set , long-long-int ) ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 11 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 15 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 31 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 32 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 33 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 34 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 35 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 36 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 37 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 38 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 39 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 14 , 1 , false ) ~> typedef ( Identifier ( "cnd_t" ) , t ( quals ( .Set ) , .Set , int ) ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 15 , 1 , false ) ~> typedef ( Identifier ( "thrd_t" ) , t ( quals ( .Set ) , .Set , int ) ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 16 , 1 , false ) ~> typedef ( Identifier ( "tss_t" ) , t ( quals ( .Set ) , .Set , int ) ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 17 , 1 , false ) ~> typedef ( Identifier ( "mtx_t" ) , t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 18 , 1 , false ) ~> typedef ( Identifier ( "tss_dtor_t" ) , t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , #NoName ( 52 ) ) ) ) ) ) ) ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 19 , 1 , false ) ~> typedef ( Identifier ( "thrd_start_t" ) , t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , #NoName ( 53 ) ) ) ) ) ) ) ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 20 , 1 , false ) ~> typedef ( Identifier ( "once_flag" ) , t ( quals ( .Set ) , .Set , int ) ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 23 , 1 , false ) ~> typedef ( Identifier ( "xtime" ) , t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "xtime_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 25 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 31 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 44 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 53 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 61 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 83 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 94 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 103 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 114 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 122 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 133 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 143 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 151 , 1 , false ) ~> CabsLoc ( "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , "/home/user/mounted/profiles/x86-gcc-limited-libc/include/library/threads.h" , 163 , 1 , false ) ~> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 2 , 1 , false ) ~> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 2 , 1 , false ) ~> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 4 , 1 , false ) ~> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 6 , 1 , false ) ~> CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 6 , 1 , false ) ) )
+      </elab-stack>
+      <curr-state>
+        <curr-tu>
+          "example.c93262d9c-af65-11f0-8c25-c810e54eadc4"
+        </curr-tu>
+        <curr-function>
+          obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+        </curr-function>
+        <curr-scope>
+          blockScope ( Identifier ( "main" ) , obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) ) , 2 )
+        </curr-scope>
+        <curr-eval-context>
+          eval
+        </curr-eval-context>
+        <curr-program-loc>
+          CabsLoc ( "example.c" , "/home/user/mounted/example.c" , 8 , 5 , false )
+        </curr-program-loc>
+      </curr-state>
+      <block-stack>
+        ListItem ( <block-control>
+          <env>
+            Identifier ( "__test_and_set" ) |-> obj ( 59 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "argc" ) |-> nonStatic
+            Identifier ( "argv" ) |-> nonStatic
+            Identifier ( "asctime" ) |-> obj ( 30 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "call_once" ) |-> obj ( 64 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "clock" ) |-> obj ( 13 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "ctime" ) |-> obj ( 33 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "difftime" ) |-> obj ( 17 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "gmtime" ) |-> obj ( 36 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "localtime" ) |-> obj ( 39 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "main" ) |-> obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "mktime" ) |-> obj ( 20 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "mtx_destroy" ) |-> obj ( 67 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "mtx_init" ) |-> obj ( 71 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "mtx_lock" ) |-> obj ( 74 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "mtx_unlock" ) |-> obj ( 77 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "myfunc1" ) |-> obj ( 103 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "strftime" ) |-> obj ( 45 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_create" ) |-> obj ( 82 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_current" ) |-> obj ( 85 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_detach" ) |-> obj ( 88 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_equal" ) |-> obj ( 92 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_exit" ) |-> obj ( 95 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_join" ) |-> obj ( 99 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "time" ) |-> obj ( 23 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "timespec_get" ) |-> obj ( 27 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          </env>
+          <types>
+            Identifier ( "__test_and_set" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            Identifier ( "argc" ) |-> t ( quals ( .Set ) , .Set , int )
+            Identifier ( "argv" ) |-> t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) ) )
+            Identifier ( "asctime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "call_once" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+            Identifier ( "clock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) )
+            Identifier ( "ctime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+            Identifier ( "difftime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , double ) , ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) )
+            ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) )
+            Identifier ( "gmtime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+            Identifier ( "localtime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+            Identifier ( "main" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "argc" ) ) )
+            ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) ) ) , Identifier ( "argv" ) ) ) ) )
+            Identifier ( "mktime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "mtx_destroy" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "mtx_init" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            Identifier ( "mtx_lock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "mtx_unlock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "myfunc1" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , Identifier ( "arg" ) ) ) ) )
+            Identifier ( "strftime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , unsigned-long-int ) , ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , unsigned-long-int ) )
+            ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , char ) ) ) )
+            ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "thrd_create" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) )
+            Identifier ( "thrd_current" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) )
+            Identifier ( "thrd_detach" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            Identifier ( "thrd_equal" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            Identifier ( "thrd_exit" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            Identifier ( "thrd_join" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) ) ) )
+            Identifier ( "time" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) ) ) )
+            Identifier ( "timespec_get" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "timespec" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            typedef ( Identifier ( "__int128_t" ) ) |-> t ( quals ( .Set ) , .Set , oversized-int )
+            typedef ( Identifier ( "__kcc_size_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-long-int )
+            typedef ( Identifier ( "__kcc_va_list" ) ) |-> t ( quals ( .Set ) , .Set , long-int )
+            typedef ( Identifier ( "__uint128_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-oversized-int )
+            typedef ( Identifier ( "clock_t" ) ) |-> t ( quals ( .Set ) , .Set , long-long-int )
+            typedef ( Identifier ( "cnd_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+            typedef ( Identifier ( "max_align_t" ) ) |-> t ( quals ( .Set ) , .Set , char )
+            typedef ( Identifier ( "mtx_t" ) ) |-> t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) )
+            typedef ( Identifier ( "once_flag" ) ) |-> t ( quals ( .Set ) , .Set , int )
+            typedef ( Identifier ( "ptrdiff_t" ) ) |-> t ( quals ( .Set ) , .Set , long-int )
+            typedef ( Identifier ( "size_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-long-int )
+            typedef ( Identifier ( "thrd_start_t" ) ) |-> t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , #NoName ( 53 ) ) ) ) ) ) )
+            typedef ( Identifier ( "thrd_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+            typedef ( Identifier ( "time_t" ) ) |-> t ( quals ( .Set ) , .Set , long-long-int )
+            typedef ( Identifier ( "tss_dtor_t" ) ) |-> t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , #NoName ( 52 ) ) ) ) ) ) )
+            typedef ( Identifier ( "tss_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+            typedef ( Identifier ( "wchar_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+            typedef ( Identifier ( "xtime" ) ) |-> t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "xtime_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) )
+          </types>
+          <renv>
+            nonStatic |-> Identifier ( "argv" )
+          </renv>
+          <local-types>
+            .Set
+          </local-types>
+          <enums>
+            Identifier ( "mtx_plain" ) |-> 0
+            Identifier ( "mtx_recursive" ) |-> 1
+            Identifier ( "mtx_timed" ) |-> 2
+            Identifier ( "mtx_try" ) |-> 4
+            Identifier ( "thrd_busy" ) |-> 3
+            Identifier ( "thrd_error" ) |-> 1
+            Identifier ( "thrd_nomem" ) |-> 4
+            Identifier ( "thrd_success" ) |-> 0
+            Identifier ( "thrd_timeout" ) |-> 2
+          </enums>
+          <block-history>
+            ListItem ( 2 )
+          </block-history>
+        </block-control> )
+        ListItem ( <block-control>
+          <env>
+            Identifier ( "__test_and_set" ) |-> obj ( 59 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "asctime" ) |-> obj ( 30 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "call_once" ) |-> obj ( 64 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "clock" ) |-> obj ( 13 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "ctime" ) |-> obj ( 33 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "difftime" ) |-> obj ( 17 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "gmtime" ) |-> obj ( 36 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "localtime" ) |-> obj ( 39 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "main" ) |-> obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "mktime" ) |-> obj ( 20 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "mtx_destroy" ) |-> obj ( 67 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "mtx_init" ) |-> obj ( 71 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "mtx_lock" ) |-> obj ( 74 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "mtx_unlock" ) |-> obj ( 77 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "myfunc1" ) |-> obj ( 103 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "strftime" ) |-> obj ( 45 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_create" ) |-> obj ( 82 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_current" ) |-> obj ( 85 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_detach" ) |-> obj ( 88 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_equal" ) |-> obj ( 92 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_exit" ) |-> obj ( 95 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "thrd_join" ) |-> obj ( 99 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "time" ) |-> obj ( 23 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+            Identifier ( "timespec_get" ) |-> obj ( 27 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          </env>
+          <types>
+            Identifier ( "__test_and_set" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            Identifier ( "asctime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "call_once" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+            Identifier ( "clock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) )
+            Identifier ( "ctime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+            Identifier ( "difftime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , double ) , ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) )
+            ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) )
+            Identifier ( "gmtime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+            Identifier ( "localtime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+            Identifier ( "main" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "argc" ) ) )
+            ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) ) ) , Identifier ( "argv" ) ) ) ) )
+            Identifier ( "mktime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "mtx_destroy" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "mtx_init" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            Identifier ( "mtx_lock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "mtx_unlock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "myfunc1" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , Identifier ( "arg" ) ) ) ) )
+            Identifier ( "strftime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , unsigned-long-int ) , ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , unsigned-long-int ) )
+            ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , char ) ) ) )
+            ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+            Identifier ( "thrd_create" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) )
+            Identifier ( "thrd_current" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) )
+            Identifier ( "thrd_detach" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            Identifier ( "thrd_equal" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            Identifier ( "thrd_exit" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            Identifier ( "thrd_join" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+            ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) ) ) )
+            Identifier ( "time" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) ) ) )
+            Identifier ( "timespec_get" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "timespec" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+            ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+            typedef ( Identifier ( "__int128_t" ) ) |-> t ( quals ( .Set ) , .Set , oversized-int )
+            typedef ( Identifier ( "__kcc_size_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-long-int )
+            typedef ( Identifier ( "__kcc_va_list" ) ) |-> t ( quals ( .Set ) , .Set , long-int )
+            typedef ( Identifier ( "__uint128_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-oversized-int )
+            typedef ( Identifier ( "clock_t" ) ) |-> t ( quals ( .Set ) , .Set , long-long-int )
+            typedef ( Identifier ( "cnd_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+            typedef ( Identifier ( "max_align_t" ) ) |-> t ( quals ( .Set ) , .Set , char )
+            typedef ( Identifier ( "mtx_t" ) ) |-> t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) )
+            typedef ( Identifier ( "once_flag" ) ) |-> t ( quals ( .Set ) , .Set , int )
+            typedef ( Identifier ( "ptrdiff_t" ) ) |-> t ( quals ( .Set ) , .Set , long-int )
+            typedef ( Identifier ( "size_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-long-int )
+            typedef ( Identifier ( "thrd_start_t" ) ) |-> t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , #NoName ( 53 ) ) ) ) ) ) )
+            typedef ( Identifier ( "thrd_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+            typedef ( Identifier ( "time_t" ) ) |-> t ( quals ( .Set ) , .Set , long-long-int )
+            typedef ( Identifier ( "tss_dtor_t" ) ) |-> t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , #NoName ( 52 ) ) ) ) ) ) )
+            typedef ( Identifier ( "tss_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+            typedef ( Identifier ( "wchar_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+            typedef ( Identifier ( "xtime" ) ) |-> t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "xtime_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) )
+          </types>
+          <renv>
+            .Map
+          </renv>
+          <local-types>
+            .Set
+          </local-types>
+          <enums>
+            Identifier ( "mtx_plain" ) |-> 0
+            Identifier ( "mtx_recursive" ) |-> 1
+            Identifier ( "mtx_timed" ) |-> 2
+            Identifier ( "mtx_try" ) |-> 4
+            Identifier ( "thrd_busy" ) |-> 3
+            Identifier ( "thrd_error" ) |-> 1
+            Identifier ( "thrd_nomem" ) |-> 4
+            Identifier ( "thrd_success" ) |-> 0
+            Identifier ( "thrd_timeout" ) |-> 2
+          </enums>
+          <block-history>
+            .List
+          </block-history>
+        </block-control> )
+      </block-stack>
+      <block-control>
+        <env>
+          Identifier ( "__test_and_set" ) |-> obj ( 59 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "argc" ) |-> nonStatic
+          Identifier ( "argv" ) |-> nonStatic
+          Identifier ( "asctime" ) |-> obj ( 30 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "call_once" ) |-> obj ( 64 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "clock" ) |-> obj ( 13 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "ctime" ) |-> obj ( 33 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "difftime" ) |-> obj ( 17 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "gmtime" ) |-> obj ( 36 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "localtime" ) |-> obj ( 39 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "main" ) |-> obj ( 108 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "mktime" ) |-> obj ( 20 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "mtx_destroy" ) |-> obj ( 67 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "mtx_init" ) |-> obj ( 71 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "mtx_lock" ) |-> obj ( 74 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "mtx_unlock" ) |-> obj ( 77 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "myfunc1" ) |-> obj ( 103 , 0 , static ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "strftime" ) |-> obj ( 45 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "t1" ) |-> nonStatic
+          Identifier ( "t2" ) |-> nonStatic
+          Identifier ( "thrd_create" ) |-> obj ( 82 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "thrd_current" ) |-> obj ( 85 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "thrd_detach" ) |-> obj ( 88 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "thrd_equal" ) |-> obj ( 92 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "thrd_exit" ) |-> obj ( 95 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "thrd_join" ) |-> obj ( 99 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "time" ) |-> obj ( 23 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+          Identifier ( "timespec_get" ) |-> obj ( 27 , 0 , link ( "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" ) )
+        </env>
+        <types>
+          Identifier ( "__test_and_set" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          Identifier ( "argc" ) |-> t ( quals ( .Set ) , .Set , int )
+          Identifier ( "argv" ) |-> t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) ) )
+          Identifier ( "asctime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "call_once" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+          Identifier ( "clock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) )
+          Identifier ( "ctime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+          Identifier ( "difftime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , double ) , ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) )
+          ListItem ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) )
+          Identifier ( "gmtime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+          Identifier ( "localtime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , long-long-int ) ) ) ) ) )
+          Identifier ( "main" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , int ) , Identifier ( "argc" ) ) )
+          ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) ) ) , Identifier ( "argv" ) ) ) ) )
+          Identifier ( "mktime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "mtx_destroy" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "mtx_init" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          Identifier ( "mtx_lock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "mtx_unlock" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "myfunc1" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , Identifier ( "arg" ) ) ) ) )
+          Identifier ( "strftime" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , unsigned-long-int ) , ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 24 , false ) ) ) , pointerType ( t ( quals ( .Set ) , .Set , char ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , unsigned-long-int ) )
+          ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 69 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , char ) ) ) )
+          ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" , 40 , 108 , false ) ) ) , pointerType ( t ( quals ( SetItem ( Const ( ) ) ) , .Set , structType ( tag ( Identifier ( "tm" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) ) ) )
+          Identifier ( "t1" ) |-> t ( quals ( .Set ) , .Set , int )
+          Identifier ( "t2" ) |-> t ( quals ( .Set ) , .Set , int )
+          Identifier ( "thrd_create" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) ) ) )
+          Identifier ( "thrd_current" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , void ) ) ) )
+          Identifier ( "thrd_detach" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          Identifier ( "thrd_equal" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+          ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          Identifier ( "thrd_exit" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          Identifier ( "thrd_join" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , int ) )
+          ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , int ) ) ) ) ) )
+          Identifier ( "time" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , long-long-int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , long-long-int ) ) ) ) ) )
+          Identifier ( "timespec_get" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "timespec" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) ) ) ) )
+          ListItem ( t ( quals ( .Set ) , .Set , int ) ) ) )
+          typedef ( Identifier ( "__int128_t" ) ) |-> t ( quals ( .Set ) , .Set , oversized-int )
+          typedef ( Identifier ( "__kcc_size_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-long-int )
+          typedef ( Identifier ( "__kcc_va_list" ) ) |-> t ( quals ( .Set ) , .Set , long-int )
+          typedef ( Identifier ( "__uint128_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-oversized-int )
+          typedef ( Identifier ( "clock_t" ) ) |-> t ( quals ( .Set ) , .Set , long-long-int )
+          typedef ( Identifier ( "cnd_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+          typedef ( Identifier ( "max_align_t" ) ) |-> t ( quals ( .Set ) , .Set , char )
+          typedef ( Identifier ( "mtx_t" ) ) |-> t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "mtx_t_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) )
+          typedef ( Identifier ( "once_flag" ) ) |-> t ( quals ( .Set ) , .Set , int )
+          typedef ( Identifier ( "ptrdiff_t" ) ) |-> t ( quals ( .Set ) , .Set , long-int )
+          typedef ( Identifier ( "size_t" ) ) |-> t ( quals ( .Set ) , .Set , unsigned-long-int )
+          typedef ( Identifier ( "thrd_start_t" ) ) |-> t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , #NoName ( 53 ) ) ) ) ) ) )
+          typedef ( Identifier ( "thrd_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+          typedef ( Identifier ( "time_t" ) ) |-> t ( quals ( .Set ) , .Set , long-long-int )
+          typedef ( Identifier ( "tss_dtor_t" ) ) |-> t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , void ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , pointerType ( t ( quals ( .Set ) , .Set , void ) ) ) , #NoName ( 52 ) ) ) ) ) ) )
+          typedef ( Identifier ( "tss_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+          typedef ( Identifier ( "wchar_t" ) ) |-> t ( quals ( .Set ) , .Set , int )
+          typedef ( Identifier ( "xtime" ) ) |-> t ( quals ( .Set ) , .Set , structType ( tag ( Identifier ( "xtime_" ) , "example.c93262d9c-af65-11f0-8c25-c810e54eadc4" , global ) ) )
+        </types>
+        <renv>
+          nonStatic |-> Identifier ( "t2" )
+        </renv>
+        <local-types>
+          SetItem ( Identifier ( "t1" ) )
+          SetItem ( Identifier ( "t2" ) )
+        </local-types>
+        <enums>
+          Identifier ( "mtx_plain" ) |-> 0
+          Identifier ( "mtx_recursive" ) |-> 1
+          Identifier ( "mtx_timed" ) |-> 2
+          Identifier ( "mtx_try" ) |-> 4
+          Identifier ( "thrd_busy" ) |-> 3
+          Identifier ( "thrd_error" ) |-> 1
+          Identifier ( "thrd_nomem" ) |-> 4
+          Identifier ( "thrd_success" ) |-> 0
+          Identifier ( "thrd_timeout" ) |-> 2
+        </enums>
+        <block-history>
+          ListItem ( 2 )
+        </block-history>
+      </block-control>
+      <init-calc>
+        <curr-object>
+          .List
+        </curr-object>
+        <curr-subobject>
+          .List
+        </curr-subobject>
+        <incomplete-length>
+          0
+        </incomplete-length>
+        <saved-init>
+          .
+        </saved-init>
+        <decl-type-holder>
+          .
+        </decl-type-holder>
+      </init-calc>
+    </exec>
+    .ErrorCellCell
+    <annotation>
+      ""
+    </annotation>
+    <generated-annotations>
+      .List
+    </generated-annotations>
+    <status>
+      initializingTu
+    </status>
+    <options>
+      .Set
+    </options>
+    <uuid>
+      "93262d9c-af65-11f0-8c25-c810e54eadc4"
+    </uuid>
+  </T>
+  <json>
+    "{\"suppressions\": [],\"message_length\": 80,\"format\": \"Console\",\"previous_errors\": [],\"fatal_errors\": false,\"rv_error\": \"\"}"
+  </json>
+</generatedTop>
