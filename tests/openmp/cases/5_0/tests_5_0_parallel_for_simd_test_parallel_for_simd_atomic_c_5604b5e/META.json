@@ -1,0 +1,16 @@
+{
+  "language": "C",
+  "requires_openmp": true,
+  "imports": [
+    "omp.h"
+  ],
+  "tags": [
+    "openmp",
+    "auto-curated"
+  ],
+  "source": "../../../CITATIONS/tests_5_0_parallel_for_simd_test_parallel_for_simd_atomic_c_5604b5e.yml",
+  "support_headers": [
+    "ompvv.h"
+  ],
+  "imported_at": "2025-10-19T18:05:26.158795+00:00"
+}

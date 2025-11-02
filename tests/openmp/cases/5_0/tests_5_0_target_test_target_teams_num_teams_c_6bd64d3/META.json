@@ -1,0 +1,16 @@
+{
+  "language": "C",
+  "requires_openmp": true,
+  "imports": [
+    "omp.h"
+  ],
+  "tags": [
+    "openmp",
+    "auto-curated"
+  ],
+  "source": "../../../CITATIONS/tests_5_0_target_test_target_teams_num_teams_c_6bd64d3.yml",
+  "support_headers": [
+    "ompvv.h"
+  ],
+  "imported_at": "2025-10-19T18:05:26.328799+00:00"
+}

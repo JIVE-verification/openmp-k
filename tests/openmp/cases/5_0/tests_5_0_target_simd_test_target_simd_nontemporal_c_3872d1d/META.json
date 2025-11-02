@@ -1,0 +1,16 @@
+{
+  "language": "C",
+  "requires_openmp": true,
+  "imports": [
+    "omp.h"
+  ],
+  "tags": [
+    "openmp",
+    "auto-curated"
+  ],
+  "source": "../../../CITATIONS/tests_5_0_target_simd_test_target_simd_nontemporal_c_3872d1d.yml",
+  "support_headers": [
+    "ompvv.h"
+  ],
+  "imported_at": "2025-10-19T18:05:26.847441+00:00"
+}

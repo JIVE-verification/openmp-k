@@ -1,0 +1,16 @@
+{
+  "language": "C",
+  "requires_openmp": true,
+  "imports": [
+    "omp.h"
+  ],
+  "tags": [
+    "openmp",
+    "auto-curated"
+  ],
+  "source": "../../../CITATIONS/tests_5_0_declare_target_test_declare_target_device_type_nohost_c_e0a8dc8.yml",
+  "support_headers": [
+    "ompvv.h"
+  ],
+  "imported_at": "2025-10-19T18:05:25.877890+00:00"
+}

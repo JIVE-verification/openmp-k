@@ -1,0 +1,16 @@
+{
+  "language": "C",
+  "requires_openmp": true,
+  "imports": [
+    "omp.h"
+  ],
+  "tags": [
+    "openmp",
+    "auto-curated"
+  ],
+  "source": "../../../CITATIONS/tests_5_0_declare_mapper_test_declare_mapper_target_struct_c_4bf1478.yml",
+  "support_headers": [
+    "ompvv.h"
+  ],
+  "imported_at": "2025-10-19T18:05:26.045459+00:00"
+}

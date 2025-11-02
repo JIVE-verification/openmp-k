@@ -1,0 +1,156 @@
+# 1 "dist/thread.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "/usr/include/stdc-predef.h" 1 3 4
+# 1 "<command-line>" 2
+# 1 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h" 1
+# 17 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h"
+typedef long int __kcc_va_list;
+typedef long unsigned int __kcc_size_t;
+# 39 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/kcc_settings.h"
+typedef __kcc_oversized_int __int128_t;
+typedef unsigned __kcc_oversized_int __uint128_t;
+# 1 "<command-line>" 2
+# 1 "dist/thread.c"
+# 1 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h" 1
+
+
+
+
+# 1 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" 1
+
+
+# 1 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stddef.h" 1
+
+
+
+typedef long int ptrdiff_t;
+typedef __kcc_size_t size_t;
+typedef char max_align_t;
+
+
+typedef int wchar_t;
+# 4 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/time.h" 2
+
+
+
+
+typedef signed long long clock_t;
+typedef signed long long time_t;
+
+struct timespec {
+      time_t tv_sec;
+      long tv_nsec;
+};
+struct tm {
+      int tm_sec;
+      int tm_min;
+      int tm_hour;
+      int tm_mday;
+      int tm_mon;
+      int tm_year;
+      int tm_wday;
+      int tm_yday;
+      int tm_isdst;
+};
+
+
+
+
+
+clock_t clock(void);
+double difftime(time_t time1, time_t time0);
+time_t mktime(struct tm *timeptr);
+time_t time(time_t* timer);
+int timespec_get(struct timespec *ts, int base);
+char *asctime(const struct tm *timeptr);
+char *ctime(const time_t *timer);
+struct tm *gmtime(const time_t *timer);
+struct tm *localtime(const time_t *timer);
+size_t strftime(char * __restrict__ s, size_t maxsize, const char * __restrict__ format, const struct tm * __restrict__ timeptr);
+# 6 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h" 2
+# 14 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h"
+typedef int cnd_t;
+typedef int thrd_t;
+typedef int tss_t;
+typedef struct mtx_t_ { int id; int type; thrd_t owner; int owned; int flag; int alive; } mtx_t;
+typedef void (*tss_dtor_t)(void*);
+typedef int (*thrd_start_t)(void*);
+typedef int once_flag;
+
+
+typedef struct xtime_ {time_t sec; long nsec;} xtime;
+
+enum {
+      mtx_plain = 0,
+      mtx_recursive = 1,
+      mtx_timed = 2,
+      mtx_try = 4,
+};
+enum {
+      thrd_success = 0,
+      thrd_error = 1,
+      thrd_timeout = 2,
+      thrd_busy = 3,
+      thrd_nomem = 4
+};
+
+
+
+
+
+
+int __test_and_set(int *p, int value);
+# 53 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h"
+void call_once(once_flag *flag, void (*func)(void));
+
+
+
+
+
+
+
+void mtx_destroy(mtx_t *mtx);
+# 83 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h"
+int mtx_init(mtx_t *mtx, int type);
+# 94 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h"
+int mtx_lock(mtx_t *mtx);
+# 103 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h"
+int mtx_unlock(mtx_t *mtx);
+# 114 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h"
+extern int thrd_create(thrd_t *thr, thrd_start_t func, void *arg);
+
+
+
+
+
+
+
+extern thrd_t thrd_current(void);
+# 133 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h"
+extern int thrd_detach(thrd_t thr);
+# 143 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h"
+int thrd_equal(thrd_t thr0, thrd_t thr1);
+
+
+
+
+
+
+
+extern void thrd_exit(int res);
+# 163 "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/threads.h"
+extern int thrd_join(thrd_t thr, int *res);
+# 2 "dist/thread.c" 2
+
+static int worker(void *arg) {
+    (void)arg;
+    return 0;
+}
+
+int main(void) {
+    thrd_t t;
+    if (thrd_create(&t, worker, 0) != thrd_success) return 1;
+    if (thrd_join(t, 0) != thrd_success) return 1;
+    return 0;
+}
