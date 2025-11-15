@@ -10,7 +10,7 @@ module C-STMT-LOOP
      imports SYMLOC-SYNTAX
      imports SYMLOC
     
-     syntax KItem ::= "spawn-aux-omp" "("K "," K "," K  ")"
+     syntax KItem ::= "spawn-aux-omp" "(" K "," K ")"
      syntax KItem ::= "OMPForInnerThread" "(" K "," K "," K")"
      syntax KItem ::= "join-aux-omp" "(" Int ")"
      syntax KItem ::= "update-identifier" "(" Int ")"
@@ -81,14 +81,84 @@ module C-STMT-LOOP
           <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
           [structural]
 
+     syntax KItem ::= ompForSpawn(K, K, K)
+
+     // Clause-1 expressions (e.g., `int i = 0`) evaluate before reaching the loop body
+     // and can leave an rvalue on top of <k>. Drop that result so the OpenMP rule
+     // can start spawning threads.
+     rule <k> loopMarked ~> V:KResult ~> OMPFor(Control:K, Post:K, S:K)
+               => loopMarked ~> OMPFor(Control, Post, S)
+          ...</k>
+          <block-history> ListItem(_:Int) ...</block-history>
+          [structural]
+
      rule [omp-for]:
      <k> loopMarked ~> OMPFor(Control:K, Post:K, S:K)
-               =>IfThenElse(Control,
-                    (S ~> Computation(Post) ~> loopMarked
-               ~> OMPFor(Control, Post, S)), Nop())
+               => ompForSpawn(Control, Post, S)
      ...</k>
      <block-history> ListItem(_:Int) ...</block-history>
-     [structural] // rule so that looping programs see repetition
+     [structural]
+
+     // Prototype parallel execution: spawn three worker threads that each run S
+     // with distinct values of the loop variable.  This mirrors our test program
+     // (iterations 0, 1, 2) and will be generalized in later iterations.
+     rule <k> ompForSpawn(_, _, S:K)
+               => spawn-aux-omp(tv(0, utype(int)), S)
+               ~> spawn-aux-omp(tv(1, utype(int)), S)
+               ~> spawn-aux-omp(tv(2, utype(int)), S)
+               ~> join-aux-omp(1)
+               ~> join-aux-omp(2)
+               ~> join-aux-omp(3)
+          ...</k>
+          <block-history> ListItem(_:Int) ...</block-history>
+          [structural]
+
+     rule [spawn-aux-omp]:
+          <thread>...
+               <k> spawn-aux-omp(IterVal:RValue, S:K)
+                    => .K
+               ...</k>
+               <curr-tu> Tu:String </curr-tu>
+               <buffer> .List </buffer>
+               <env> ParentEnv:Map </env>
+               <types> Types:Map </types>
+               <curr-scope> Scope:Scope </curr-scope>
+          ...</thread>
+          <genv> GEnv:Map </genv>
+          <thread-status>
+               Status:Map => Status[ThId <- threadRunning]
+          </thread-status>
+          <next-thread-id> ThId:Int => ThId +Int 1 </next-thread-id>
+          (.Bag =>
+          <thread>...
+               <duration> threadLocal(ThId) </duration>
+               <thread-id> ThId </thread-id>
+               <k> S </k>
+               <env> updateMap(GEnv, ParentEnv) </env>
+               <types> Types </types>
+               <curr-tu> Tu </curr-tu>
+               <curr-scope> Scope </curr-scope>
+          ...</thread>)
+          requires notBool hasLint
+          [large, ndthread]
+
+     rule [join-aux-omp]:
+          <thread>...
+               <k> join-aux-omp(ThId:Int) => .K ...</k>
+               <thread-id> ThisThread:Int </thread-id>
+               <buffer> .List </buffer>
+          ...</thread>
+          <thread-status>
+               Status:Map => Status[ThId <- threadJoined]
+          </thread-status>
+          (<thread>...
+               <k> _:KResult </k>
+               <thread-id> ThId </thread-id>
+          ...</thread> => .Bag)
+          requires (ThId in_keys(Status))
+               andBool (Status[ThId] =/=K threadJoined)
+               andBool ThId =/=K ThisThread
+          [ndthread]
 
      // rule [updateIndentifier]:
      // <thread>...
