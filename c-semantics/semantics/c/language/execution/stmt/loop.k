@@ -9,6 +9,8 @@ module C-STMT-LOOP
      imports LIBC-STDIO
      imports SYMLOC-SYNTAX
      imports SYMLOC
+     imports C-MEMORY-ALLOC-SYNTAX
+     imports C-ENV-SYNTAX
     
      syntax KItem ::= "spawn-aux-omp" "(" K "," K ")"
      syntax KItem ::= "OMPForInnerThread" "(" K "," K "," K")"
@@ -19,6 +21,9 @@ module C-STMT-LOOP
      syntax Stmt ::= "updateEnv"
      syntax Stmt ::= "continueForLoop"
      syntax K ::= placeContext(Map)
+
+     // Helper to allocate and initialize thread-local loop variable
+     syntax KItem ::= initThreadLocalVar(CId, Type, RValue, SymBase)
 
      
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.2}{1}}}{
@@ -133,7 +138,9 @@ module C-STMT-LOOP
           <thread>...
                <duration> threadLocal(ThId) </duration>
                <thread-id> ThId </thread-id>
-               <k> S </k>
+               <k> initThreadLocalVar(Identifier("i"), type(int), IterVal, linc(type(int), threadLocal(ThId)))
+                    ~> S
+               </k>
                <env> updateMap(GEnv, ParentEnv) </env>
                <types> Types </types>
                <curr-tu> Tu </curr-tu>
@@ -146,19 +153,29 @@ module C-STMT-LOOP
           <thread>...
                <k> join-aux-omp(ThId:Int) => .K ...</k>
                <thread-id> ThisThread:Int </thread-id>
-               <buffer> .List </buffer>
           ...</thread>
           <thread-status>
                Status:Map => Status[ThId <- threadJoined]
           </thread-status>
           (<thread>...
-               <k> _:KResult </k>
+               <k> .K </k>
                <thread-id> ThId </thread-id>
           ...</thread> => .Bag)
           requires (ThId in_keys(Status))
                andBool (Status[ThId] =/=K threadJoined)
                andBool ThId =/=K ThisThread
           [ndthread]
+
+     // Initialize thread-local loop variable with iteration-specific value
+     // Follows pattern from decl/local.k:103-108 (defineAndInit)
+     rule <k> initThreadLocalVar(X:CId, T:Type, InitVal:RValue, Base:SymBase)
+               => allocObject(Base, T)
+               ~> addToEnv(X, Base)
+               ~> giveType(X, T)
+               ~> Computation(lv(lnew(Base), T) := InitVal)
+          ...</k>
+          <local-addresses>... .Set => SetItem(Base) ...</local-addresses>
+          [structural]
 
      // rule [updateIndentifier]:
      // <thread>...
