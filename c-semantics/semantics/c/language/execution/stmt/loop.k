@@ -4,6 +4,7 @@ module C-STMT-LOOP
      imports C-SYNTAX
      imports C-DYNAMIC-SYNTAX
      imports C-TYPING-SYNTAX
+     imports C-EXECUTION-ERROR-SYNTAX
      imports LIBC-THREADS
      imports LIBC-THREADS-SYNTAX
      imports LIBC-STDIO
@@ -164,6 +165,18 @@ module C-STMT-LOOP
           requires (ThId in_keys(Status))
                andBool (Status[ThId] =/=K threadJoined)
                andBool ThId =/=K ThisThread
+          [ndthread]
+
+     rule <k> (.K => UNDEF("OMP1", "join-aux-omp called for an invalid or already-joined thread."))
+               ~> join-aux-omp(ThId:Int)
+          ...</k>
+          <thread-status>
+               Status:Map
+          </thread-status>
+          <thread-id> ThisThread:Int </thread-id>
+          requires notBool ((ThId in_keys(Status))
+               andBool (Status[ThId] =/=K threadJoined)
+               andBool ThId =/=K ThisThread)
           [ndthread]
 
      // Initialize thread-local loop variable with iteration-specific value
