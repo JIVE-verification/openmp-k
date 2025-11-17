@@ -26,7 +26,14 @@ module C-STMT-LOOP
      // Helper to allocate and initialize thread-local loop variable
      syntax KItem ::= initThreadLocalVar(CId, Type, RValue, SymBase)
 
-     
+     // Thread pool for OpenMP
+     syntax KItem ::= "spawnPoolThread" "(" Int "," Int "," Int "," K ")"
+     syntax KItem ::= "executeIterationRange" "(" Int "," Int "," K ")"  // (currentIter, endIter, body)
+
+     // Helper functions for contiguous block distribution
+     syntax Int ::= getThreadBlockStart(Int, Int, Int) [function]  // (threadIdx, numThreads, totalIters)
+     syntax Int ::= getThreadBlockEnd(Int, Int, Int) [function]    // (threadIdx, numThreads, totalIters)
+
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.2}{1}}}{
      The statement
      \cdisplay{for ( $\textit{clause-1}$ ; $\textit{expression-2}$ ;
@@ -105,19 +112,38 @@ module C-STMT-LOOP
      <block-history> ListItem(_:Int) ...</block-history>
      [structural]
 
-     // Prototype parallel execution: spawn three worker threads that each run S
-     // with distinct values of the loop variable.  This mirrors our test program
-     // (iterations 0, 1, 2) and will be generalized in later iterations.
+     // Thread pool execution: hardcoded 3 threads for 3 iterations
      rule <k> ompForSpawn(_, _, S:K)
-               => spawn-aux-omp(tv(0, utype(int)), S)
-               ~> spawn-aux-omp(tv(1, utype(int)), S)
-               ~> spawn-aux-omp(tv(2, utype(int)), S)
+               => spawnPoolThread(0, 3, 3, S)
+               ~> spawnPoolThread(1, 3, 3, S)
+               ~> spawnPoolThread(2, 3, 3, S)
                ~> join-aux-omp(1)
                ~> join-aux-omp(2)
                ~> join-aux-omp(3)
           ...</k>
           <block-history> ListItem(_:Int) ...</block-history>
           [structural]
+
+     // Compute start iteration for a thread using contiguous block distribution
+     // For N iterations and T threads:
+     //   blockSize = N / T, remainder = N % T
+     //   First 'remainder' threads get (blockSize + 1) iterations
+     //   Remaining threads get blockSize iterations
+     rule getThreadBlockStart(ThreadIdx:Int, NumThreads:Int, TotalIters:Int)
+          => ((TotalIters /Int NumThreads) +Int 1) *Int minInt(ThreadIdx, TotalIters %Int NumThreads)
+             +Int (TotalIters /Int NumThreads) *Int maxInt(0, ThreadIdx -Int (TotalIters %Int NumThreads))
+          [function]
+
+     // Compute end iteration (exclusive) for a thread
+     rule getThreadBlockEnd(ThreadIdx:Int, NumThreads:Int, TotalIters:Int)
+          => getThreadBlockStart(ThreadIdx +Int 1, NumThreads, TotalIters)
+          requires ThreadIdx <Int NumThreads -Int 1
+          [function]
+
+     rule getThreadBlockEnd(ThreadIdx:Int, _:Int, TotalIters:Int)
+          => TotalIters
+          requires ThreadIdx >=Int 0  // Last thread goes to end
+          [owise, function]
 
      rule [spawn-aux-omp]:
           <thread>...
@@ -142,6 +168,37 @@ module C-STMT-LOOP
                <k> initThreadLocalVar(Identifier("i"), type(int), IterVal, linc(type(int), threadLocal(ThId)))
                     ~> S
                </k>
+               <env> updateMap(GEnv, ParentEnv) </env>
+               <types> Types </types>
+               <curr-tu> Tu </curr-tu>
+               <curr-scope> Scope </curr-scope>
+          ...</thread>)
+          requires notBool hasLint
+          [large, ndthread]
+
+     rule [spawnPoolThread]:
+          <thread>...
+               <k> spawnPoolThread(ThreadIdx:Int, NumThreads:Int, TotalIters:Int, S:K)
+                    => .K
+               ...</k>
+               <curr-tu> Tu:String </curr-tu>
+               <buffer> .List </buffer>
+               <env> ParentEnv:Map </env>
+               <types> Types:Map </types>
+               <curr-scope> Scope:Scope </curr-scope>
+          ...</thread>
+          <genv> GEnv:Map </genv>
+          <thread-status>
+               Status:Map => Status[ThId <- threadRunning]
+          </thread-status>
+          <next-thread-id> ThId:Int => ThId +Int 1 </next-thread-id>
+          (.Bag =>
+          <thread>...
+               <duration> threadLocal(ThId) </duration>
+               <thread-id> ThId </thread-id>
+               <k> executeIterationRange(getThreadBlockStart(ThreadIdx, NumThreads, TotalIters),
+                                         getThreadBlockEnd(ThreadIdx, NumThreads, TotalIters),
+                                         S) </k>
                <env> updateMap(GEnv, ParentEnv) </env>
                <types> Types </types>
                <curr-tu> Tu </curr-tu>
@@ -178,6 +235,21 @@ module C-STMT-LOOP
                andBool (Status[ThId] =/=K threadJoined)
                andBool ThId =/=K ThisThread)
           [ndthread]
+
+     // Execute contiguous block of iterations [currentIter, endIter)
+     rule <k> executeIterationRange(CurrentIter:Int, EndIter:Int, S:K)
+               => initThreadLocalVar(Identifier("i"), type(int), tv(CurrentIter, utype(int)), linc(type(int), threadLocal(ThId)))
+               ~> S
+               ~> executeIterationRange(CurrentIter +Int 1, EndIter, S)
+          ...</k>
+          <thread-id> ThId:Int </thread-id>
+          requires CurrentIter <Int EndIter
+          [structural]
+
+     // All iterations in this thread's block complete
+     rule <k> executeIterationRange(CurrentIter:Int, EndIter:Int, _) => .K ...</k>
+          requires CurrentIter >=Int EndIter
+          [structural]
 
      // Initialize thread-local loop variable with iteration-specific value
      // Follows pattern from decl/local.k:103-108 (defineAndInit)
