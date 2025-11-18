@@ -3,6 +3,7 @@ module C-STMT-LOOP
      imports K-REFLECTION
      imports C-SYNTAX
      imports C-DYNAMIC-SYNTAX
+     imports C-CHECK-USE-SYNTAX
      imports C-TYPING-SYNTAX
      imports C-EXECUTION-ERROR-SYNTAX
      imports LIBC-THREADS
@@ -33,6 +34,49 @@ module C-STMT-LOOP
      // Helper functions for contiguous block distribution
      syntax Int ::= getThreadBlockStart(Int, Int, Int) [function]  // (threadIdx, numThreads, totalIters)
      syntax Int ::= getThreadBlockEnd(Int, Int, Int) [function]    // (threadIdx, numThreads, totalIters)
+
+     // Extract iteration count from Control expression
+     syntax Int ::= extractIterCount(K) [function]
+     syntax Int ::= findMaxIntInK(K) [function]
+     syntax Int ::= findMaxIntInKItem(KItem) [function]
+
+     // Extract iteration count from loop condition
+     rule extractIterCount(te(compoundExp(K:K), _)) => findMaxIntInK(K) [function]
+     rule extractIterCount(compoundExp(K:K)) => findMaxIntInK(K) [function]
+     rule extractIterCount(K:K) => findMaxIntInK(K) [owise, function]
+
+     // Recursively search for integer values in K structure
+     rule findMaxIntInK(.K) => 0 [function]
+     rule findMaxIntInK(KI:KItem) => findMaxIntInKItem(KI) [function]
+     rule findMaxIntInK(KI:KItem ~> Rest:K)
+          => maxInt(findMaxIntInKItem(KI), findMaxIntInK(Rest))
+          [function]
+
+     rule findMaxIntInKItem(tv(N:Int, _)) => maxInt(N, 0) [function]
+     rule findMaxIntInKItem(checkUse(K:K)) => findMaxIntInK(K) [function]
+     rule findMaxIntInKItem(compoundExp(K:K)) => findMaxIntInK(K) [function]
+     rule findMaxIntInKItem(te(K:K, _)) => findMaxIntInK(K) [function]
+     rule findMaxIntInKItem(`_<__C-SYNTAX`(L:K, R:K))
+          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
+          [function]
+     rule findMaxIntInKItem(`_<=__C-SYNTAX`(L:K, R:K))
+          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
+          [function]
+     rule findMaxIntInKItem(`_>__C-SYNTAX`(L:K, R:K))
+          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
+          [function]
+     rule findMaxIntInKItem(`_>=__C-SYNTAX`(L:K, R:K))
+          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
+          [function]
+     rule findMaxIntInKItem(`_==__C-SYNTAX`(L:K, R:K))
+          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
+          [function]
+     rule findMaxIntInKItem(`_!=__C-SYNTAX`(L:K, R:K))
+          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
+          [function]
+     rule findMaxIntInKItem(`CabsLoc`(_, _, _, _, _)) => 0 [function]
+     rule findMaxIntInKItem(`Identifier`(_)) => 0 [function]
+     rule findMaxIntInKItem(KI:KItem) => 0 [owise, function]
 
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.2}{1}}}{
      The statement
@@ -112,11 +156,11 @@ module C-STMT-LOOP
      <block-history> ListItem(_:Int) ...</block-history>
      [structural]
 
-     // Thread pool execution: hardcoded 3 threads for 3 iterations
-     rule <k> ompForSpawn(_, _, S:K)
-               => spawnPoolThread(0, 3, 3, S)
-               ~> spawnPoolThread(1, 3, 3, S)
-               ~> spawnPoolThread(2, 3, 3, S)
+     // Thread pool execution: spawn threads using iteration count extracted from Control
+     rule <k> ompForSpawn(Control:K, _, S:K)
+               => spawnPoolThread(0, 3, extractIterCount(Control), S)
+               ~> spawnPoolThread(1, 3, extractIterCount(Control), S)
+               ~> spawnPoolThread(2, 3, extractIterCount(Control), S)
                ~> join-aux-omp(1)
                ~> join-aux-omp(2)
                ~> join-aux-omp(3)
