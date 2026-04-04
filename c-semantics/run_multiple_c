@@ -1,0 +1,21 @@
+#!/bin/bash
+mkdir diff
+# Usage: ./run_multiple
+a=6700
+b=7000
+d=5
+echo "start counter.c from $a $b $d"
+./run_depths counter.c $a $b $d
+echo "end counter.c from  $a $b $d"
+a=6500
+b=7500
+d=5
+echo "start star.c from $a $b $d"
+./run_depths star.c $a $b $d
+echo "end star.c from $a $b $d"
+a=6500
+b=8001
+d=5
+echo "start reverse.c from $a $b $d "
+./run_depths reverse.c $a $b $d
+echo "end reverse.c from $a $b $d "

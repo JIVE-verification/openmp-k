@@ -7,6 +7,7 @@ from pathlib import Path
 import shutil
 import re
 import os
+from datetime import datetime
 
 
 
@@ -80,7 +81,7 @@ def main():
         sys.exit(130)
 
     combined = (proc.stdout or "") + "\n" + (proc.stderr or "")
-
+    # print (combined)
     # (1) Last .tmp-*-*
     last_tmp = None
     for m in TMP_PATTERN.finditer(combined):
@@ -145,12 +146,19 @@ def main():
     #         "-c", "JSON=" + '{}'.format(last_json) ,
     #         "-c", "UUID=" + '{}'.format(last_uuid),
     #     ]
+    timestamp = datetime.now().strftime("%Y%m%d%H%M")
+    output_dir = "experiments/translation-" + args.cfile
+    Path(output_dir).mkdir(exist_ok=True)
+
+    depth_flag = "" if depth == 0 else f"--depth {depth} "
+
     krun_cmd = (
         "krun {kast_dir} "
         "--directory ./dist/profiles/x86-gcc-limited-libc/c-translation-kompiled "
         "--output pretty "
-        "--output-file output-{depth_}-steps.txt "
-        "--depth {depth_} "
+#        "--output-file {output_dir}/output-{ut}-{cf}-{depth_}.txt "
+        "--output-file {output_dir}/trans-{cf}-{depth_}.txt "
+        "{depth_flag}"
         "--parser \"cat\" "
         "--config-parser OPTIONS=\"echo\" "
         "--config-parser JSON=\"echo\" "
@@ -160,9 +168,13 @@ def main():
         "-c UUID='{uuid}'"
     ).format(
         kast_dir=shlex.quote(kast_dir),
-        json=last_json,          # RAW paste
-        uuid=last_uuid,           # RAW paste
-        depth_ = depth
+        output_dir = output_dir,
+#        ut=timestamp,
+        cf=args.cfile,
+        depth_=depth,
+        depth_flag=depth_flag,
+        json=last_json,
+        uuid=last_uuid,
     )
     
     

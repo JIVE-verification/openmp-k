@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Check arguments
+if [ $# -ne 2 ]; then
+  echo "Usage: $0 <filename> <line-number>"
+  exit 1
+fi
+
+file="$1"
+line="$2"
+target="../output-$file"
+
+# Use grep with:
+# -E for extended regex
+# -i for case-insensitive (optional)
+# -r only if target is a directory
+# - proper escaping of parentheses and flexible whitespace
+
+grep -r -P -x -l ".*CabsLoc\s\(\s\"$file\"\s,\s\"/home/user/mounted/$file\"\s,\s$line\s,\s[0-9]+\s,\sfalse\s\)" "$target"
+

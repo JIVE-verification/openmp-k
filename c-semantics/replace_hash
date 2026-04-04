@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Usage: ./replace_regex.sh <regex_pattern> <replacement> <file>
+
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <regex_pattern> <file>"
+fi
+
+pattern="[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{4,}"
+replacement=""
+file="$1"
+
+sed -i -E "s/${pattern}/${replacement}/g" "$file"

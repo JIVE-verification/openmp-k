@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Usage: ./replace_regex.sh <regex_pattern> <replacement> <file>
+
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <start> <end> <interval>"
+fi
+
+pattern="[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{4,}-[a-f0-9]{4,}"
+replacement=""
+
+for ((i=$1;i<=$2;i+=$3)); do
+	echo $i
+	sed -i -E "s/${pattern}/${replacement}/g" "output-prod.c-$i.txt"
+done

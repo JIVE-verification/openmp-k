@@ -1,0 +1,36 @@
+#!/bin/bash
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <filename> <depth>"
+    exit 1
+fi
+input_file=$1
+output_file="${input_file%.c}"
+execution_depth=$2
+echo "INPUT: "$input_file 
+echo "OUTPUT :"$output_file
+echo "DEPTH :"$execution_depth
+destination_dir="experiments/exe-$input_file"
+
+if [ ! -d "$destination_dir" ]; then
+    	echo "Directory Creating.."
+	mkdir -p "$destination_dir"
+fi
+
+if [ ! -f "$experiments/exe-$input_file/$output_file" ]; then
+	echo "$output_file.out Creating"
+	dist/kcc $input_file -o "$destination_dir/$output_file"
+	sed -i 's/if (!defined $ENV{DUMPALL}) {/if (defined $ENV{DUMPALL}) {/' "$destination_dir/$output_file"
+	sed -i "s/my @cmd = ('--output', 'kast'/my @cmd = ('--output', 'json', '--depth', '0'/" "$destination_dir/$output_file"
+	a="tmp-kcc-"
+	b="$destination_dir/tmp-kcc-"
+	sed -i "s|$a|$b|" "$destination_dir/$output_file"    
+else
+    echo "File does not exist."
+fi
+echo "Executing $output_file --depth $execution_depth ..."
+sed -i "s/'--depth', '[0-9]*'/'--depth', '$execution_depth'/" "$destination_dir/$output_file"
+./$destination_dir/$output_file --depth $destination_dir/$execution_depth
+echo "Executing kjson2pretty ..."
+python3 kjson2pretty.py $destination_dir/tmp-kcc-out-*.txt > "$destination_dir/$output_file-$execution_depth.txt"
+rm -r $destination_dir/tmp-kcc-*
+echo "DONE"
