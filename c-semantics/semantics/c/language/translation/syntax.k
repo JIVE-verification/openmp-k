@@ -21,6 +21,9 @@ module C-ABSTRACT-SYNTAX
      syntax Constant ::= IntConstant
      syntax Constant ::= FloatConstant
 
+     // openmp temp-var
+//      syntax CId ::= ompTempVar(Int)
+
      // -------------------------------------------------
      // Below, I give the declaration as found in cabs.ml first, followed by
      // the K version
@@ -251,7 +254,17 @@ module C-ABSTRACT-SYNTAX
      syntax KItem ::= DoWhile(K, KItem, CabsLoc)  [klabel(DoWhile3), symbol]
      syntax KItem ::= For(Int, KItem, K, K, K)  [klabel(For5), symbol]
      syntax KItem ::= OMPFor(Int, KItem, K, K, K)  [klabel(OMPFor5), symbol]
-     // syntax KItem ::= OMPFor2(Int, KItem, K, K, K)  
+     syntax KItem ::= PFor(Int, KItem, K, K, K) [klabel(PFor5), symbol]
+     
+     syntax KItem ::= OMPForr(Int, KItem, K, K, K)  [klabel(OMForr5), symbol]
+     syntax KItem ::= OMPForrr(Int, KItem, K, K, K)  [klabel(OMForrr5), symbol]
+     
+     syntax KItem ::= OMPFora(Int, KItem, K, K, K)  [klabel(OMFora5), symbol]
+     
+     // OMP FOR
+     syntax KItem ::= blockOMP(Int, CId, K) [klabel(blockOMP3), symbol]
+     syntax KItem ::= blockOMP(Int, CId, K, K, K)  [klabel(blockOMP5), symbol]
+
      // gcc extension
      syntax KItem ::= CaseRange(KItem, KItem, KItem) [symbol]
 
@@ -402,7 +415,8 @@ module C-ABSTRACT-SYNTAX
      */
      syntax KItem ::= ForClauseExpression(KItem) [symbol]
      syntax KItem ::= OMPForClauseExpression(KItem) [symbol]
-
+     syntax KItem ::= PForClauseExpression(KItem) [symbol]
+     
      syntax KItem ::= Conditional(KItem, KItem, KItem) [symbol]
 
      syntax KItem ::= ArrayIndex(KItem, KItem) [symbol]

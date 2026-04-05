@@ -1,0 +1,37 @@
+# Ignore all object files
+*.o
+
+# Ignore compiled OCaml files
+*.cmi
+*.cmx
+*.cmo
+*.cmxa
+
+# Ignore temporary files
+*.tmp
+.*.swp
+
+#Experiment Files
+experiments/
+
+# Original Gitignore
+parser/*.o
+parser/*.cmi
+parser/*.cmx
+.*.swp
+semantics/.kompile-*
+semantics/*/c*-kompiled
+dist/
+parser/cparser
+parser/clexer.ml
+parser/cparser.ml
+parser/cparser.mli
+semantics/.depend*
+semantics/.lock
+semantics/.build
+scripts/cdecl-*
+.vagrant
+
+# .kompile files
+
+.*kompile.*

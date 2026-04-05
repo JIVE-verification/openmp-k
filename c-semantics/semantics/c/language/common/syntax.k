@@ -40,6 +40,9 @@ module C-SYNTAX
      syntax KItem ::= OMPComputation(K) [latex({{#1}};), symbol]
      context OMPComputation(HOLE:KItem => reval(HOLE)) [result(RValue)]
 
+     syntax KItem ::= PComputation(K) [latex({{#1}};), symbol]
+     context PComputation(HOLE:KItem => reval(HOLE)) [result(RValue)]
+
      syntax KItem ::= "Initializer" "(" K ":=" K ")" [strict(1)]
      context Initializer(_ := (HOLE:KItem => reval(HOLE))) [result(RValue)]
 
@@ -85,11 +88,28 @@ module C-SYNTAX
      syntax KItem ::= For(K, K, K)
      syntax KItem ::= For1(K, K, K)
      syntax KItem ::= For2(K, K, K)
-     syntax KItem ::= OMPFork(K)
+     syntax KItem ::= OMPFor(K, K)
      syntax KItem ::= OMPFor(K,K,K)
+     // Th, CId, Condition, Post, Body
+     syntax KItem ::= blockOMP(Int, CId, K, K, K)
+     syntax KItem ::= OMPForr(K, K)
+     syntax KItem ::= OMPForr(K,K,K)
+
+     syntax KItem ::= OMPForrr(K, K)
+     syntax KItem ::= OMPForrr(K,K,K)
+
+
+     syntax KItem ::= PFor(K,K)
+     syntax KItem ::= PFor(K,K,K)
+     syntax KItem ::= blockOMP(Int, CId, K, K)
+     // TID, TT, FOR 
+//     syntax KItem ::= BlockOMP(K, K, K)
      syntax KItem ::= RUNONTHREAD(K,K,K)
      syntax KItem ::= FORLOOPINFO(K,K,K)
      syntax KItem ::= POPLOOPONTHREAD(Int)
+          // openmp temp-var
+     syntax CId ::= ompTempVar(Int)
+
      /*
      | BREAK of cabsloc
      | CONTINUE of cabsloc

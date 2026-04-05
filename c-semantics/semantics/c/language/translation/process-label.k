@@ -133,11 +133,11 @@ module C-PROCESS-LABEL
 
                </goto-calc>
           )
-
+   
      rule <k> waitingOnGotoMap ...</k>
           <goto-calc>
                <computation>
-                    (OMPFor(Control:K, Post:K, S:K) => .K)
+                    (blockOMP(Th:Int, Temp:CId, Control:K, Post:K, S:K) => .K)
                     ~> K:K
                </computation>
                <computation-tail> Tail:K </computation-tail>
@@ -154,7 +154,7 @@ module C-PROCESS-LABEL
                     <computation-tail>
                          Computation(Post)
                          ~> loopMarked
-                         ~> OMPFor((#if Control =/=K emptyValue
+                         ~> blockOMP(Th, Temp, (#if Control =/=K emptyValue
                               #then Control
                               #else tv(1, utype(int))
                               #fi), Post, S)

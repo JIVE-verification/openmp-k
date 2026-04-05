@@ -3,7 +3,6 @@ module C-STMT-LOOP
      imports K-REFLECTION
      imports C-SYNTAX
      imports C-DYNAMIC-SYNTAX
-     imports C-CHECK-USE-SYNTAX
      imports C-TYPING-SYNTAX
      imports C-EXECUTION-ERROR-SYNTAX
      imports LIBC-THREADS
@@ -24,60 +23,13 @@ module C-STMT-LOOP
      syntax Stmt ::= "continueForLoop"
      syntax K ::= placeContext(Map)
 
+     // joining OMP Thread with Id:Int 
+     syntax KItem ::= joinOmpThread(Int)
+
      // Helper to allocate and initialize thread-local loop variable
      syntax KItem ::= initThreadLocalVar(CId, Type, RValue, SymBase)
 
-     // Thread pool for OpenMP
-     syntax KItem ::= "spawnPoolThread" "(" Int "," Int "," Int "," K ")"
-     syntax KItem ::= "executeIterationRange" "(" Int "," Int "," K ")"  // (currentIter, endIter, body)
-
-     // Helper functions for contiguous block distribution
-     syntax Int ::= getThreadBlockStart(Int, Int, Int) [function]  // (threadIdx, numThreads, totalIters)
-     syntax Int ::= getThreadBlockEnd(Int, Int, Int) [function]    // (threadIdx, numThreads, totalIters)
-
-     // Extract iteration count from Control expression
-     syntax Int ::= extractIterCount(K) [function]
-     syntax Int ::= findMaxIntInK(K) [function]
-     syntax Int ::= findMaxIntInKItem(KItem) [function]
-
-     // Extract iteration count from loop condition
-     rule extractIterCount(te(compoundExp(K:K), _)) => findMaxIntInK(K) [function]
-     rule extractIterCount(compoundExp(K:K)) => findMaxIntInK(K) [function]
-     rule extractIterCount(K:K) => findMaxIntInK(K) [owise, function]
-
-     // Recursively search for integer values in K structure
-     rule findMaxIntInK(.K) => 0 [function]
-     rule findMaxIntInK(KI:KItem) => findMaxIntInKItem(KI) [function]
-     rule findMaxIntInK(KI:KItem ~> Rest:K)
-          => maxInt(findMaxIntInKItem(KI), findMaxIntInK(Rest))
-          [function]
-
-     rule findMaxIntInKItem(tv(N:Int, _)) => maxInt(N, 0) [function]
-     rule findMaxIntInKItem(checkUse(K:K)) => findMaxIntInK(K) [function]
-     rule findMaxIntInKItem(compoundExp(K:K)) => findMaxIntInK(K) [function]
-     rule findMaxIntInKItem(te(K:K, _)) => findMaxIntInK(K) [function]
-     rule findMaxIntInKItem(`_<__C-SYNTAX`(L:K, R:K))
-          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
-          [function]
-     rule findMaxIntInKItem(`_<=__C-SYNTAX`(L:K, R:K))
-          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
-          [function]
-     rule findMaxIntInKItem(`_>__C-SYNTAX`(L:K, R:K))
-          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
-          [function]
-     rule findMaxIntInKItem(`_>=__C-SYNTAX`(L:K, R:K))
-          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
-          [function]
-     rule findMaxIntInKItem(`_==__C-SYNTAX`(L:K, R:K))
-          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
-          [function]
-     rule findMaxIntInKItem(`_!=__C-SYNTAX`(L:K, R:K))
-          => maxInt(findMaxIntInK(L), findMaxIntInK(R))
-          [function]
-     rule findMaxIntInKItem(`CabsLoc`(_, _, _, _, _)) => 0 [function]
-     rule findMaxIntInKItem(`Identifier`(_)) => 0 [function]
-     rule findMaxIntInKItem(KI:KItem) => 0 [owise, function]
-
+     
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.2}{1}}}{
      The statement
      \cdisplay{for ( $\textit{clause-1}$ ; $\textit{expression-2}$ ;
@@ -125,18 +77,65 @@ module C-STMT-LOOP
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
      
-     rule [omp-for-mark]:
-          <k> OMPFor(Control:K, Post:K, S:K) ~> K:K
-               => loopMarked
-               ~> OMPFor((#if Control =/=K emptyValue
-                    #then Control
-                    #else tv(1, utype(int)) #fi),
-                    Post, S)
-               ~> popLoop
-          </k>
-          <block-history> ListItem(Num:Int) ...</block-history>
-          <loop-stack> .List => ListItem(kpair(Num, K)) ...</loop-stack>
-          [structural]
+     
+     rule [zero-thread]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOMP(Th:Int, Temp:CId, Control:K, Post:K, S:K)
+               => For(Control, Post, S)
+               ...</k>
+          ...</thread>
+          <thread-status>
+               Status:Map => Status[Th <- threadRunning]
+          </thread-status>
+          requires Th ==Int ThId andBool Th ==Int 0
+     
+     rule [block-omp-mark-f]:
+          <thread>
+          ...
+               <thread-local> 
+                    C::Bag 
+                    <duration> _ </duration>
+               </thread-local>
+               <k> blockOMP(Th:Int, Temp:CId, Control:K, Post:K, S:K) ~> R:K
+               => blockOMP(Th -Int 1, Temp, Control, Post, S) ~> R
+               </k>
+//               <curr-tu> Tu:String </curr-tu>
+//               <buffer> .List </buffer>
+//               <env> Env:Map</env>
+//               <renv> Renv:Map</renv>
+//               <types> Types:Map </types>
+          ...
+          </thread>
+          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+//          <genv> Env:Map </genv>
+          <thread-status>
+               Status:Map => Status[Fresh <- threadRunning]
+          </thread-status>
+          (.Bag =>
+          <thread>
+          ...
+               <thread-id> Fresh:Int </thread-id>
+               <k> 
+                    For(Control, Post, S) ~> R
+               </k>
+               <thread-local>
+                    C
+                    <duration> threadLocal(Fresh:Int) </duration>
+               </thread-local>
+//               <env> Env </env>
+//               <renv> Renv</renv>
+//               <types> Types </types>
+//               <curr-tu> Tu </curr-tu>
+          ...
+          </thread>)
+          requires Th =/=Int 0 andBool notBool hasLint
+          [large, ndthread]
+
+	// each time add new thread
+	// and push for (Control, Post, S) to that thread
+	// waiting for Thread Calculation to finish
+
 
      syntax KItem ::= ompForSpawn(K, K, K)
 
@@ -156,38 +155,19 @@ module C-STMT-LOOP
      <block-history> ListItem(_:Int) ...</block-history>
      [structural]
 
-     // Thread pool execution: spawn threads using iteration count extracted from Control
-     rule <k> ompForSpawn(Control:K, _, S:K)
-               => spawnPoolThread(0, 3, extractIterCount(Control), S)
-               ~> spawnPoolThread(1, 3, extractIterCount(Control), S)
-               ~> spawnPoolThread(2, 3, extractIterCount(Control), S)
+     // Prototype parallel execution: spawn three worker threads that each run S
+     // with distinct values of the loop variable.  This mirrors our test program
+     // (iterations 0, 1, 2) and will be generalized in later iterations.
+     rule <k> ompForSpawn(_, _, S:K)
+               => spawn-aux-omp(tv(0, utype(int)), S)
+               ~> spawn-aux-omp(tv(1, utype(int)), S)
+               ~> spawn-aux-omp(tv(2, utype(int)), S)
                ~> join-aux-omp(1)
                ~> join-aux-omp(2)
                ~> join-aux-omp(3)
           ...</k>
           <block-history> ListItem(_:Int) ...</block-history>
           [structural]
-
-     // Compute start iteration for a thread using contiguous block distribution
-     // For N iterations and T threads:
-     //   blockSize = N / T, remainder = N % T
-     //   First 'remainder' threads get (blockSize + 1) iterations
-     //   Remaining threads get blockSize iterations
-     rule getThreadBlockStart(ThreadIdx:Int, NumThreads:Int, TotalIters:Int)
-          => ((TotalIters /Int NumThreads) +Int 1) *Int minInt(ThreadIdx, TotalIters %Int NumThreads)
-             +Int (TotalIters /Int NumThreads) *Int maxInt(0, ThreadIdx -Int (TotalIters %Int NumThreads))
-          [function]
-
-     // Compute end iteration (exclusive) for a thread
-     rule getThreadBlockEnd(ThreadIdx:Int, NumThreads:Int, TotalIters:Int)
-          => getThreadBlockStart(ThreadIdx +Int 1, NumThreads, TotalIters)
-          requires ThreadIdx <Int NumThreads -Int 1
-          [function]
-
-     rule getThreadBlockEnd(ThreadIdx:Int, _:Int, TotalIters:Int)
-          => TotalIters
-          requires ThreadIdx >=Int 0  // Last thread goes to end
-          [owise, function]
 
      rule [spawn-aux-omp]:
           <thread>...
@@ -212,37 +192,6 @@ module C-STMT-LOOP
                <k> initThreadLocalVar(Identifier("i"), type(int), IterVal, linc(type(int), threadLocal(ThId)))
                     ~> S
                </k>
-               <env> updateMap(GEnv, ParentEnv) </env>
-               <types> Types </types>
-               <curr-tu> Tu </curr-tu>
-               <curr-scope> Scope </curr-scope>
-          ...</thread>)
-          requires notBool hasLint
-          [large, ndthread]
-
-     rule [spawnPoolThread]:
-          <thread>...
-               <k> spawnPoolThread(ThreadIdx:Int, NumThreads:Int, TotalIters:Int, S:K)
-                    => .K
-               ...</k>
-               <curr-tu> Tu:String </curr-tu>
-               <buffer> .List </buffer>
-               <env> ParentEnv:Map </env>
-               <types> Types:Map </types>
-               <curr-scope> Scope:Scope </curr-scope>
-          ...</thread>
-          <genv> GEnv:Map </genv>
-          <thread-status>
-               Status:Map => Status[ThId <- threadRunning]
-          </thread-status>
-          <next-thread-id> ThId:Int => ThId +Int 1 </next-thread-id>
-          (.Bag =>
-          <thread>...
-               <duration> threadLocal(ThId) </duration>
-               <thread-id> ThId </thread-id>
-               <k> executeIterationRange(getThreadBlockStart(ThreadIdx, NumThreads, TotalIters),
-                                         getThreadBlockEnd(ThreadIdx, NumThreads, TotalIters),
-                                         S) </k>
                <env> updateMap(GEnv, ParentEnv) </env>
                <types> Types </types>
                <curr-tu> Tu </curr-tu>
@@ -279,21 +228,6 @@ module C-STMT-LOOP
                andBool (Status[ThId] =/=K threadJoined)
                andBool ThId =/=K ThisThread)
           [ndthread]
-
-     // Execute contiguous block of iterations [currentIter, endIter)
-     rule <k> executeIterationRange(CurrentIter:Int, EndIter:Int, S:K)
-               => initThreadLocalVar(Identifier("i"), type(int), tv(CurrentIter, utype(int)), linc(type(int), threadLocal(ThId)))
-               ~> S
-               ~> executeIterationRange(CurrentIter +Int 1, EndIter, S)
-          ...</k>
-          <thread-id> ThId:Int </thread-id>
-          requires CurrentIter <Int EndIter
-          [structural]
-
-     // All iterations in this thread's block complete
-     rule <k> executeIterationRange(CurrentIter:Int, EndIter:Int, _) => .K ...</k>
-          requires CurrentIter >=Int EndIter
-          [structural]
 
      // Initialize thread-local loop variable with iteration-specific value
      // Follows pattern from decl/local.k:103-108 (defineAndInit)
