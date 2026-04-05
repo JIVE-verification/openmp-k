@@ -6,31 +6,57 @@ fi
 input_file=$1
 output_file="${input_file%.c}"
 execution_depth=$2
+destination_dir="experiments/exe-$input_file"
+output_file_path="$destination_dir/$output_file"
+
 echo "INPUT: "$input_file 
 echo "OUTPUT :"$output_file
 echo "DEPTH :"$execution_depth
-destination_dir="experiments/exe-$input_file"
 
+echo "$destination_dir"
 if [ ! -d "$destination_dir" ]; then
-    	echo "Directory Creating.."
+    echo "$destination_dir Creating.."
 	mkdir -p "$destination_dir"
+else
+	echo "$destination_dir exists"
+	echo "Removing tmp-kcc-* file"
+	for file in "$destination_dir"/tmp-kcc-*; do
+    		if [ -f "$file" ]; then
+        		rm "$file"
+    		fi
+	done
 fi
-
-if [ ! -f "$experiments/exe-$input_file/$output_file" ]; then
-	echo "$output_file.out Creating"
-	dist/kcc $input_file -o "$destination_dir/$output_file"
-	sed -i 's/if (!defined $ENV{DUMPALL}) {/if (defined $ENV{DUMPALL}) {/' "$destination_dir/$output_file"
-	sed -i "s/my @cmd = ('--output', 'kast'/my @cmd = ('--output', 'json', '--depth', '0'/" "$destination_dir/$output_file"
+# 
+if [ ! -f "$output_file_path" ]; then
+	echo "$output_file outfile creating"
+	dist/kcc $input_file -o "$output_file_path"
+	sed -i 's/if (!defined $ENV{DUMPALL}) {/if (defined $ENV{DUMPALL}) {/' "$output_file_path"
+	sed -i "s/my @cmd = ('--output', 'kast'/my @cmd = ('--output', 'json', '--depth', '0'/" "$output_file_path"
 	a="tmp-kcc-"
 	b="$destination_dir/tmp-kcc-"
-	sed -i "s|$a|$b|" "$destination_dir/$output_file"    
+	sed -i "s|$a|$b|" "$output_file_path" 
+	echo "Executing $output_file --depth $execution_depth ..."
+	# ./a.out
+	./$output_file_path
+	echo "Executing kjson2pretty ..."
+	if [ -f $destination_dir/tmp-kcc-out-*.txt ]; then
+		python3 kjson2pretty.py $destination_dir/tmp-kcc-out-*.txt > "$destination_dir/$output_file-$execution_depth.txt"		
+	else
+		echo "TMP Creation ERROR!"
+	fi
 else
-    echo "File does not exist."
+	echo "$output_file.out Exists"
+	echo "Executing $output_file --depth $execution_depth ..."
+	# replacing depth in .out file first
+	sed -i "s/'--depth', '[0-9]*'/'--depth', '$execution_depth'/" "$output_file_path"
+	# ./a.out --depth $execution_depth
+	./$output_file_path 
+	echo "Executing kjson2pretty ..."
+	if [ -f $destination_dir/tmp-kcc-out-*.txt ]; then
+		python3 kjson2pretty.py $destination_dir/tmp-kcc-out-*.txt > "$destination_dir/$output_file-$execution_depth.txt"		
+	else
+		echo "TMP Creation ERROR!"
+	fi
+
+	echo "END"    
 fi
-echo "Executing $output_file --depth $execution_depth ..."
-sed -i "s/'--depth', '[0-9]*'/'--depth', '$execution_depth'/" "$destination_dir/$output_file"
-./$destination_dir/$output_file --depth $destination_dir/$execution_depth
-echo "Executing kjson2pretty ..."
-python3 kjson2pretty.py $destination_dir/tmp-kcc-out-*.txt > "$destination_dir/$output_file-$execution_depth.txt"
-rm -r $destination_dir/tmp-kcc-*
-echo "DONE"

@@ -6,7 +6,7 @@ int main() {
     int a[N];
 
     #pragma omp parallel for
-    for (int i = 1; i < N; i++) {
+    for (int i = 0; i < N; i++) {
         a[i] = i * i;
     }
 
