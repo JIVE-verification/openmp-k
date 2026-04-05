@@ -35,3 +35,4 @@ scripts/cdecl-*
 # .kompile files
 
 .*kompile.*
+c-semantics/semantics/.kompile-*
