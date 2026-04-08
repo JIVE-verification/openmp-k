@@ -33,6 +33,10 @@ module SYMLOC-SYNTAX
      syntax Duration ::= nativeSymbol(String)
      // Thread local duration.
      syntax Duration ::= threadLocal(Int)
+     
+     // OpenMP Thread duration
+     syntax Duration ::= ompThreadDuration(Int)
+
      // Auto storage duration.
      syntax Duration ::= auto(Int)
                        | constexpr(String)
@@ -53,6 +57,9 @@ module SYMLOC-SYNTAX
      syntax Bool ::= isThreadDuration(SymLoc) [function]
      syntax Bool ::= isAutoDuration(SymLoc) [function]
      syntax Bool ::= isAutoDuration(SymBase) [function, klabel(isAutoDuration2)]
+
+     // About OpenMP
+     syntax Bool ::= isompThreadDuration(Duration) [function]
 
      syntax Bool ::= isStringLoc(SymLoc) [function]
      syntax Bool ::= isLinkerLoc(SymLoc) [function]
@@ -159,6 +166,9 @@ module SYMLOC
      rule isThreadDuration(loc(obj(... d: threadLocal(_)), _)) => true
      rule isThreadDuration(loc(obj(... d: threadLocal(_)), _, _)) => true
      rule isThreadDuration(_) => false [owise]
+
+     rule isompThreadDuration(ompThreadDuration(_)) => true
+     rule isompThreadDuration(_) => false [owise]
 
      rule isAutoDuration(NullPointer) => false
      rule isAutoDuration(Loc:SymLoc) => isAutoDuration(base(Loc)) [owise]

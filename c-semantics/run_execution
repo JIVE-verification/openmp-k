@@ -32,6 +32,7 @@ if [ ! -f "$output_file_path" ]; then
 	dist/kcc $input_file -o "$output_file_path"
 	sed -i 's/if (!defined $ENV{DUMPALL}) {/if (defined $ENV{DUMPALL}) {/' "$output_file_path"
 	sed -i "s/my @cmd = ('--output', 'kast'/my @cmd = ('--output', 'json', '--depth', '0'/" "$output_file_path"
+	sed -i "s/'--depth', '[0-9]*'/'--depth', '$execution_depth'/" "$output_file_path"
 	a="tmp-kcc-"
 	b="$destination_dir/tmp-kcc-"
 	sed -i "s|$a|$b|" "$output_file_path" 

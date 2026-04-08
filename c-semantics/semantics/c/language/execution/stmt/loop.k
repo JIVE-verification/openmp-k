@@ -121,7 +121,7 @@ module C-STMT-LOOP
                </k>
                <thread-local>
                     C
-                    <duration> threadLocal(Fresh:Int) </duration>
+                    <duration> ompThreadDuration(Fresh:Int) </duration>
                </thread-local>
 //               <env> Env </env>
 //               <renv> Renv</renv>
