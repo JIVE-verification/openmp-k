@@ -17,11 +17,14 @@ module C-STMT-LOOP
      syntax KItem ::= "OMPForInnerThread" "(" K "," K "," K")"
      syntax KItem ::= "join-aux-omp" "(" Int ")"
      syntax KItem ::= "update-identifier" "(" Int ")"
-      syntax KItem ::= "update-mem" "(" Int "," Int "," Duration ")"
+     syntax KItem ::= "update-mem" "(" Int "," Int "," Duration ")"
      // syntax KItem ::= "obj" "(" Int "," Int "," K ")"
      syntax Stmt ::= "updateEnv"
      syntax Stmt ::= "continueForLoop"
      syntax K ::= placeContext(Map)
+
+     syntax KItem ::= "waitingForChild"
+     syntax KItem ::= "joinChild"
 
      // joining OMP Thread with Id:Int 
      syntax KItem ::= joinOmpThread(Int)
@@ -91,24 +94,11 @@ module C-STMT-LOOP
                andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
           [structural]
 
-// original rule for declareInternalVariable
- /*    rule <k> declareInternalVariable(X:CId, _, initValue(_, T::Type, Init:K))
-               => declareAndDefine(X, T, Init)
-          ...</k>
-          <env> Env::Map </env>
-          requires notBool isStaticType(T)
-               andBool notBool isExternType(T)
-               andBool notBool isFunctionType(T)
-               andBool notBool isVariablyModifiedType(T)
-               andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
-          [structural]
-
-*/
      rule [zero-thread]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
           <k> blockOMP(Th:Int, Temp:CId, Initial:K, Control:K, Post:K, S:K)
-               => Initial ~> For(Control, Post, S)
+               => Initial ~> For(Control, Post, S) ~> waitingForChild
                ...</k>
           ...</thread>
           <thread-status>
@@ -119,22 +109,21 @@ module C-STMT-LOOP
      rule [block-omp-mark-f]:
           <thread>
           ...
+               <thread-id> Parent:Int </thread-id>
                <thread-local> 
                     C::Bag 
                     <duration> _ </duration>
+                    <parent-thread> _ </parent-thread>
+                    <child-threads> ... .Set => SetItem(Fresh)</child-threads>
                </thread-local>
-               <k> blockOMP(Th:Int, Temp:CId, Initial:K, Control:K, Post:K, S:K) ~> R:K
-               => blockOMP(Th -Int 1, Temp, Initial, Control, Post, S) ~> R
+               <k> 
+                    blockOMP(Th:Int, Temp:CId, Initial:K, Control:K, Post:K, S:K) 
+                    => blockOMP(Th -Int 1, Temp, Initial, Control, Post, S)
+               ...
                </k>
-//               <curr-tu> Tu:String </curr-tu>
-//               <buffer> .List </buffer>
-//               <env> Env:Map</env>
-//               <renv> Renv:Map</renv>
-//               <types> Types:Map </types>
           ...
           </thread>
           <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
-//          <genv> Env:Map </genv>
           <thread-status>
                Status:Map => Status[Fresh <- threadRunning]
           </thread-status>
@@ -143,21 +132,44 @@ module C-STMT-LOOP
           ...
                <thread-id> Fresh:Int </thread-id>
                <k> 
-                    Initial ~> For(Control, Post, S) ~> R
+                    Initial ~> For(Control, Post, S) ~> joinChild
                </k>
                <thread-local>
                     C
-                    <duration> ompThreadDuration(Fresh:Int) </duration>
+                    <parent-thread> Parent </parent-thread>
+                    <child-threads> .Set </child-threads>
+                    <duration> threadLocal(Fresh:Int) </duration>
                </thread-local>
-//               <env> Env </env>
-//               <renv> Renv</renv>
-//               <types> Types </types>
-//               <curr-tu> Tu </curr-tu>
           ...
           </thread>)
           requires Th =/=Int 0 andBool notBool hasLint
           [large, ndthread]
 
+
+     rule [join-if-no-child]:
+          <thread> ...
+               <k>
+                    waitingForChild => .K 
+               ...</k>
+               <child-threads> .Set </child-threads>
+          ...
+          </thread>
+
+     rule [join-child-thread]:
+          ((<thread>...
+               <thread-id> ThId:Int </thread-id>
+               <k>
+                    joinChild
+               </k>
+               <child-threads> .Set </child-threads>
+               <parent-thread> P:Int </parent-thread>
+               ...</thread>) => .Bag)
+          <thread>
+          ...
+               <thread-id> P </thread-id>
+               <child-threads> ... SetItem(ThId) => .Set ...</child-threads>
+          ...
+          </thread>
 	// each time add new thread
 	// and push for (Control, Post, S) to that thread
 	// waiting for Thread Calculation to finish
