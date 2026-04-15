@@ -12,6 +12,10 @@ module COMMON-THREAD-LOCAL
   <thread-local>
        <buffer color="lightgray"> .List </buffer>
        <duration color="black">  auto(0) </duration>
+       
+       // used for tracking the parent-child threads
+       <parent-thread> -1 </parent-thread>
+       <child-threads> .Set </child-threads>
 
        // Used for verifying the aliasing restrictions on
        // restrict-qualified pointers.
@@ -22,15 +26,7 @@ module COMMON-THREAD-LOCAL
        <pthread-active-keys> .Map </pthread-active-keys>
        // For detecting recursive calls.
        <called-functions> .Map </called-functions>
-       // TODO(chathhorn, h0nzZik): not sure where to put these.
-       <call-stack-frame multiplicity="?">
-            <continuation> .K </continuation>
-            <stack-function-control> .K </stack-function-control>
-            <stack-lang-linkage> CLinkage </stack-lang-linkage>
-       </call-stack-frame>
 
-       // stack of function-control cells
-       <call-stack color="violet"> .List </call-stack>
        <function-control>
             // general information
             <curr-tu color="lightgray"> "" </curr-tu>
@@ -51,9 +47,6 @@ module COMMON-THREAD-LOCAL
             <constructing> .K </constructing>
             // most derived class being constructed
             <most-derived-class> .K </most-derived-class>
-
-            // stack of block-control cells
-            <block-stack color="violet"> .List </block-stack>
             <block-control>
                  // maps from CIds
                  <env color="red"> .Map </env>
@@ -81,6 +74,9 @@ module COMMON-THREAD-LOCAL
                  <catch-handlers> .List </catch-handlers>
                  <current-exception> .K </current-exception>
             </block-control>
+            
+            // stack of block-control cells
+            <block-stack color="violet"> .List </block-stack>
 
             // used to control initialization when gotoing
             <should-init color="lightgray">
@@ -121,6 +117,17 @@ module COMMON-THREAD-LOCAL
                  <format-item> "" </format-item>
             </formatting>
        </function-control>
+       
+       // TODO(chathhorn, h0nzZik): not sure where to put these.
+       <call-stack-frame multiplicity="?">
+            <continuation> .K </continuation>
+            <stack-function-control> .K </stack-function-control>
+            <stack-lang-linkage> CLinkage </stack-lang-linkage>
+       </call-stack-frame>
+
+       // stack of function-control cells
+       <call-stack color="violet"> .List </call-stack>
+       
   </thread-local>
 
 endmodule

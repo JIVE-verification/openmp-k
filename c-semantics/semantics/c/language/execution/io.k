@@ -64,15 +64,16 @@ module C-IO
      syntax KItem ::= checkWrite(SymLoc)
      rule <k> checkWrite(loc(Base::SymBase, Offset::Int)) => .K ...</k>
           <thread-id> ThreadId::Int </thread-id>
-          <duration> D::Duration</duration>
+          <parent-thread> ParentThread::Int</parent-thread>
           <mem>... Base |-> object(ObjT::EffectiveType, Len::Int, _) ...</mem>
           requires // Const.
                (notBool (Const() inQuals getQualsAtOffset(ObjT, Offset)))
                // Cross-thread writes.
                andBool notBool ((isThreadDuration(loc(Base, Offset))
-                         orBool isAutoDuration(loc(Base, Offset)))
+                         orBool isAutoDuration(loc(Base, Offset))
+                         orBool isompThreadDuration(loc(Base, Offset)))
                     andBool (ThreadId =/=K getThreadId(loc(Base, Offset)))
-                    andBool (notBool isompThreadDuration(D)))
+                    andBool (ParentThread =/=K getThreadId(loc(Base, Offset))))
                // Libc fixed.
                andBool (notBool isLibcFixedDuration(Base))
           [structural]
@@ -89,11 +90,11 @@ module C-IO
                "Trying to modify an object with thread or auto storage duration in a thread other than the one in which the object is associated."))
                ~> checkWrite(Loc::SymLoc)
           ...</k>
-          <duration> D::Duration</duration>
+          <parent-thread> ParentThread::Int</parent-thread>
           <thread-id> ThreadId::Int </thread-id>
-          requires (isThreadDuration(Loc) orBool isAutoDuration(Loc))
-               andBool (ThreadId =/=K getThreadId(Loc)
-               andBool (notBool isompThreadDuration(D)))
+          requires (isThreadDuration(Loc) orBool isAutoDuration(Loc) orBool isompThreadDuration(Loc))
+               andBool (ThreadId =/=K getThreadId(Loc)) 
+               andBool (ParentThread =/=K getThreadId(Loc))
           [structural]
      rule (.K => UNDEF("EIO11",
                "Trying to modify an unmodifiable object returned by a library function."))
@@ -154,11 +155,11 @@ module C-IO
                Base |-> object(ObjT::EffectiveType, Len::Int, M::Array)
           ...</mem>
           <locs-written> Locs::Set </locs-written>
-          <duration> D::Duration </duration>
+          <parent-thread> ParentThread::Int</parent-thread>
           <buffer> Mem::List </buffer>
-          requires notBool ((isThreadDuration(Loc) orBool isAutoDuration(Loc))
-                    andBool (ThreadId =/=K getThreadId(Loc))
-                    andBool (notBool isompThreadDuration(D)))
+          requires notBool ((isThreadDuration(Loc) orBool isAutoDuration(Loc) orBool isompThreadDuration(Loc))
+               andBool (ThreadId =/=K getThreadId(Loc))
+               andBool (ParentThread =/=K getThreadId(Loc)))
           [structural]
           // not (isThreadDuration(Loc) OR isAutoDuration(Loc)) OR  not (ThreadId =/=K getThreadId(Loc)) 
           // (not isThreadDuration(Loc) and  not isAutoDuration(Loc)) OR (ThreadId ==K getThreadId(Loc))
@@ -170,21 +171,21 @@ module C-IO
           ...</k>
           <thread-id> ThreadId::Int </thread-id>
           <locs-written> Locs::Set </locs-written>
-          <duration> D::Duration </duration>
+          <parent-thread> ParentThread::Int</parent-thread>
           <buffer> Mem::List </buffer>
-          requires notBool ((isThreadDuration(Loc) orBool isAutoDuration(Loc))
-                    andBool (ThreadId =/=K getThreadId(Loc))
-                    andBool (notBool isompThreadDuration(D)))
+          requires notBool ((isThreadDuration(Loc) orBool isAutoDuration(Loc) orBool isompThreadDuration(Loc))
+               andBool (ThreadId =/=K getThreadId(Loc))
+               andBool (ParentThread =/=K getThreadId(Loc)))
                andBool isNativeLoc(Loc)
 
      rule <k> (.K => IMPL("EIO6", "Attempting to access an object with thread or auto storage duration in a thread other than the one in which the object is associated."))
                ~> readBytes(loc(_, _, _) #as Loc::SymLoc, _, _)
           ...</k>
           <thread-id> ThreadId::Int </thread-id>
-          <duration> D::Duration </duration>
-          requires (isThreadDuration(Loc) orBool isAutoDuration(Loc))
+          <parent-thread> ParentThread::Int</parent-thread>
+          requires (isThreadDuration(Loc) orBool isAutoDuration(Loc) orBool isompThreadDuration(Loc))
                andBool (ThreadId =/=K getThreadId(Loc))
-               andBool (notBool isompThreadDuration(D))
+               andBool (ParentThread =/=K getThreadId(Loc))
           [structural]
 
      // (isThreadDuration(Loc) orBool isAutoDuration(Loc)) is always true,

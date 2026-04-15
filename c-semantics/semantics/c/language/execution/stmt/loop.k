@@ -78,11 +78,37 @@ module C-STMT-LOOP
           [structural] // rule so that looping programs see repetition
      
      
+     // declareInternalVariable ( Identifier ( "i" ) , t ( quals ( .Set ) , .Set , int (  ) ) , initValue ( Identifier ( "i" ) , t ( quals ( .Set ) , .Set , int (  ) ) , Initializer(_:=_) ( Identifier ( "i" ) , checkUse ( tv ( 5 , ut ( .Set , int (  ) ) ) ) ) ) ) 
+     rule [include-i]:
+          <k> declareInternalVariable(X:CId, _, initValue(_, T::Type, Init:K)) ~> blockOMP(Th:Int, Temp:CId, Control:K, Post:K, S:K)
+               => blockOMP(Th, Temp, declareInternalVariable(X, T, initValue(X, T, Init)), Control, Post, S)
+               ...</k>
+          <env> Env::Map </env>
+          requires notBool isStaticType(T)
+               andBool notBool isExternType(T)
+               andBool notBool isFunctionType(T)
+               andBool notBool isVariablyModifiedType(T)
+               andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
+          [structural]
+
+// original rule for declareInternalVariable
+ /*    rule <k> declareInternalVariable(X:CId, _, initValue(_, T::Type, Init:K))
+               => declareAndDefine(X, T, Init)
+          ...</k>
+          <env> Env::Map </env>
+          requires notBool isStaticType(T)
+               andBool notBool isExternType(T)
+               andBool notBool isFunctionType(T)
+               andBool notBool isVariablyModifiedType(T)
+               andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
+          [structural]
+
+*/
      rule [zero-thread]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
-          <k> blockOMP(Th:Int, Temp:CId, Control:K, Post:K, S:K)
-               => For(Control, Post, S)
+          <k> blockOMP(Th:Int, Temp:CId, Initial:K, Control:K, Post:K, S:K)
+               => Initial ~> For(Control, Post, S)
                ...</k>
           ...</thread>
           <thread-status>
@@ -97,8 +123,8 @@ module C-STMT-LOOP
                     C::Bag 
                     <duration> _ </duration>
                </thread-local>
-               <k> blockOMP(Th:Int, Temp:CId, Control:K, Post:K, S:K) ~> R:K
-               => blockOMP(Th -Int 1, Temp, Control, Post, S) ~> R
+               <k> blockOMP(Th:Int, Temp:CId, Initial:K, Control:K, Post:K, S:K) ~> R:K
+               => blockOMP(Th -Int 1, Temp, Initial, Control, Post, S) ~> R
                </k>
 //               <curr-tu> Tu:String </curr-tu>
 //               <buffer> .List </buffer>
@@ -117,7 +143,7 @@ module C-STMT-LOOP
           ...
                <thread-id> Fresh:Int </thread-id>
                <k> 
-                    For(Control, Post, S) ~> R
+                    Initial ~> For(Control, Post, S) ~> R
                </k>
                <thread-local>
                     C

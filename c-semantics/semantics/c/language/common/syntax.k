@@ -92,6 +92,7 @@ module C-SYNTAX
      syntax KItem ::= OMPFor(K,K,K)
      // Th, CId, Condition, Post, Body
      syntax KItem ::= blockOMP(Int, CId, K, K, K)
+     syntax KItem ::= blockOMP(Int, CId, K, K, K, K)
      syntax KItem ::= OMPForr(K, K)
      syntax KItem ::= OMPForr(K,K,K)
 

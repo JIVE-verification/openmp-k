@@ -39,13 +39,14 @@ module C-MEMORY-READING
      computational, depending on what is being read */
      rule read(Loc::SymLoc, T::Type)
           => readActual(Loc, T)
-          requires isThreadDuration(Loc) orBool isAutoDuration(Loc)
+          requires isThreadDuration(Loc) orBool isAutoDuration(Loc) orBool isThreadDuration(Loc)
           [structural]
      // read data of "allocated" duration
      rule read(Loc::SymLoc, T::Type)
           => readActual(Loc, T)
           requires notBool isThreadDuration(Loc)
                andBool notBool isAutoDuration(Loc)
+               andBool notBool isompThreadDuration(Loc)
                andBool Loc =/=K NullPointer
                andBool notBool isLinkerLoc(Loc)
           [ndtrans]

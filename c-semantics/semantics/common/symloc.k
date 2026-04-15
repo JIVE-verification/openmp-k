@@ -36,7 +36,8 @@ module SYMLOC-SYNTAX
      
      // OpenMP Thread duration
      syntax Duration ::= ompThreadDuration(Int)
-
+//     syntax Duration ::= ompThread(Int)
+     
      // Auto storage duration.
      syntax Duration ::= auto(Int)
                        | constexpr(String)
@@ -59,7 +60,9 @@ module SYMLOC-SYNTAX
      syntax Bool ::= isAutoDuration(SymBase) [function, klabel(isAutoDuration2)]
 
      // About OpenMP
-     syntax Bool ::= isompThreadDuration(Duration) [function]
+     syntax Bool ::= isompThread(Duration) [function]
+//     syntax Bool ::= isompThreadDuration(Duration) [function]
+     syntax Bool ::= isompThreadDuration(SymLoc) [function]
 
      syntax Bool ::= isStringLoc(SymLoc) [function]
      syntax Bool ::= isLinkerLoc(SymLoc) [function]
@@ -167,7 +170,11 @@ module SYMLOC
      rule isThreadDuration(loc(obj(... d: threadLocal(_)), _, _)) => true
      rule isThreadDuration(_) => false [owise]
 
-     rule isompThreadDuration(ompThreadDuration(_)) => true
+     rule isompThread(ompThreadDuration(_)) => true
+     rule isompThread(_) => false [owise]
+
+     rule isompThreadDuration(loc(obj(... d: ompThreadDuration(_)), _)) => true
+     rule isompThreadDuration(loc(obj(... d: ompThreadDuration(_)), _, _)) => true
      rule isompThreadDuration(_) => false [owise]
 
      rule isAutoDuration(NullPointer) => false
@@ -260,6 +267,8 @@ module SYMLOC
      rule getTU(obj(... d: builtinSymbol(_))) => "builtin"
      rule getTU(obj(... d: builtinCppSymbol(_))) => "cpp-builtin"
 
+     rule getThreadId(loc(obj(... d: ompThreadDuration(Th:Int)), _)) => Th
+     rule getThreadId(loc(obj(... d: ompThreadDuration(Th:Int)), _, _)) => Th
      rule getThreadId(loc(obj(... d: threadLocal(Th:Int)), _)) => Th
      rule getThreadId(loc(obj(... d: threadLocal(Th:Int)), _, _)) => Th
      rule getThreadId(loc(obj(... d: auto(Th:Int)), _)) => Th
@@ -382,4 +391,3 @@ module SYMLOC
      rule wrapParens(S::String) => "(" +String S +String ")"
 
 endmodule
-
