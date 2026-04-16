@@ -24,8 +24,8 @@ module C-STMT-LOOP
           => handleE1(E1) ~> blockOMP(TT, Temp,  OMPForr(Tag, E1, E2, E3, B))
       	 ...</k>      	 
      rule <k>
-     		handleE1(CodeLoc(DeclarationDefinition(InitNameGroup(T, list(ListItem(InitName(N, Exp))))), L:CabsLoc)) ~> blockOMP(Th:Int, Temp:CId, OMPForr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
-     		=>  blockOMP(Th, Temp, OMPForr(Tag, CodeLoc(DeclarationDefinition(InitNameGroup(T, list(ListItem(InitName(N, SingleInit(TT)))))), L), E2, E3, B) )
+     		handleE1(E1:KItem) ~> blockOMP(Th:Int, Temp:CId, OMPForr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
+     		=>  blockOMP(Th, Temp, OMPForr(Tag, E1, E2, E3, B) )
      	 ...</k>
      <omp-default-threads> TT:Int </omp-default-threads>      	      	 
      
@@ -34,8 +34,8 @@ module C-STMT-LOOP
       	 ...</k>
       	 
      rule <k>
-     	  handleE2(L:K < R:K) ~> blockOMP(Th:Int, Temp:CId, OMPForrr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
-     		=>  blockOMP(Th, Temp, OMPForrr(Tag, E1, L < R / TT, E3, B) )
+     	  handleE2(E2:K) ~> blockOMP(Th:Int, Temp:CId, OMPForrr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
+     		=>  blockOMP(Th, Temp, OMPForrr(Tag, E1, E2, E3, B) )
      	   ...</k>
      <omp-default-threads> TT:Int </omp-default-threads>
 

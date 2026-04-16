@@ -106,6 +106,10 @@ module C-STMT-LOOP
           </thread-status>
           requires Th ==Int ThId andBool Th ==Int 0
      
+     // compoundExp (L::CabsLoc ~> )
+     // rule te(L:K, T::UType) / tv(V:CValue, T'::UType) => te(L / tv(V, T'), T)
+     // compoundExp ( CabsLoc ( "test-c-511.c" , "/home/user/mounted/test-c-511.c" , 6 , 10 , "false" ) ~> 
+     // te ( _!=_ ( _<_ ( Cast2 ( t ( quals ( .Set ) , .Set , unsigned-long-long-int (  ) ) , Identifier ( "i" ) ) , checkUse ( tv ( 11 , ut ( .Set , unsigned-long-long-int (  ) ) ) ) ) , checkUse ( tv ( 0 , ut ( SetItem ( IntegerConstant (  ) ) , int (  ) ) ) ) ) , ut ( .Set , int (  ) ) ) )
      rule [block-omp-mark-f]:
           <thread>
           ...
