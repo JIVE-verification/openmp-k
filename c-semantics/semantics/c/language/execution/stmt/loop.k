@@ -26,6 +26,8 @@ module C-STMT-LOOP
      syntax KItem ::= "waitingForChild"
      syntax KItem ::= "joinChild"
 
+     syntax KItem ::= extractInitialTerm(KItem)
+
      // joining OMP Thread with Id:Int 
      syntax KItem ::= joinOmpThread(Int)
 
@@ -81,7 +83,6 @@ module C-STMT-LOOP
           [structural] // rule so that looping programs see repetition
      
      
-     // declareInternalVariable ( Identifier ( "i" ) , t ( quals ( .Set ) , .Set , int (  ) ) , initValue ( Identifier ( "i" ) , t ( quals ( .Set ) , .Set , int (  ) ) , Initializer(_:=_) ( Identifier ( "i" ) , checkUse ( tv ( 5 , ut ( .Set , int (  ) ) ) ) ) ) ) 
      rule [include-i]:
           <k> declareInternalVariable(X:CId, _, initValue(_, T::Type, Init:K)) ~> blockOMP(Th:Int, Temp:CId, Control:K, Post:K, S:K)
                => blockOMP(Th, Temp, declareInternalVariable(X, T, initValue(X, T, Init)), Control, Post, S)
@@ -94,23 +95,79 @@ module C-STMT-LOOP
                andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
           [structural]
 
-     rule [zero-thread]:
+     //        syntax KItem ::= checkUse(KItem) [strict] semantics/c/language/common/check-use.k:5:
+     //        extractInitialTerm(checkUse(tv(V:Int, TT:UType))) => checkUse(tv(100, TT)) ===========> DID NOT WORK
+     //        extractInitialTerm(V:KItem) => V =============> WORKED
+     //        extractInitialTerm(checkUse(V:KItem)) => V =============> DID NOT WORK
+     rule <k>
+               extractInitialTerm(V:KItem) 
+               => V
+          ...
+          </k>
+     syntax KItem ::= extractControlTerm(K)
+     rule <k>
+               extractControlTerm(L:CabsLoc ~> te((A:KItem < B:KItem) != C:KItem, T:UType))
+               => te((A < 10) != C, T)
+          ...
+          </k>
+     // syntax KItem ::= checkUse(KItem)
+
+
+     // te ( _!=_ ( _<_ ( Cast2 ( t ( quals ( .Set ) , .Set , unsigned-long-long-int (  ) ) , Identifier ( "i" ) ) , checkUse ( tv ( 11 , ut ( .Set , unsigned-long-long-int (  ) ) ) ) ) , checkUse ( tv ( 0 , ut ( SetItem ( IntegerConstant (  ) ) , int (  ) ) ) ) ) , ut ( .Set , int (  ) ) ) 
+
+     // declareInternalVariable(X:CId, _, initValue(_, T::Type, Init:K))
+     // blockOMP(,,declareInternalVariable(X:CId, _, initValue(_, T::Type, Init:KItem)),,,) => extractInitialTerm(X, T, Init) =========> WORKED
+     // blockOMP(,,declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem :=  V:KItem))),,,) => extractInitialTerm(X, T, V) =========> WORKED
+     // blockOMP(,,declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem :=  checkUse(tv(V::CValue, TT::UType))))),,,) => declareInternalVariable(X, T, initValue(X, T, Initializer(Y :=  checkUse(tv(100, TT))))) =========> DID NOT WORK: [Error] Inner Parser: Parse error: unexpected token 'checkUse'.
+     // blockOMP(,,declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem :=  V:KItem))),,,) => extractInitialTerm(V) =========> WORKED
+     // declareInternalVariable(X, T, initValue(X, T, Initializer(Y := 10))) ========> WORKED
+
+     // declareInternalVariable ( Identifier ( "i" ) , t ( quals ( .Set ) , .Set , int (  ) ) , initValue ( Identifier ( "i" ) , t ( quals ( .Set ) , .Set , int (  ) ) , Initializer(_:=_) ( Identifier ( "i" ) , checkUse ( tv ( 0, ut ( .Set , int (  ) ) ) ) ) ) ) 
+     // compoundExp ( CabsLoc ( "test-c-511.c" , "/home/user/mounted/test-c-511.c" , 6 , 10 , "false" ) ~> te ( _!=_ ( _<_ ( Cast2 ( t ( quals ( .Set ) , .Set , unsigned-long-long-int (  ) ) , Identifier ( "i" ) ) , checkUse ( tv ( 15 , ut ( .Set , unsigned-long-long-int (  ) ) ) ) ) , checkUse ( tv ( 0 , ut ( SetItem ( IntegerConstant (  ) ) , int (  ) ) ) ) ) , ut ( .Set , int (  ) ) ) )
+
+/*
+     ============== WORKED ========================
+    rule [temp-zero-thread-dist]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOMP(Th:Int, Temp:CId, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((I:KItem < N:KItem) != C:KItem, TT:UType)), Post:K, S:K)
+               => declareInternalVariable(X, T, initValue(X, T, Initializer(Y := (N % tv(TotalThreads, TT) + N / tv( TotalThreads, TT) + tv(Th, TT) ) ))) ~> For(compoundExp( L~> te((I < (N % tv(TotalThreads, TT) + N / tv( TotalThreads, TT) + tv(Th +Int 1, TT) )) != C, TT)), Post, S)
+               ...</k>
+          ...</thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires TotalThreads =/=Int 0
+*/
+
+// declareInternalVariable(X, T, initValue(X, T, Initializer(Y := (N % tv(TotalThreads, TT) + N / tv( TotalThreads, TT) + tv(Th, TT) ) ))) ~> For(compoundExp( L~> te((I < (N % tv(TotalThreads, TT) + N / tv( TotalThreads, TT) + tv(Th +Int 1, TT) )) != C, TT)), Post, S)
+
+
+     rule [extract-total-threads]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
           <k> blockOMP(Th:Int, Temp:CId, Initial:K, Control:K, Post:K, S:K)
-               => Initial ~> For(Control, Post, S) ~> waitingForChild
+               ...</k>
+          ...</thread>
+          <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>
+          requires TotalThreads ==Int 0 
+
+
+     rule [zero-thread]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOMP(Th:Int, Temp:CId, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((I:KItem < N:KItem) != C:KItem, TT:UType)), Post:K, S:K)
+               => declareInternalVariable(X, T, initValue(X, T, Initializer(Y := V ))) ~> For(compoundExp( L~> te((I < ( (N % tv(TotalThreads, TT)) + ( N / tv( TotalThreads, TT) )  ) ) != C, TT)), Post, S) ~> waitingForChild
                ...</k>
           ...</thread>
           <thread-status>
                Status:Map => Status[Th <- threadRunning]
           </thread-status>
-          requires Th ==Int ThId andBool Th ==Int 0
-     
+          <omp-current-threads> TotalThreads:Int => 0 </omp-current-threads>
+          requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
+    
      // compoundExp (L::CabsLoc ~> )
      // rule te(L:K, T::UType) / tv(V:CValue, T'::UType) => te(L / tv(V, T'), T)
-     // compoundExp ( CabsLoc ( "test-c-511.c" , "/home/user/mounted/test-c-511.c" , 6 , 10 , "false" ) ~> 
-     // te ( _!=_ ( _<_ ( Cast2 ( t ( quals ( .Set ) , .Set , unsigned-long-long-int (  ) ) , Identifier ( "i" ) ) , checkUse ( tv ( 11 , ut ( .Set , unsigned-long-long-int (  ) ) ) ) ) , checkUse ( tv ( 0 , ut ( SetItem ( IntegerConstant (  ) ) , int (  ) ) ) ) ) , ut ( .Set , int (  ) ) ) )
-     rule [block-omp-mark-f]:
+     
+     rule [other-thread]:
           <thread>
           ...
                <thread-id> Parent:Int </thread-id>
@@ -121,8 +178,8 @@ module C-STMT-LOOP
                     <child-threads> ... .Set => SetItem(Fresh)</child-threads>
                </thread-local>
                <k> 
-                    blockOMP(Th:Int, Temp:CId, Initial:K, Control:K, Post:K, S:K) 
-                    => blockOMP(Th -Int 1, Temp, Initial, Control, Post, S)
+                    blockOMP(Th:Int, Temp:CId, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((I:KItem < N:KItem) != CM:KItem, TT:UType)), Post:K, S:K)
+                    => blockOMP(Th -Int 1, Temp, declareInternalVariable(X, T, initValue(X, T, Initializer(Y := V))), compoundExp(L ~> te((I < N) != CM, TT)),  Post, S)
                ...
                </k>
           ...
@@ -131,12 +188,13 @@ module C-STMT-LOOP
           <thread-status>
                Status:Map => Status[Fresh <- threadRunning]
           </thread-status>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
           (.Bag =>
           <thread>
           ...
                <thread-id> Fresh:Int </thread-id>
-               <k> 
-                    Initial ~> For(Control, Post, S) ~> joinChild
+               <k>  
+                   declareInternalVariable(X, T, initValue(X, T, Initializer(Y := ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(Th, TT) ) ))) )~> For(compoundExp( L~> te((I < ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(Th +Int 1, TT) ) )) != CM, TT)), Post, S) ~> joinChild
                </k>
                <thread-local>
                     C
@@ -146,9 +204,8 @@ module C-STMT-LOOP
                </thread-local>
           ...
           </thread>)
-          requires Th =/=Int 0 andBool notBool hasLint
+          requires Th =/=Int 0 andBool notBool hasLint andBool TotalThreads =/=Int 0
           [large, ndthread]
-
 
      rule [join-if-no-child]:
           <thread> ...
@@ -517,5 +574,71 @@ module C-STMT-LOOP
           <loop-stack> ListItem(kpair(Num':Int, _)) ...</loop-stack>
           requires Num' =/=Int Num
           [structural]
+
+/*
+    rule [temp-zero-thread-dist]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOMP(Th:Int, Temp:CId, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((A:KItem < B:KItem) != C:KItem, TT:UType)), Post:K, S:K)
+               => declareInternalVariable(X, T, initValue(X, T, Initializer(Y := (V / tv(TotalThreads *Int Th, TT)) ))) ~> For(compoundExp( L~> te((A < (B / tv(TotalThreads *Int Th, TT))) != C, TT)), Post, S)
+               ...</k>
+          ...</thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires TotalThreads =/=Int 0
+*/
+/*
+    rule [temp-zero-thread]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOMP(Th:Int, Temp:CId, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((A:KItem < B:KItem) != C:KItem, TT:UType)), Post:K, S:K)
+               => declareInternalVariable(X, T, initValue(X, T, Initializer(Y := (Th *Int 2)))) ~> For(compoundExp( L~> te((A < (B / tv(2, TT))) != C, TT)), Post, S)
+               ...</k>
+          ...</thread>
+*/
+/*
+    rule [temp-zero-thread]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOMP(Th:Int, Temp:CId, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((A:KItem < B:KItem) != C:KItem, TT:UType)), Post:K, S:K)
+               => declareInternalVariable(X, T, initValue(X, T, Initializer(Y := (Th *Int 2)))) ~> For(compoundExp( L~> te((A < (B / tv(2, TT))) != C, TT)), Post, S)
+               ...</k>
+          ...</thread>
+//  WORKED
+*/         
+/*
+    rule [temp-zero-thread]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOMP(Th:Int, Temp:CId, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((A:KItem < B:KItem) != C:KItem, TT:UType)), Post:K, S:K)
+               => declareInternalVariable(X, T, initValue(X, T, Initializer(Y := (Th *Int 2)))) ~> For(compoundExp( L~> te((A < (10 +Int 2)) != C, TT)), Post, S)
+               ...</k>
+          ...</thread>
+/*
+
+/*     rule [temp-zero-thread]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOMP(Th:Int, Temp:CId, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((A:KItem < B:KItem) != C:KItem, TT:UType)), Post:K, S:K)
+               => te((A < (10 +Int 2)) != C, TT)
+               ...</k>
+          ...</thread>
+*/
+/*
+     rule [temp-zero-thread]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOMP(Th:Int, Temp:CId, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(K:K), Post:K, S:K)
+               => extractControlTerm(K)
+               ...</k>
+          ...</thread>
+*/
+/*     rule [temp-zero-thread]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOMP(Th:Int, Temp:CId, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(K:K), Post:K, S:K)
+               => declareInternalVariable(X, T, initValue(X, T, Initializer(Y := (Th *Int 2))))
+               ...</k>
+          ...</thread>
+*/
 
 endmodule

@@ -24,9 +24,11 @@ module C-CONFIGURATION
 
      <next-thread-id color="black"> 1 </next-thread-id>
      // <curr-exec-thread-id color="black"> 0 </curr-exec-thread-id>
+     <omp-current-threads> 0 </omp-current-threads>
+
      <for-thread-op> .K </for-thread-op>
      <compile-time-evaluation> true </compile-time-evaluation>
-
+     
      <thread-info color="yellow">
           <thread-status color="yellow"> .Map </thread-status>
           <mutexes color="yellow"> .Map </mutexes>

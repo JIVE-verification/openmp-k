@@ -1,28 +1,12 @@
-find the wrapper that wraps the identifier
-    -> 1 step before the thread creation || at declaration
+// can we split the for loop in the translation step???
+blockOMP(Th, E1:KItem, E2:K, E3:K, B:K)
+OMPFor(E1, E2, E3, B:K)
+OMPFor(E1, E2, E3, B:K)
 
-    Translation
-    // processlabel.k 
-    // loop.k
-    // Configuration
-    // Configuration::GotoMap (specify which thread it belongs to)
-    //  Do not touch goto-calc, gotomap.
-    //But modify For 
-    // add thread id to goto-calc (goto-id). For all unrelated thread --> keep it sequential
-    // process-label.k:: ompfor (main thing is to target process-label).
+blockOMP() => <block-omp>Current:Int</block-omp> 
+when creating block of OMP, using this cell, we can create new thread with parent <>
 
-    // OpenMP for we know we have thread-id (line-46)
+Each blockOMP
 
-    Launch the threads in the translation semantics (launch the threads & join the threads)
-    thread.k:: thread can also call a block instead of a function.
-
-    create a script for depth
-    Don't create other modules
-    We need to know what the for gotomap evals to in a heating rule.
-    SOLVVE DATASET
-
-
-
-fIRST figure out how for-loop handles goto computation.
-
-Observe pthread function calls (translations semantics and its effect in exec semantics)
+// [o] Extract the 0 from int i=0
+// [x] Extract the N from i < N
