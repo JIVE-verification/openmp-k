@@ -237,7 +237,7 @@ let trd3 (_, _, result) = result
 
 %token<Cabs.cabsloc> SIZEOF ALIGNOF
 
-%token EQ PLUS_EQ MINUS_EQ STAR_EQ SLASH_EQ PERCENT_EQ SPRAGMA REDUCTION PRIVATE FIRSTPRIVATE LASTPRIVATE
+%token EQ PLUS_EQ MINUS_EQ STAR_EQ SLASH_EQ PERCENT_EQ
 %token AND_EQ PIPE_EQ CIRC_EQ INF_INF_EQ SUP_SUP_EQ
 %token ARROW DOT
 
@@ -262,6 +262,7 @@ let trd3 (_, _, result) = result
 %token<Cabs.cabsloc> BREAK CONTINUE GOTO RETURN
 %token<Cabs.cabsloc> SWITCH CASE DEFAULT
 %token<Cabs.cabsloc> WHILE DO FOR
+%token<Cabs.cabsloc> KPRAGMA OMP PARALLEL
 %token<Cabs.cabsloc> IF TRY EXCEPT FINALLY
 %token ELSE
 
@@ -840,9 +841,9 @@ statement:
 	        	{WHILE (smooth_expression (fst $2), $3, (*handleLoc*) $1)}
 |   DO statement WHILE paren_comma_expression SEMICOLON
 	        	         {DOWHILE (smooth_expression (fst $4), $2, (*handleLoc*) $1, $3)}
-|   SPRAGMA FOR LPAREN for_clause opt_expression
+|   KPRAGMA OMP PARALLEL FOR FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
-	                         {OMPFOR ($4, $5, $7, $9, (*handleLoc*) $2)}
+	                         {OMPFOR ($7, $8, $10, $12, (*handleLoc*) $5)}
 |   FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
 	                         {FOR ($3, $4, $6, $8, (*handleLoc*) $1)}

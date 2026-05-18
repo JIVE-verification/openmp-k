@@ -51,11 +51,6 @@ type token =
   | STAR_EQ
   | SLASH_EQ
   | PERCENT_EQ
-  | SPRAGMA
-  | REDUCTION
-  | PRIVATE
-  | FIRSTPRIVATE
-  | LASTPRIVATE
   | AND_EQ
   | PIPE_EQ
   | CIRC_EQ
@@ -106,6 +101,9 @@ type token =
   | WHILE of (Cabs.cabsloc)
   | DO of (Cabs.cabsloc)
   | FOR of (Cabs.cabsloc)
+  | KPRAGMA of (Cabs.cabsloc)
+  | OMP of (Cabs.cabsloc)
+  | PARALLEL of (Cabs.cabsloc)
   | IF of (Cabs.cabsloc)
   | TRY of (Cabs.cabsloc)
   | EXCEPT of (Cabs.cabsloc)

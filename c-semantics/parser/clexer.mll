@@ -143,6 +143,9 @@ let init_lexicon _ =
       ("extern", fun loc -> EXTERN loc);
       ("float", fun loc -> FLOAT loc);
       ("for", fun loc -> FOR loc);
+      ("#pragma", fun loc -> KPRAGMA loc);
+      ("omp", fun loc -> OMP loc);
+      ("parallel", fun loc -> PARALLEL loc);
       ("goto", fun loc -> GOTO loc); 
       ("if", fun loc -> dbgToken (IF loc));
       ("inline", fun loc -> INLINE loc); 
@@ -484,11 +487,6 @@ rule initial =
 |		octnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		intnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		"!quit!"		{EOF}
-|              "#pragma omp parallel for"                {SPRAGMA}
-|               "reduction"       {REDUCTION}
-|               "private"               {PRIVATE}
-|               "firstprivate"               {FIRSTPRIVATE}
-|               "lastprivate"               {LASTPRIVATE}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}
