@@ -487,6 +487,9 @@ rule initial =
 |		octnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		intnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		"!quit!"		{EOF}
+|   "#pragma"   {KPRAGMA (currentLoc ())}
+|   "omp"       {OMP (currentLoc ())}
+|   "parallel"  {PARALLEL (currentLoc ())}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}
