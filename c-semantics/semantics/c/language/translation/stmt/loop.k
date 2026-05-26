@@ -7,66 +7,61 @@ module C-STMT-LOOP
      imports C-ELABORATOR-SYNTAX
      imports C-EXPR-LOGICAL-SYNTAX
      imports C-SYNTAX
+     imports LIST
+
      imports C-TRANSLATION-ERROR-SYNTAX
 
      rule For(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
           => Block(Tag, list(ListItem(E1) ListItem(For(E2, E3, B)))) 
           
      // for(int i=0; i< N; i++){} E1:: int i=0;
-     
-     rule <k> OMPFor(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
-     		=> blockOMP(TT, ompTempVar(V), OMPFor(Tag, E1, E2, E3, B))
+     rule <k> OMPFor(Tag:Int, list(OMP1:List), E1:KItem, E2:K, E3:K, B:K)
+     		=> blockOMP(TT, ompTempVar(V), OMPFor(Tag, list(OMP1), E1, E2, E3, B))
      	...</k>
-     <omp-default-threads> TT:Int </omp-default-threads> 
+     <omp-default-threads> TT:Int </omp-default-threads>
      <omp-temp-var> V:Int => V +Int 1 </omp-temp-var>
      
-     rule <k> blockOMP(TT:Int, Temp:CId,  OMPFor(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
-          => handleE1(E1) ~> blockOMP(TT, Temp,  OMPForr(Tag, E1, E2, E3, B))
+     rule <k> blockOMP(TT:Int, Temp:CId,  OMPFor(Tag:Int, list(OMP1:List), E1:KItem, E2:K, E3:K, B:K))
+          =>  clasueList(OMP1) ~> compoundExp(.K) ~> blockOMP(TT, Temp,  OMPForr(Tag, E1, E2, E3, B))
       	 ...</k>      	 
-     rule <k>
-     		handleE1(E1:KItem) ~> blockOMP(Th:Int, Temp:CId, OMPForr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
-     		=>  blockOMP(Th, Temp, OMPForr(Tag, E1, E2, E3, B) )
-     	 ...</k>
-     <omp-default-threads> TT:Int </omp-default-threads>      	      	 
      
-     rule <k> blockOMP(Th:Int, Temp:CId, OMPForr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
-          => handleE2(E2) ~> blockOMP(Th:Int, Temp:CId, OMPForrr(Tag, E1, E2, E3, B))
-      	 ...</k>
-      	 
-     rule <k>
-     	  handleE2(E2:K) ~> blockOMP(Th:Int, Temp:CId, OMPForrr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
-     		=>  blockOMP(Th, Temp, OMPForrr(Tag, E1, E2, E3, B) )
-     	   ...</k>
-     <omp-default-threads> TT:Int </omp-default-threads>
+     // semantics/common/compat.k:40:     syntax K ::= listToK(List) [function]
+     // semantics/common/compat.k:249:     rule listToK(ListItem(K:KItem) L:List) => K ~> listToK(L)
+     // semantics/common/compat.k:250:     rule listToK(.List) => .K
 
-    // rule <k> blockOMP(Th:Int, Temp:CId, OMPForrr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
-    //      => Block(Tag, list(ListItem(E1) ListItem(Th) ListItem(Temp) ListItem(PFor(E2, E3, B))))
-    // ...</k>
-    
+     syntax KItem ::= clasueList(List)
+     rule <k> clasueList(ListItem(H:KItem) T:List) 
+                    => H ~> clasueList(T) 
+          ...</k> 
+     rule <k> clasueList(.List) 
+                    => .K
+          ...</k> 
+
+     rule <k> OmpPrivateList(list(ListItem(H:CId) T:List)) ~> clasueList(C:List) ~> compoundExp(K:K)
+                    => OmpPrivateList(list(T)) ~> clasueList(C) ~> compoundExp(K ~> OmpPrivateItem(H))
+          ...</k>
+
+     rule <k> OmpPrivateList(list(.List)) ~> clasueList(C:List) ~> compoundExp(K:K) 
+                    => clasueList(C) ~> compoundExp(K)
+          ...</k>
+
+     rule <k> compoundExp(CEXP:K) ~> blockOMP(TT:Int, Temp:CId,  OMPForr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
+          =>  blockOMP(TT, Temp, compoundExp(CEXP), OMPForr(Tag, E1, E2, E3, B))
+      	 ...</k>      	 
+	 
      // for(int i=0; i< N; i++){B} For(E1; E2; E3){B}
-    rule <k> blockOMP(Th:Int, Temp:CId, OMPForrr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
-        => Block(Tag, list(ListItem(E1) ListItem(blockOMP(Th, Temp, E2, E3, B))))
-     ...</k>
-    
-//    context blockOMP((HOLE:KItem => reval(HOLE)),_,_,_) [result(RValue)]
-//    context blockOMP(_,(HOLE:KItem => reval(HOLE)),_,_) [result(RValue)]
-//    context blockOMP(_,_,(HOLE:KItem => reval(HOLE)),_) [result(RValue)]
-//    rule <k> blockOMP(Th:Int, Temp:CId, For(E2:K, E3:K, B:K))
-//    		=> Th ~> Temp ~> E1 ~> For(E2, E3, B)
-//    ...</k>
-      	 
-	 syntax KItem ::= handleE1(KItem) 
-	 syntax KItem ::= handleE2(K) 
+    rule <k> blockOMP(Th:Int, Temp:CId, compoundExp(CEXP:K), OMPForr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
+        => Block(Tag, list(ListItem(E1) ListItem(blockOMP(Th, Temp, compoundExp(CEXP), E2, E3, B))))
+     ...</k>   
                     
      rule ForClauseExpression(K:KItem) => Computation(K)
-     //rule blockOMPClauseExpression(K:KItem) => Computation(K)
 
      context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-     context blockOMP(_:Int,_:CId,(HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+     context blockOMP(_:Int,_:CId, _:K, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
 
 
      context For(_, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]
-     context blockOMP(_:Int,_:CId, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
+     context blockOMP(_:Int,_:CId, _, _:K, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
      
      rule <k> For(Control:RValue, Post:RValue, S:K)
                => #for(simplifyTruth(Control), Post, S, L)
@@ -76,14 +71,14 @@ module C-STMT-LOOP
      rule For(emptyValue, Post:RValue, S:K)
           => #for(Post, S)
 
-     rule <k> blockOMP(Th:Int, Temp:CId, Control:RValue, Post:RValue, S:K)
-            =>  #blockOMP(Th, Temp, simplifyTruth(Control), Post, S, L)
+     rule <k> blockOMP(Th:Int, Temp:CId, CompdExp:K, Control:RValue, Post:RValue, S:K)
+            =>  #blockOMP(Th, Temp, CompdExp, simplifyTruth(Control), Post, S, L)
           ...</k>
      	<curr-program-loc> L::CabsLoc </curr-program-loc>
      	requires Control =/=K emptyValue      
                	  
-     rule blockOMP(Th:Int, Temp:CId, emptyValue, Post:RValue, S:K)
-          => #blockOMP(Th, Temp, Post, S)
+     rule blockOMP(Th:Int, Temp:CId, CompdExp:K, emptyValue, Post:RValue, S:K)
+          => #blockOMP(Th, Temp, CompdExp, Post, S)
 
              
      syntax KItem ::= #for(K, RValue, K, CabsLoc) [klabel(#for4)]
@@ -94,9 +89,12 @@ module C-STMT-LOOP
 
      syntax KItem ::= #blockOMP(Int, CId, K, RValue, K, CabsLoc) [klabel(#blockOMP6)]
                     | #blockOMP(Int, CId, RValue, K)             [klabel(##blockOMP4)]
+                    | #blockOMP(Int, CId, K, K, RValue, K, CabsLoc) [klabel(#blockOMP7)]
+                    | #blockOMP(Int, CId, K, RValue, K)             [klabel(##blockOMP5)]
+                     
                     
      context #for((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
-     context #blockOMP(_,_,(HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
+     context #blockOMP(_,_, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
 
      
      rule (.K => elaborate(S)) ~> #for(_:RValue, _, S:K, _)
@@ -114,19 +112,19 @@ module C-STMT-LOOP
           <elab>... .K => For(emptyValue, Post, S) </elab>
 
 
-     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, Temp:CId, _:RValue, _, S:K, _)
+     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, Temp:CId, CompdExp:K, _:RValue, _, S:K, _)
      rule <k> elaborateDone(S:K)
-               ~> #blockOMP(Th:Int, Temp:CId, Control:RValue, Post:RValue, _, L::CabsLoc)
+               ~> #blockOMP(Th:Int, Temp:CId, CompdExp:K, Control:RValue, Post:RValue, _, L::CabsLoc)
                => lintZero(Control) ~> lintEmpty(S)
           ...</k>
-          <elab>... .K => blockOMP(Th, Temp, compoundExp(L ~> Control), Post, S) </elab>
+          <elab>... .K => blockOMP(Th, Temp, CompdExp, compoundExp(L ~> Control), Post, S) </elab>
 
-     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, Temp:CId, _, S:K)
+     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, Temp:CId, CompdExp:K, _, S:K)
      rule <k> elaborateDone(S:K)
-               ~> #blockOMP(Th:Int, Temp:CId, Post:RValue, _)
+               ~> #blockOMP(Th:Int, Temp:CId, CompdExp:K, Post:RValue, _)
                => lintEmpty(S)
           ...</k>
-          <elab>... .K => blockOMP(Th, Temp, emptyValue, Post, S) </elab>
+          <elab>... .K => blockOMP(Th, Temp, CompdExp, emptyValue, Post, S) </elab>
 
      context While((HOLE:KItem => reval(HOLE)), _) [result(RValue)]
      rule <k> While(B:RValue, S:K) => #while(simplifyTruth(B), S, L) ...</k>

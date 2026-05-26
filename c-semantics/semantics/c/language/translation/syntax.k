@@ -15,6 +15,7 @@ module C-ABSTRACT-SYNTAX
      imports C-DYNAMIC-SORTS
      imports C-REVAL-SYNTAX
      imports C-TYPING-SORTS
+     imports LIST
 
      syntax SymBase ::= "nonStatic"
 
@@ -253,7 +254,7 @@ module C-ABSTRACT-SYNTAX
      */
      syntax KItem ::= DoWhile(K, KItem, CabsLoc)  [klabel(DoWhile3), symbol]
      syntax KItem ::= For(Int, KItem, K, K, K)  [klabel(For5), symbol]
-     syntax KItem ::= OMPFor(Int, KItem, K, K, K)  [klabel(OMPFor5), symbol]
+     syntax KItem ::= OMPFor(Int, KItem, KItem, K, K, K)  [klabel(OMPFor6), symbol]
      syntax KItem ::= PFor(Int, KItem, K, K, K) [klabel(PFor5), symbol]
      
      syntax KItem ::= OMPForr(Int, KItem, K, K, K)  [klabel(OMForr5), symbol]
@@ -264,6 +265,9 @@ module C-ABSTRACT-SYNTAX
      // OMP FOR
      syntax KItem ::= blockOMP(Int, CId, K) [klabel(blockOMP3), symbol]
      syntax KItem ::= blockOMP(Int, CId, K, K, K)  [klabel(blockOMP5), symbol]
+     // NEW
+     syntax KItem ::= blockOMP(Int, CId, K, K)  [klabel(blockOMP4), symbol]
+     syntax KItem ::= blockOMP(Int, CId, K, K, K, K)  [klabel(blockOMP6), symbol]
 
      // gcc extension
      syntax KItem ::= CaseRange(KItem, KItem, KItem) [symbol]
@@ -414,8 +418,21 @@ module C-ABSTRACT-SYNTAX
      | FC_DECL of definition
      */
      syntax KItem ::= ForClauseExpression(KItem) [symbol]
-     syntax KItem ::= OMPForClauseExpression(KItem) [symbol]
-     syntax KItem ::= PForClauseExpression(KItem) [symbol]
+
+     /*
+     and omp_clause = 
+          OMP_PRIVATE of string list
+          | OMP_FIRST_PRIVATE of string list
+     */
+     syntax KItem ::= OmpPrivateList(KItem) [symbol]
+     syntax KItem ::= OmpFirstPrivateList(KItem) [symbol]
+     syntax KItem ::= OmpNumThreads(Int) [symbol]
+
+     /*
+          
+     */
+     syntax KItem ::= OmpPrivateItem(CId) [symbol]
+     
      
      syntax KItem ::= Conditional(KItem, KItem, KItem) [symbol]
 

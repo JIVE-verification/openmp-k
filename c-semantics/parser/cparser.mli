@@ -104,6 +104,8 @@ type token =
   | KPRAGMA of (Cabs.cabsloc)
   | OMP of (Cabs.cabsloc)
   | PARALLEL of (Cabs.cabsloc)
+  | PRIVATE of (Cabs.cabsloc)
+  | FIRSTPRIVATE of (Cabs.cabsloc)
   | IF of (Cabs.cabsloc)
   | TRY of (Cabs.cabsloc)
   | EXCEPT of (Cabs.cabsloc)

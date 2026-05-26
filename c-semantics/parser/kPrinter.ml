@@ -512,12 +512,12 @@ and statement =
   let statement_loc s l = kapply KItem "StatementLoc" [s KItem; cabs_loc l CabsLoc] in
   let for_statement fc1 exp2 exp3 stat sort = new_counter >>= fun counter ->
     kapply KItem "For5" [ktoken_int counter; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in
-  let omp_for_clause = function
-    | FC_EXP exp1  -> kapply1 KItem "OMPForClauseExpression" (expression exp1 KItem)
-    | FC_DECL dec1 -> definition dec1 in
+  let omp_clause = function
+    | OMP_PRIVATE exp1  -> kapply1 KItem "OmpPrivateList" (list_of identifier exp1 KItem) 
+    | OMP_FIRST_PRIVATE exp1  -> kapply1 KItem "OmpFirstPrivateList" (list_of identifier exp1 KItem) in
     let statement_loc s l = kapply KItem "StatementLoc" [s KItem; cabs_loc l CabsLoc] in
-  let omp_for_statement fc1 exp2 exp3 stat sort = new_counter >>= fun counter ->
-    kapply KItem "OMPFor5" [ktoken_int counter; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in
+  let omp_for_statement omp1 fc1 exp2 exp3 stat sort = new_counter >>= fun counter ->
+    kapply KItem "OMPFor6" [ktoken_int counter; list_of omp_clause omp1 KItem; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in
   
   let switch exp stat sort = push_switch >>= fun id ->
     kapply KItem "Switch" [ktoken_int id; expression exp K; new_block_statement stat K] sort
@@ -534,7 +534,7 @@ and statement =
     | WHILE (exp, stat, loc)            -> statement_loc (kapply KItem "While" [expression exp K; new_block_statement stat K]) loc
     | DOWHILE (exp, stat, loc, wloc)    -> statement_loc (kapply KItem "DoWhile3" [expression exp K; new_block_statement stat KItem; cabs_loc wloc CabsLoc]) loc
     | FOR (fc1, exp2, exp3, stat, loc)  -> statement_loc (for_statement fc1 exp2 exp3 stat) loc
-    | OMPFOR (fc1, exp2, exp3, stat, loc)  -> statement_loc (omp_for_statement fc1 exp2 exp3 stat) loc
+    | OMPFOR (omp1, fc1, exp2, exp3, stat, loc)  -> statement_loc (omp_for_statement omp1 fc1 exp2 exp3 stat) loc
     | BREAK loc                         -> statement_loc (kapply0 KItem "Break") loc
     | CONTINUE loc                      -> statement_loc (kapply0 KItem "Continue") loc
     | RETURN (exp, loc)                 -> statement_loc (kapply KItem "Return" [expression exp K]) loc

@@ -143,9 +143,6 @@ let init_lexicon _ =
       ("extern", fun loc -> EXTERN loc);
       ("float", fun loc -> FLOAT loc);
       ("for", fun loc -> FOR loc);
-      ("#pragma", fun loc -> KPRAGMA loc);
-      ("omp", fun loc -> OMP loc);
-      ("parallel", fun loc -> PARALLEL loc);
       ("goto", fun loc -> GOTO loc); 
       ("if", fun loc -> dbgToken (IF loc));
       ("inline", fun loc -> INLINE loc); 
@@ -490,6 +487,8 @@ rule initial =
 |   "#pragma"   {KPRAGMA (currentLoc ())}
 |   "omp"       {OMP (currentLoc ())}
 |   "parallel"  {PARALLEL (currentLoc ())}
+|   "private"  {PRIVATE (currentLoc ())}
+|   "firstprivate"  {FIRSTPRIVATE (currentLoc ())}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}

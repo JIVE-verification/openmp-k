@@ -262,7 +262,7 @@ let trd3 (_, _, result) = result
 %token<Cabs.cabsloc> BREAK CONTINUE GOTO RETURN
 %token<Cabs.cabsloc> SWITCH CASE DEFAULT
 %token<Cabs.cabsloc> WHILE DO FOR
-%token<Cabs.cabsloc> KPRAGMA OMP PARALLEL
+%token<Cabs.cabsloc> KPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE
 %token<Cabs.cabsloc> IF TRY EXCEPT FINALLY
 %token ELSE
 
@@ -841,9 +841,9 @@ statement:
 	        	{WHILE (smooth_expression (fst $2), $3, (*handleLoc*) $1)}
 |   DO statement WHILE paren_comma_expression SEMICOLON
 	        	         {DOWHILE (smooth_expression (fst $4), $2, (*handleLoc*) $1, $3)}
-|   KPRAGMA OMP PARALLEL FOR FOR LPAREN for_clause opt_expression
+|   KPRAGMA OMP PARALLEL FOR omp_clause FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
-	                         {OMPFOR ($7, $8, $10, $12, (*handleLoc*) $5)}
+	                         {OMPFOR ($5, $8, $9, $11, $13, (*handleLoc*) $6)}
 |   FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
 	                         {FOR ($3, $4, $6, $8, (*handleLoc*) $1)}
@@ -893,6 +893,17 @@ for_clause:
 |   declaration                  { FC_DECL $1 }
 ;
 
+/*OPENMP*/
+omp_clause:
+     /* empty */ {[]}   
+  | PRIVATE LPAREN omp_clause_args RPAREN omp_clause { (OMP_PRIVATE $3) :: $5}
+  | FIRSTPRIVATE LPAREN omp_clause_args RPAREN omp_clause { (OMP_FIRST_PRIVATE $3) :: $5}  ;
+
+omp_clause_args:
+     /* empty */ {[]}
+  | IDENT                       { [fst $1 ]} /* private (i)*/
+  | IDENT COMMA omp_clause_args { let rest = $3 in (fst $1) :: rest} /* private (i, j)*/
+  ;
 
 
 declaration:                                /* ISO 6.7.*/
