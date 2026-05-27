@@ -15,15 +15,15 @@ module C-STMT-LOOP
      rule For(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
           => Block(Tag, list(ListItem(E1) ListItem(For(E2, E3, B)))) 
           
-     // for(int i=0; i< N; i++){} E1:: int i=0;
+     // for(int i=0; i< N; i++){} E1:: int i=0; // for(int i=0; i< N; i++){B} For(E1; E2; E3){B}
      rule <k> OMPFor(Tag:Int, list(OMP1:List), E1:KItem, E2:K, E3:K, B:K)
-               => ompClauseExpr(handleOmpClauses(OMP1, M))
+               => Block(Tag, list(ListItem(E1) ListItem(blockOMP(TT, ompTempVar(V), ompClauseExpr(handleOmpClauses(OMP1, M)), E2, E3, B))))
      	...</k>
      <omp-default-threads> TT:Int </omp-default-threads>
      <omp-temp-var> V:Int => V +Int 1 </omp-temp-var>
      <types> M:Map </types>
 
-     // semantics/common/compat.k:40:     syntax K ::= listToK(List) [function]
+     // semantics/common/compat.k:40:      syntax K ::= listToK(List) [function]
      // semantics/common/compat.k:249:     rule listToK(ListItem(K:KItem) L:List) => K ~> listToK(L)
      // semantics/common/compat.k:250:     rule listToK(.List) => .K
 
@@ -42,24 +42,14 @@ module C-STMT-LOOP
      rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1",
                "Variable is not declared.") ~> handlePrivateClasue(L, M)
      requires notBool A in_keys(M)
-
-     // testing 
-     rule <k> ompClauseExpr(K:K)
-               => K
-          ...</k>
-
-     // for(int i=0; i< N; i++){B} For(E1; E2; E3){B}
-    rule <k> blockOMP(Th:Int, Temp:CId, K:K, OMPForr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
-        => Block(Tag, list(ListItem(E1) ListItem(blockOMP(Th, Temp, E2, E3, B))))
-     ...</k>   
                     
      rule ForClauseExpression(K:KItem) => Computation(K)
 
      context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-     context blockOMP(_:Int, _:CId, _:KItem, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+     context blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
 
      context For(_, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]
-     context blockOMP(_:Int, _:CId, _:KItem, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
+     context blockOMP(_, _, _, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
 
      rule <k> For(Control:RValue, Post:RValue, S:K)
                => #for(simplifyTruth(Control), Post, S, L)
@@ -69,12 +59,12 @@ module C-STMT-LOOP
      
      rule For(emptyValue, Post:RValue, S:K)
           => #for(Post, S)
-
-     rule <k> blockOMP(Th:Int, Temp:CId, C:KItem, Control:K, Post:RValue, S:K)
-            =>  jive
-          ...</k>
-     	<curr-program-loc> L::CabsLoc </curr-program-loc>
-     	requires Control =/=K emptyValue 
+     // for-testing
+     // rule <k> blockOMP(Th:Int, Temp:CId, C:KItem, Control:K, Post:RValue, S:K)
+     //       =>  jive
+     //     ...</k>
+     //	<curr-program-loc> L::CabsLoc </curr-program-loc>
+     //	requires Control =/=K emptyValue 
 
 
      rule <k> blockOMP(Th:Int, Temp:CId, C:KItem, Control:RValue, Post:RValue, S:K)

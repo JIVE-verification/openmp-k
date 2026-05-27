@@ -99,16 +99,16 @@ module C-SYNTAX
      syntax KItem ::= OMPForrr(K, K)
      syntax KItem ::= OMPForrr(K,K,K)
 
-
-     syntax KItem ::= PFor(K,K)
-     syntax KItem ::= PFor(K,K,K)
-     syntax KItem ::= blockOMP(Int, CId, K, K)
-     // TID, TT, FOR 
-//     syntax KItem ::= BlockOMP(K, K, K)
+     /*
+     To collect all clauses
+     */
+     syntax KItem ::= ompClauseExpr(K)
+     
+     
      syntax KItem ::= RUNONTHREAD(K,K,K)
      syntax KItem ::= FORLOOPINFO(K,K,K)
      syntax KItem ::= POPLOOPONTHREAD(Int)
-          // openmp temp-var
+     // openmp temp-var
      syntax CId ::= ompTempVar(Int)
 
      /*
