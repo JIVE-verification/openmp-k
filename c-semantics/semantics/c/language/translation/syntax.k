@@ -266,8 +266,8 @@ module C-ABSTRACT-SYNTAX
      syntax KItem ::= blockOMP(Int, CId, K) [klabel(blockOMP3), symbol]
      syntax KItem ::= blockOMP(Int, CId, K, K, K)  [klabel(blockOMP5), symbol]
      // NEW
-     syntax KItem ::= blockOMP(Int, CId, K, K)  [klabel(blockOMP4), symbol]
-     syntax KItem ::= blockOMP(Int, CId, K, K, K, K)  [klabel(blockOMP6), symbol]
+     syntax KItem ::= blockOMP(Int, CId, KItem, K)  [klabel(blockOMP4), symbol]
+     syntax KItem ::= blockOMP(Int, CId, KItem, K, K, K)  [klabel(blockOMP6), symbol]
 
      // gcc extension
      syntax KItem ::= CaseRange(KItem, KItem, KItem) [symbol]
@@ -424,7 +424,7 @@ module C-ABSTRACT-SYNTAX
           OMP_PRIVATE of string list
           | OMP_FIRST_PRIVATE of string list
      */
-     syntax KItem ::= OmpPrivateList(KItem) [symbol]
+     syntax KItem ::= OmpPrivateList(K) [symbol]
      syntax KItem ::= OmpFirstPrivateList(KItem) [symbol]
      syntax KItem ::= OmpNumThreads(Int) [symbol]
 
@@ -432,8 +432,16 @@ module C-ABSTRACT-SYNTAX
           
      */
      syntax KItem ::= OmpPrivateItem(CId) [symbol]
+     /*
+     To collect all clauses
+     */
+     syntax KItem ::= ompClauseExpr(K)
      
-     
+     /*
+          testing
+     */
+     syntax KItem ::= "jive"
+
      syntax KItem ::= Conditional(KItem, KItem, KItem) [symbol]
 
      syntax KItem ::= ArrayIndex(KItem, KItem) [symbol]

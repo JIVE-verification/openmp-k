@@ -8,6 +8,7 @@ module C-STMT-LOOP
      imports C-EXPR-LOGICAL-SYNTAX
      imports C-SYNTAX
      imports LIST
+     imports C-ERROR-SYNTAX
 
      imports C-TRANSLATION-ERROR-SYNTAX
 
@@ -16,85 +17,86 @@ module C-STMT-LOOP
           
      // for(int i=0; i< N; i++){} E1:: int i=0;
      rule <k> OMPFor(Tag:Int, list(OMP1:List), E1:KItem, E2:K, E3:K, B:K)
-     		=> blockOMP(TT, ompTempVar(V), OMPFor(Tag, list(OMP1), E1, E2, E3, B))
+               => ompClauseExpr(handleOmpClauses(OMP1, M))
      	...</k>
      <omp-default-threads> TT:Int </omp-default-threads>
      <omp-temp-var> V:Int => V +Int 1 </omp-temp-var>
-     
-     rule <k> blockOMP(TT:Int, Temp:CId,  OMPFor(Tag:Int, list(OMP1:List), E1:KItem, E2:K, E3:K, B:K))
-          =>  clasueList(OMP1) ~> compoundExp(.K) ~> blockOMP(TT, Temp,  OMPForr(Tag, E1, E2, E3, B))
-      	 ...</k>      	 
-     
+     <types> M:Map </types>
+
      // semantics/common/compat.k:40:     syntax K ::= listToK(List) [function]
      // semantics/common/compat.k:249:     rule listToK(ListItem(K:KItem) L:List) => K ~> listToK(L)
      // semantics/common/compat.k:250:     rule listToK(.List) => .K
 
-     syntax KItem ::= clasueList(List)
-     rule <k> clasueList(ListItem(H:KItem) T:List) 
-                    => H ~> clasueList(T) 
-          ...</k> 
-     rule <k> clasueList(.List) 
-                    => .K
-          ...</k> 
+     syntax K ::= handleOmpClauses(List, Map) [function]
 
-     rule <k> OmpPrivateList(list(ListItem(H:CId) T:List)) ~> clasueList(C:List) ~> compoundExp(K:K)
-                    => OmpPrivateList(list(T)) ~> clasueList(C) ~> compoundExp(K ~> OmpPrivateItem(H))
+     rule handleOmpClauses(.List, M:Map) => .K 
+     rule handleOmpClauses(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handlePrivateClasue(L1, M) ~> handleOmpClauses(L,M)
+
+     syntax K ::= handlePrivateClasue(List, Map) [function]
+
+     rule handlePrivateClasue(.List, M:Map) => .K
+
+     rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, M[A], NoInit()) ~> handlePrivateClasue(L, M)
+     requires A in_keys(M)
+
+     rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1",
+               "Variable is not declared.") ~> handlePrivateClasue(L, M)
+     requires notBool A in_keys(M)
+
+     // testing 
+     rule <k> ompClauseExpr(K:K)
+               => K
           ...</k>
 
-     rule <k> OmpPrivateList(list(.List)) ~> clasueList(C:List) ~> compoundExp(K:K) 
-                    => clasueList(C) ~> compoundExp(K)
-          ...</k>
-
-     rule <k> compoundExp(CEXP:K) ~> blockOMP(TT:Int, Temp:CId,  OMPForr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
-          =>  blockOMP(TT, Temp, compoundExp(CEXP), OMPForr(Tag, E1, E2, E3, B))
-      	 ...</k>      	 
-	 
      // for(int i=0; i< N; i++){B} For(E1; E2; E3){B}
-    rule <k> blockOMP(Th:Int, Temp:CId, compoundExp(CEXP:K), OMPForr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
-        => Block(Tag, list(ListItem(E1) ListItem(blockOMP(Th, Temp, compoundExp(CEXP), E2, E3, B))))
+    rule <k> blockOMP(Th:Int, Temp:CId, K:K, OMPForr(Tag:Int, E1:KItem, E2:K, E3:K, B:K))
+        => Block(Tag, list(ListItem(E1) ListItem(blockOMP(Th, Temp, E2, E3, B))))
      ...</k>   
                     
      rule ForClauseExpression(K:KItem) => Computation(K)
 
      context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-     context blockOMP(_:Int,_:CId, _:K, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-
+     context blockOMP(_:Int, _:CId, _:KItem, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
 
      context For(_, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]
-     context blockOMP(_:Int,_:CId, _, _:K, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
-     
+     context blockOMP(_:Int, _:CId, _:KItem, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
+
      rule <k> For(Control:RValue, Post:RValue, S:K)
                => #for(simplifyTruth(Control), Post, S, L)
           ...</k>
           <curr-program-loc> L::CabsLoc </curr-program-loc>
           requires Control =/=K emptyValue
+     
      rule For(emptyValue, Post:RValue, S:K)
           => #for(Post, S)
 
-     rule <k> blockOMP(Th:Int, Temp:CId, CompdExp:K, Control:RValue, Post:RValue, S:K)
-            =>  #blockOMP(Th, Temp, CompdExp, simplifyTruth(Control), Post, S, L)
+     rule <k> blockOMP(Th:Int, Temp:CId, C:KItem, Control:K, Post:RValue, S:K)
+            =>  jive
+          ...</k>
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>
+     	requires Control =/=K emptyValue 
+
+
+     rule <k> blockOMP(Th:Int, Temp:CId, C:KItem, Control:RValue, Post:RValue, S:K)
+            =>  #blockOMP(Th, Temp, C, simplifyTruth(Control), Post, S, L)
           ...</k>
      	<curr-program-loc> L::CabsLoc </curr-program-loc>
      	requires Control =/=K emptyValue      
                	  
-     rule blockOMP(Th:Int, Temp:CId, CompdExp:K, emptyValue, Post:RValue, S:K)
-          => #blockOMP(Th, Temp, CompdExp, Post, S)
+     rule blockOMP(Th:Int, Temp:CId, C:KItem, emptyValue, Post:RValue, S:K)
+          => #blockOMP(Th, Temp, C, Post, S)
 
              
      syntax KItem ::= #for(K, RValue, K, CabsLoc) [klabel(#for4)]
                     | #for(RValue, K)             [klabel(#for2)]
                     
-     syntax KItem ::= #pfor(K, RValue, K, CabsLoc) [klabel(#pfor4)]
-                    | #pfor(RValue, K)             [klabel(#pfor2)]
 
-     syntax KItem ::= #blockOMP(Int, CId, K, RValue, K, CabsLoc) [klabel(#blockOMP6)]
-                    | #blockOMP(Int, CId, RValue, K)             [klabel(##blockOMP4)]
-                    | #blockOMP(Int, CId, K, K, RValue, K, CabsLoc) [klabel(#blockOMP7)]
-                    | #blockOMP(Int, CId, K, RValue, K)             [klabel(##blockOMP5)]
+     syntax KItem ::= #blockOMP(Int, CId, KItem, K, RValue, K, CabsLoc) [klabel(#blockOMP7)]
+                    | #blockOMP(Int, CId, KItem, RValue, K)             [klabel(##blockOMP5)]
                      
                     
      context #for((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
-     context #blockOMP(_,_, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
+     context #blockOMP(_, _,  _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
 
      
      rule (.K => elaborate(S)) ~> #for(_:RValue, _, S:K, _)
@@ -112,19 +114,19 @@ module C-STMT-LOOP
           <elab>... .K => For(emptyValue, Post, S) </elab>
 
 
-     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, Temp:CId, CompdExp:K, _:RValue, _, S:K, _)
+     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, Temp:CId, ClauseExpr:KItem, _:RValue, _, S:K, _)
      rule <k> elaborateDone(S:K)
-               ~> #blockOMP(Th:Int, Temp:CId, CompdExp:K, Control:RValue, Post:RValue, _, L::CabsLoc)
+               ~> #blockOMP(Th:Int, Temp:CId, ClauseExpr:KItem, Control:RValue, Post:RValue, _, L::CabsLoc)
                => lintZero(Control) ~> lintEmpty(S)
           ...</k>
-          <elab>... .K => blockOMP(Th, Temp, CompdExp, compoundExp(L ~> Control), Post, S) </elab>
+          <elab>... .K => blockOMP(Th, Temp, ClauseExpr, compoundExp(L ~> Control), Post, S) </elab>
 
-     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, Temp:CId, CompdExp:K, _, S:K)
+     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, Temp:CId, ClauseExpr:KItem, _, S:K)
      rule <k> elaborateDone(S:K)
-               ~> #blockOMP(Th:Int, Temp:CId, CompdExp:K, Post:RValue, _)
+               ~> #blockOMP(Th:Int, Temp:CId, ClauseExpr:KItem, Post:RValue, _)
                => lintEmpty(S)
           ...</k>
-          <elab>... .K => blockOMP(Th, Temp, CompdExp, emptyValue, Post, S) </elab>
+          <elab>... .K => blockOMP(Th, Temp, ClauseExpr, emptyValue, Post, S) </elab>
 
      context While((HOLE:KItem => reval(HOLE)), _) [result(RValue)]
      rule <k> While(B:RValue, S:K) => #while(simplifyTruth(B), S, L) ...</k>
