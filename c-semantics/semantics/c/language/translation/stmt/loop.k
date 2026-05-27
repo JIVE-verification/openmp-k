@@ -9,6 +9,9 @@ module C-STMT-LOOP
      imports C-SYNTAX
      imports LIST
      imports C-ERROR-SYNTAX
+     imports C-DECL-INITIALIZER-SYNTAX
+     imports C-DECL-LOCAL
+
 
      imports C-TRANSLATION-ERROR-SYNTAX
 
@@ -27,6 +30,10 @@ module C-STMT-LOOP
      // semantics/common/compat.k:249:     rule listToK(ListItem(K:KItem) L:List) => K ~> listToK(L)
      // semantics/common/compat.k:250:     rule listToK(.List) => .K
 
+     // syntax KItem ::= handleInitial (KItem) [function]
+
+     // rule handleInitial(I:KItem) => 
+
      syntax K ::= handleOmpClauses(List, Map) [function]
 
      rule handleOmpClauses(.List, M:Map) => .K 
@@ -36,12 +43,28 @@ module C-STMT-LOOP
 
      rule handlePrivateClasue(.List, M:Map) => .K
 
-     rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, M[A], NoInit()) ~> handlePrivateClasue(L, M)
+
+     // semantics/c/language/translation/decl/initializer.k:40:     rule figureInit(X:CId, T:Type, NoInit()) => initValue(X, T, .K)
+     // semantics/c/language/common/dynamic.k:95:     syntax KResult ::= initValue(CId, Type, K)
+     // semantics/c/language/translation/decl/local.k:120:     syntax K ::= toInitValue(CId, Type, K) [function]
+     // semantics/c/language/translation/decl/local.k:121:     rule toInitValue(X:CId, T:Type, NoInit()) => initValue(X, T, .K)
+     // semantics/c/language/translation/decl/local.k:122:     rule toInitValue(_, _, Init:K) => Init [owise]
+
+     // NoInit() // figureInit // toInitValue //initValue(A, M[A], .K) // figureInit(A, M[A], NoInit())  // 
+
+     syntax KItem ::= extractTypeInPrivate(KItem, Map) [function] 
+     syntax Type ::= convertType(K) [function]
+     rule convertType(T:Type) => T
+     rule convertType(A:K) => t (quals (.Set) , .Set , int ) [owise]
+
+     rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, convertType(M[A]), initValue(A, convertType(M[A]), .K)) ~> handlePrivateClasue(L, M)
      requires A in_keys(M)
 
      rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1",
                "Variable is not declared.") ~> handlePrivateClasue(L, M)
      requires notBool A in_keys(M)
+
+     rule extractTypeInPrivate(A:KItem, M:Map) => M[A]
                     
      rule ForClauseExpression(K:KItem) => Computation(K)
 
