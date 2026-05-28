@@ -90,10 +90,9 @@ module C-SYNTAX
      syntax KItem ::= For2(K, K, K)
      syntax KItem ::= OMPFor(K, K)
      syntax KItem ::= OMPFor(K,K,K)
-     // Th, CId, Condition, Post, Body
-     syntax KItem ::= blockOMP(Int, CId, K, K, K)
-     syntax KItem ::= blockOMP(Int, CId, K, K, K, K)
-     syntax KItem ::= blockOMP(Int, CId, K, K, K, K, K)
+     // Th, Clause, Condition, Post, Body
+     syntax KItem ::= blockOMP(Int, K, K, K, K)
+     syntax KItem ::= blockOMP(Int, K, K, K, K, K)
      syntax KItem ::= OMPForr(K, K)
      syntax KItem ::= OMPForr(K,K,K)
 
@@ -105,6 +104,10 @@ module C-SYNTAX
      */
      syntax KItem ::= ompClauseExpr(K)
      
+     /*
+          testing
+     */
+     syntax KItem ::= "jive"
      
      syntax KItem ::= RUNONTHREAD(K,K,K)
      syntax KItem ::= FORLOOPINFO(K,K,K)

@@ -255,19 +255,7 @@ module C-ABSTRACT-SYNTAX
      syntax KItem ::= DoWhile(K, KItem, CabsLoc)  [klabel(DoWhile3), symbol]
      syntax KItem ::= For(Int, KItem, K, K, K)  [klabel(For5), symbol]
      syntax KItem ::= OMPFor(Int, KItem, KItem, K, K, K)  [klabel(OMPFor6), symbol]
-     syntax KItem ::= PFor(Int, KItem, K, K, K) [klabel(PFor5), symbol]
      
-     syntax KItem ::= OMPForr(Int, KItem, K, K, K)  [klabel(OMForr5), symbol]
-     syntax KItem ::= OMPForrr(Int, KItem, K, K, K)  [klabel(OMForrr5), symbol]
-     syntax KItem ::= OMPFora(Int, KItem, K, K, K)  [klabel(OMFora5), symbol]
-     
-     // OMP FOR
-//     syntax KItem ::= blockOMP(Int, CId, K) [klabel(blockOMP3), symbol]
-//     syntax KItem ::= blockOMP(Int, CId, K, K, K)  [klabel(blockOMP5), symbol]
-     // NEW
-//     syntax KItem ::= blockOMP(Int, CId, KItem, K)  [klabel(blockOMP4), symbol]
-//     syntax KItem ::= blockOMP(Int, CId, KItem, K, K, K)  [klabel(blockOMP6), symbol]
-
      // gcc extension
      syntax KItem ::= CaseRange(KItem, KItem, KItem) [symbol]
 
@@ -430,13 +418,8 @@ module C-ABSTRACT-SYNTAX
      /*
           
      */
-     syntax KItem ::= OmpPrivateItem(CId) [symbol]
+//     syntax KItem ::= OmpPrivateItem(CId) [symbol]
 
-     
-     /*
-          testing
-     */
-     syntax KItem ::= "jive"
 
      syntax KItem ::= Conditional(KItem, KItem, KItem) [symbol]
 

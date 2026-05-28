@@ -81,11 +81,23 @@ module C-STMT-LOOP
           ...</k>
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
-     
-     
+
      rule [include-i]:
-          <k> declareInternalVariable(X:CId, _, initValue(_, T::Type, Init:K)) ~> blockOMP(Th:Int, Temp:CId, C:K, Control:K, Post:K, S:K)
-               => blockOMP(Th, Temp, C, declareInternalVariable(X, T, initValue(X, T, Init)), Control, Post, S)
+               <k> Computation(te(X:CId := V:KItem, TT::UType)) ~> blockOMP(Th:Int, C:K, Control:K, Post:K, S:K)
+                    => blockOMP(Th, C, declareInternalVariable ( X , type(TypesMap[X]) , initValue ( X , type(TypesMap[X]) , Initializer( X:=V) )), Control, Post, S)
+                    ...</k>
+               <env> Env::Map </env>
+               <types> TypesMap::Map </types>
+         requires notBool isStaticType(type(TypesMap[X]))
+               andBool notBool isExternType(type(TypesMap[X]))
+               andBool notBool isFunctionType(type(TypesMap[X]))
+               andBool notBool isVariablyModifiedType(type(TypesMap[X]))
+               andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
+          [structural]
+
+     rule [include-int-i]:
+          <k> declareInternalVariable(X:CId, _, initValue(_, T::Type, Init:K)) ~> blockOMP(Th:Int, C:K, Control:K, Post:K, S:K)
+               => blockOMP(Th, C, declareInternalVariable(X, T, initValue(X, T, Init)), Control, Post, S)
                ...</k>
           <env> Env::Map </env>
           requires notBool isStaticType(T)
@@ -118,7 +130,7 @@ module C-STMT-LOOP
      rule [extract-total-threads]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
-          <k> blockOMP(Th:Int, Temp:CId, C:K, Initial:K, Control:K, Post:K, S:K)
+          <k> blockOMP(Th:Int, C:K, Initial:K, Control:K, Post:K, S:K)
                ...</k>
           ...</thread>
           <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>
@@ -127,7 +139,7 @@ module C-STMT-LOOP
      rule [zero-thread]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
-          <k> blockOMP(Th:Int, Temp:CId, O:K, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((I:KItem < N:KItem) != C:KItem, TT:UType)), Post:K, S:K)
+          <k> blockOMP(Th:Int, O:K, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((I:KItem < N:KItem) != C:KItem, TT:UType)), Post:K, S:K)
                => declareInternalVariable(X, T, initValue(X, T, Initializer(Y := V ))) ~> O ~> For(compoundExp( L~> te((I < ( (N % tv(TotalThreads, TT)) + ( N / tv( TotalThreads, TT) )  ) ) != C, TT)), Post, S) ~> waitingForChild
                ...</k>
           ...</thread>
@@ -148,8 +160,8 @@ module C-STMT-LOOP
                     <child-threads> ... .Set => SetItem(Fresh)</child-threads>
                </thread-local>
                <k> 
-                    blockOMP(Th:Int, Temp:CId, O:K, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((I:KItem < N:KItem) != CM:KItem, TT:UType)), Post:K, S:K)
-                    => blockOMP(Th -Int 1, Temp, O, declareInternalVariable(X, T, initValue(X, T, Initializer(Y := V))), compoundExp(L ~> te((I < N) != CM, TT)),  Post, S)
+                    blockOMP(Th:Int, O:K, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((I:KItem < N:KItem) != CM:KItem, TT:UType)), Post:K, S:K)
+                    => blockOMP(Th -Int 1, O, declareInternalVariable(X, T, initValue(X, T, Initializer(Y := V))), compoundExp(L ~> te((I < N) != CM, TT)),  Post, S)
                ...
                </k>
           ...
