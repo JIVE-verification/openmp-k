@@ -412,8 +412,8 @@ module C-ABSTRACT-SYNTAX
           | OMP_FIRST_PRIVATE of string list
      */
      syntax KItem ::= OmpPrivateList(K) [symbol]
-     syntax KItem ::= OmpFirstPrivateList(KItem) [symbol]
-     syntax KItem ::= OmpNumThreads(Int) [symbol]
+     syntax KItem ::= OmpFirstPrivateList(K) [symbol]
+     syntax KItem ::= OmpNumThreads(KItem) [symbol]
 
      /*
           

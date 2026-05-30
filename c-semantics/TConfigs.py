@@ -156,7 +156,6 @@ def main():
         "krun {kast_dir} "
         "--directory ./dist/profiles/x86-gcc-limited-libc/c-translation-kompiled "
         "--output pretty "
-#        "--output-file {output_dir}/output-{ut}-{cf}-{depth_}.txt "
         "--output-file {output_dir}/trans-{cf}-{depth_}.txt "
         "{depth_flag}"
         "--parser \"cat\" "

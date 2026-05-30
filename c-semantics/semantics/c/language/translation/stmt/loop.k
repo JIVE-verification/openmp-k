@@ -26,29 +26,27 @@ module C-STMT-LOOP
      <omp-temp-var> V:Int => V +Int 1 </omp-temp-var>
      <types> M:Map </types>
 
-     // semantics/common/compat.k:40:      syntax K ::= listToK(List) [function]
-     // semantics/common/compat.k:249:     rule listToK(ListItem(K:KItem) L:List) => K ~> listToK(L)
-     // semantics/common/compat.k:250:     rule listToK(.List) => .K
-
-     // syntax KItem ::= handleInitial (KItem) [function]
-
-     // rule handleInitial(I:KItem) => 
-
      syntax K ::= handleOmpClauses(List, Map) [function]
 
      rule handleOmpClauses(.List, M:Map) => .K 
      rule handleOmpClauses(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handlePrivateClasue(L1, M) ~> handleOmpClauses(L,M)
+     rule handleOmpClauses(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) => handleFirstPrivateClause(L1, M) ~> handleOmpClauses(L,M)
 
      syntax K ::= handlePrivateClasue(List, Map) [function]
+     syntax K ::= handleFirstPrivateClause(List, Map) [function]
 
      rule handlePrivateClasue(.List, M:Map) => .K
+     rule handleFirstPrivateClause(.List, M:Map) => .K
 
      rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handlePrivateClasue(L, M)
      requires A in_keys(M)
+     rule handleFirstPrivateClause(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handleFirstPrivateClause(L, M)
+     requires A in_keys(M)
 
-     rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1",
-               "Variable is not declared.") ~> handlePrivateClasue(L, M)
+     rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "PRIVATE:: Variable is not declared.") ~> handlePrivateClasue(L, M)
      requires notBool A in_keys(M)
+     rule handleFirstPrivateClause(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleFirstPrivateClause(L, M)
+     requires notBool A in_keys(M)     
                     
      rule ForClauseExpression(K:KItem) => Computation(K)
 

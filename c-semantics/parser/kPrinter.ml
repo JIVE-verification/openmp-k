@@ -514,7 +514,9 @@ and statement =
     kapply KItem "For5" [ktoken_int counter; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in
   let omp_clause = function
     | OMP_PRIVATE exp1  -> kapply1 KItem "OmpPrivateList" (list_of identifier exp1 KItem) 
-    | OMP_FIRST_PRIVATE exp1  -> kapply1 KItem "OmpFirstPrivateList" (list_of identifier exp1 KItem) in
+    | OMP_FIRST_PRIVATE exp1  ->  kapply1 KItem "OmpFirstPrivateList" (list_of identifier exp1 KItem)  
+    |OMP_NUM_THREADS NT_INT exp1 -> kapply1 KItem "OmpNumThreads" (ktoken_int_of_string exp1) 
+    |OMP_NUM_THREADS NT_IDENT exp1 -> kapply1 KItem "OmpNumThreads" (identifier exp1 KItem) in
     let statement_loc s l = kapply KItem "StatementLoc" [s KItem; cabs_loc l CabsLoc] in
   let omp_for_statement omp1 fc1 exp2 exp3 stat sort = new_counter >>= fun counter ->
     kapply KItem "OMPFor6" [ktoken_int counter; list_of omp_clause omp1 KItem; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in

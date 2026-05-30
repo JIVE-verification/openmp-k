@@ -106,6 +106,7 @@ type token =
   | PARALLEL of (Cabs.cabsloc)
   | PRIVATE of (Cabs.cabsloc)
   | FIRSTPRIVATE of (Cabs.cabsloc)
+  | NUMTHREADS of (Cabs.cabsloc)
   | IF of (Cabs.cabsloc)
   | TRY of (Cabs.cabsloc)
   | EXCEPT of (Cabs.cabsloc)

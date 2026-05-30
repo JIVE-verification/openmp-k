@@ -489,6 +489,7 @@ rule initial =
 |   "parallel"  {PARALLEL (currentLoc ())}
 |   "private"  {PRIVATE (currentLoc ())}
 |   "firstprivate"  {FIRSTPRIVATE (currentLoc ())}
+|   "num_threads"   {NUMTHREADS (currentLoc ())}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}

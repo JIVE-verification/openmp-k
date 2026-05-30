@@ -262,7 +262,7 @@ let trd3 (_, _, result) = result
 %token<Cabs.cabsloc> BREAK CONTINUE GOTO RETURN
 %token<Cabs.cabsloc> SWITCH CASE DEFAULT
 %token<Cabs.cabsloc> WHILE DO FOR
-%token<Cabs.cabsloc> KPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE
+%token<Cabs.cabsloc> KPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS
 %token<Cabs.cabsloc> IF TRY EXCEPT FINALLY
 %token ELSE
 
@@ -897,7 +897,8 @@ for_clause:
 omp_clause:
      /* empty */ {[]}   
   | PRIVATE LPAREN omp_clause_args RPAREN omp_clause { (OMP_PRIVATE $3) :: $5}
-  | FIRSTPRIVATE LPAREN omp_clause_args RPAREN omp_clause { (OMP_FIRST_PRIVATE $3) :: $5}  ;
+  | FIRSTPRIVATE LPAREN omp_clause_args RPAREN omp_clause { (OMP_FIRST_PRIVATE $3) :: $5}  
+  | NUMTHREADS LPAREN omp_num_threads_clause RPAREN omp_clause { (OMP_NUM_THREADS $3) :: $5 };
 
 omp_clause_args:
      /* empty */ {[]}
@@ -905,6 +906,11 @@ omp_clause_args:
   | IDENT COMMA omp_clause_args { let rest = $3 in (fst $1) :: rest} /* private (i, j)*/
   ;
 
+omp_num_threads_clause:
+    CST_INT   {NT_INT (fst $1) }
+  | IDENT     {NT_IDENT (fst $1)}
+
+// CST_INT {CONST_INT (fst $1)}
 
 declaration:                                /* ISO 6.7.*/
     decl_spec_list init_declarator_list SEMICOLON

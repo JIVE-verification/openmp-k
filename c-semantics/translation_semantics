@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Usage:
+# ./traverse_c_files.sh <directory_path>
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <directory_path>"
+    exit 1
+fi
+
+DIRECTORY="$1"
+i=1
+find "$DIRECTORY" -type f -name "*.c" | while read -r file; do
+    echo "$file"
+    cp "$file" . 
+    filename=$(basename "$file")
+    python3 TConfigs.py $filename 20000
+    for f in .tmp-kcc-*; do
+    	if [ -e "$f" ]; then
+    	    rm -r "$f"
+    	fi
+    done
+    echo "$filename"
+    if [ -e "$filename" ]; then
+    	rm -rf "$filename"
+    fi
+    echo "counting $i"
+    if [ "$i" -eq 100 ]; then
+        echo "Reached 100, exiting..."
+        exit 0
+    fi
+    i=$((i + 1))
+done
+
+

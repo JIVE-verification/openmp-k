@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Usage:
+# ./traverse_c_files.sh <directory_path>
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <directory_path>"
+    exit 1
+fi
+
+DIRECTORY="$1"
+
+find "$DIRECTORY" -type f -name "*.c" | while read -r file; do
+    echo "$file"
+    python3 TConfigs.py $file 0
+    rm -r .tmp-kcc-*
+done
+
+

@@ -38,7 +38,7 @@
 (** This file was originally part of Hugues Casee's frontc 2.0, and has been 
  * extensively changed since. 
 **
-** 1.0	3.22.99	Hugues Cass�	First version.
+** 1.0	3.22.99	Hugues Casse	First version.
 ** 2.0  George Necula 12/12/00: Many extensions
  **)
 
@@ -251,6 +251,11 @@ and statement =
 and omp_clause = 
   OMP_PRIVATE of string list
   | OMP_FIRST_PRIVATE of string list
+  | OMP_NUM_THREADS of omp_num_threads_clause
+
+and omp_num_threads_clause = 
+  | NT_INT of string
+  | NT_IDENT of string
 
 and for_clause = 
    FC_EXP of expression
