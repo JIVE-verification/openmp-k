@@ -229,6 +229,7 @@ and statement =
  | DOWHILE of expression * statement * cabsloc * cabsloc
  | FOR of for_clause * expression * expression * statement * cabsloc
  | OMPFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
+ | OMPPARALLEL of omp_clause list * statement * cabsloc
  | BREAK of cabsloc
  | CONTINUE of cabsloc
  | RETURN of expression * cabsloc
@@ -252,6 +253,8 @@ and omp_clause =
   OMP_PRIVATE of string list
   | OMP_FIRST_PRIVATE of string list
   | OMP_NUM_THREADS of omp_num_threads_clause
+  | OMP_REDUCTION of string * string * string list
+  | OMP_LAST_PRIVATE of string * string list
 
 and omp_num_threads_clause = 
   | NT_INT of string

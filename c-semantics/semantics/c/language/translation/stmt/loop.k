@@ -40,11 +40,13 @@ module C-STMT-LOOP
 
      rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handlePrivateClasue(L, M)
      requires A in_keys(M)
+
      rule handleFirstPrivateClause(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handleFirstPrivateClause(L, M)
      requires A in_keys(M)
 
      rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "PRIVATE:: Variable is not declared.") ~> handlePrivateClasue(L, M)
      requires notBool A in_keys(M)
+     
      rule handleFirstPrivateClause(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleFirstPrivateClause(L, M)
      requires notBool A in_keys(M)     
                     

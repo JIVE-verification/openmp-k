@@ -25,8 +25,8 @@ find "$DIRECTORY" -type f -name "*.c" | while read -r file; do
     	rm -rf "$filename"
     fi
     echo "counting $i"
-    if [ "$i" -eq 100 ]; then
-        echo "Reached 100, exiting..."
+    if [ "$i" -eq 200 ]; then
+        echo "Reached 200, exiting..."
         exit 0
     fi
     i=$((i + 1))

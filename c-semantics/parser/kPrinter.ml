@@ -516,10 +516,22 @@ and statement =
     | OMP_PRIVATE exp1  -> kapply1 KItem "OmpPrivateList" (list_of identifier exp1 KItem) 
     | OMP_FIRST_PRIVATE exp1  ->  kapply1 KItem "OmpFirstPrivateList" (list_of identifier exp1 KItem)  
     |OMP_NUM_THREADS NT_INT exp1 -> kapply1 KItem "OmpNumThreads" (ktoken_int_of_string exp1) 
-    |OMP_NUM_THREADS NT_IDENT exp1 -> kapply1 KItem "OmpNumThreads" (identifier exp1 KItem) in
+    |OMP_NUM_THREADS NT_IDENT exp1 -> kapply1 KItem "OmpNumThreads" (identifier exp1 KItem) 
+    |OMP_REDUCTION (mod1, op1, exp1) -> kapply KItem "OmpReduction" [ktoken_string mod1; ktoken_string op1; list_of identifier exp1 KItem] 
+    |OMP_LAST_PRIVATE (mod1, exp1) -> kapply KItem "OmpLastPrivateList" [ktoken_string mod1; list_of identifier exp1 KItem] in
     let statement_loc s l = kapply KItem "StatementLoc" [s KItem; cabs_loc l CabsLoc] in
   let omp_for_statement omp1 fc1 exp2 exp3 stat sort = new_counter >>= fun counter ->
     kapply KItem "OMPFor6" [ktoken_int counter; list_of omp_clause omp1 KItem; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in
+  let omp_parallel_clause = function
+    | OMP_PRIVATE exp1  -> kapply1 KItem "OmpPrivateList" (list_of identifier exp1 KItem) 
+    | OMP_FIRST_PRIVATE exp1  ->  kapply1 KItem "OmpFirstPrivateList" (list_of identifier exp1 KItem)  
+    |OMP_NUM_THREADS NT_INT exp1 -> kapply1 KItem "OmpNumThreads" (ktoken_int_of_string exp1) 
+    |OMP_NUM_THREADS NT_IDENT exp1 -> kapply1 KItem "OmpNumThreads" (identifier exp1 KItem) 
+    |OMP_REDUCTION (mod1, op1, exp1) -> kapply KItem "OmpReduction" [ktoken_string mod1; ktoken_string op1; list_of identifier exp1 KItem] 
+    |OMP_LAST_PRIVATE (mod1, exp1) -> kapply KItem "OmpLastPrivateList" [ktoken_string mod1; list_of identifier exp1 KItem] in
+    let statement_loc s l = kapply KItem "StatementLoc" [s KItem; cabs_loc l CabsLoc] in
+  let omp_parallel_statement omp1 stat sort = new_counter >>= fun counter ->
+    kapply KItem "OMPPARALLEL3" [ktoken_int counter; list_of omp_parallel_clause omp1 KItem; new_block_statement stat K] sort in
   
   let switch exp stat sort = push_switch >>= fun id ->
     kapply KItem "Switch" [ktoken_int id; expression exp K; new_block_statement stat K] sort
@@ -537,6 +549,7 @@ and statement =
     | DOWHILE (exp, stat, loc, wloc)    -> statement_loc (kapply KItem "DoWhile3" [expression exp K; new_block_statement stat KItem; cabs_loc wloc CabsLoc]) loc
     | FOR (fc1, exp2, exp3, stat, loc)  -> statement_loc (for_statement fc1 exp2 exp3 stat) loc
     | OMPFOR (omp1, fc1, exp2, exp3, stat, loc)  -> statement_loc (omp_for_statement omp1 fc1 exp2 exp3 stat) loc
+    | OMPPARALLEL (omp1,stat, loc)  -> statement_loc (omp_parallel_statement omp1 stat) loc
     | BREAK loc                         -> statement_loc (kapply0 KItem "Break") loc
     | CONTINUE loc                      -> statement_loc (kapply0 KItem "Continue") loc
     | RETURN (exp, loc)                 -> statement_loc (kapply KItem "Return" [expression exp K]) loc

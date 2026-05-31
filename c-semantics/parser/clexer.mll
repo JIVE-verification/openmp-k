@@ -490,6 +490,10 @@ rule initial =
 |   "private"  {PRIVATE (currentLoc ())}
 |   "firstprivate"  {FIRSTPRIVATE (currentLoc ())}
 |   "num_threads"   {NUMTHREADS (currentLoc ())}
+|   "reduction"     {REDUCTION (currentLoc ())}
+|   "task"          {OMP_REDUCTION_TASK (currentLoc ())}
+|   "lastprivate"   {OMP_LAST_PRIVATE (currentLoc ())}
+|   "conditional"   {OMP_LAST_PRIVATE_CONDITIONAL (currentLoc ())}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}

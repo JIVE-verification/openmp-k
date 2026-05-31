@@ -251,11 +251,14 @@ module C-ABSTRACT-SYNTAX
      /*
      | DOWHILE of expression * statement * cabsloc * cabsloc
      | FOR of for_clause * expression * expression * statement * cabsloc
+     | OMPFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
+     | OMPPARALLEL of omp_clause list * statement * cabsloc
      */
      syntax KItem ::= DoWhile(K, KItem, CabsLoc)  [klabel(DoWhile3), symbol]
      syntax KItem ::= For(Int, KItem, K, K, K)  [klabel(For5), symbol]
      syntax KItem ::= OMPFor(Int, KItem, KItem, K, K, K)  [klabel(OMPFor6), symbol]
-     
+     syntax KItem ::= OMPPARALLEL(Int, KItem, K)  [klabel(OMPPARALLEL3), symbol]
+
      // gcc extension
      syntax KItem ::= CaseRange(KItem, KItem, KItem) [symbol]
 
@@ -408,17 +411,18 @@ module C-ABSTRACT-SYNTAX
 
      /*
      and omp_clause = 
-          OMP_PRIVATE of string list
-          | OMP_FIRST_PRIVATE of string list
+     OMP_PRIVATE of string list
+     | OMP_FIRST_PRIVATE of string list
+     | OMP_NUM_THREADS of omp_num_threads_clause
+     | OMP_REDUCTION of string * string * string list
+     | OMP_LAST_PRIVATE of string * string list
      */
+
      syntax KItem ::= OmpPrivateList(K) [symbol]
      syntax KItem ::= OmpFirstPrivateList(K) [symbol]
+     syntax KItem ::= OmpLastPrivateList(String, K) [symbol]
      syntax KItem ::= OmpNumThreads(KItem) [symbol]
-
-     /*
-          
-     */
-//     syntax KItem ::= OmpPrivateItem(CId) [symbol]
+     syntax KItem ::= OmpReduction(String, String, K) [symbol]
 
 
      syntax KItem ::= Conditional(KItem, KItem, KItem) [symbol]

@@ -262,7 +262,7 @@ let trd3 (_, _, result) = result
 %token<Cabs.cabsloc> BREAK CONTINUE GOTO RETURN
 %token<Cabs.cabsloc> SWITCH CASE DEFAULT
 %token<Cabs.cabsloc> WHILE DO FOR
-%token<Cabs.cabsloc> KPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS
+%token<Cabs.cabsloc> KPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS REDUCTION OMP_REDUCTION_TASK OMP_LAST_PRIVATE OMP_LAST_PRIVATE_CONDITIONAL
 %token<Cabs.cabsloc> IF TRY EXCEPT FINALLY
 %token ELSE
 
@@ -844,6 +844,8 @@ statement:
 |   KPRAGMA OMP PARALLEL FOR omp_clause FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
 	                         {OMPFOR ($5, $8, $9, $11, $13, (*handleLoc*) $6)}
+|   KPRAGMA OMP PARALLEL omp_clause statement
+	                         {OMPPARALLEL ($4, $5, (*handleLoc*) $3)}
 |   FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
 	                         {FOR ($3, $4, $6, $8, (*handleLoc*) $1)}
@@ -898,12 +900,34 @@ omp_clause:
      /* empty */ {[]}   
   | PRIVATE LPAREN omp_clause_args RPAREN omp_clause { (OMP_PRIVATE $3) :: $5}
   | FIRSTPRIVATE LPAREN omp_clause_args RPAREN omp_clause { (OMP_FIRST_PRIVATE $3) :: $5}  
-  | NUMTHREADS LPAREN omp_num_threads_clause RPAREN omp_clause { (OMP_NUM_THREADS $3) :: $5 };
+  | NUMTHREADS LPAREN omp_num_threads_clause RPAREN omp_clause { (OMP_NUM_THREADS $3) :: $5 }
+  | REDUCTION LPAREN omp_reduction_modifier omp_reduction_identiifer COLON omp_clause_args RPAREN omp_clause {(OMP_REDUCTION( $3, $4, $6)) :: $8}
+  | OMP_LAST_PRIVATE LPAREN omp_last_private_modifier omp_clause_args RPAREN omp_clause {OMP_LAST_PRIVATE($3, $4) :: $6};
 
 omp_clause_args:
      /* empty */ {[]}
   | IDENT                       { [fst $1 ]} /* private (i)*/
   | IDENT COMMA omp_clause_args { let rest = $3 in (fst $1) :: rest} /* private (i, j)*/
+  ;
+
+omp_last_private_modifier:
+  /* empty */ {"omp_lastprivate_empty"}
+  | OMP_LAST_PRIVATE_CONDITIONAL COLON {"omp_lastprivate_conditional"}
+  ;
+
+omp_reduction_modifier:
+    /* empty */ {"omp_reduction_empty"}
+  | OMP_REDUCTION_TASK COMMA {"omp_reduction_task"}
+  ;
+
+omp_reduction_identiifer:
+  PLUS { "+" }
+  | STAR {"*"}
+  | AND {"&"}
+  | PIPE {"|"}
+  | CIRC {"^"}
+  | AND_AND {"&&"}
+  | PIPE_PIPE {"||"}
   ;
 
 omp_num_threads_clause:
