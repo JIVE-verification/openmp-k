@@ -12,7 +12,6 @@ module C-STMT-LOOP
      imports C-DECL-INITIALIZER-SYNTAX
      imports C-DECL-LOCAL
 
-
      imports C-TRANSLATION-ERROR-SYNTAX
 
      rule For(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
@@ -27,28 +26,57 @@ module C-STMT-LOOP
      <types> M:Map </types>
 
      syntax K ::= handleOmpClauses(List, Map) [function]
+     syntax K ::= extractNumThreads(List, Int) [function]
 
      rule handleOmpClauses(.List, M:Map) => .K 
+
      rule handleOmpClauses(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handlePrivateClasue(L1, M) ~> handleOmpClauses(L,M)
+
      rule handleOmpClauses(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) => handleFirstPrivateClause(L1, M) ~> handleOmpClauses(L,M)
+
+     rule handleOmpClauses(ListItem(OmpLastPrivateList(S:String, list(L1:List))) L:List, M:Map) => handleLastPrivateClause(L1, M) ~> handleOmpClauses(L,M)
+
+     rule handleOmpClauses(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClause(L1, M) ~> handleOmpClauses(L,M)
+
+     rule handleOmpClauses(ListItem(OmpNumThreads(N:KItem)) L:List, M:Map) => handleOmpClauses(L,M)
+
+     rule extractNumThreads(ListItem(OmpNumThreads(N:KItem)) L:List, T:Int) => N
+     rule extractNumThreads(ListItem(K1:KItem) L:List, T:Int) => extractNumThreads(L, T)
+     rule extractNumThreads(.List, T:Int) => T
 
      syntax K ::= handlePrivateClasue(List, Map) [function]
      syntax K ::= handleFirstPrivateClause(List, Map) [function]
+     syntax K ::= handleLastPrivateClause(List, Map) [function]
+     syntax K ::= handleReductionClause(List, Map) [function]
 
      rule handlePrivateClasue(.List, M:Map) => .K
      rule handleFirstPrivateClause(.List, M:Map) => .K
+     rule handleLastPrivateClause(.List, M:Map) => .K
+     rule handleReductionClause(.List, M:Map) => .K
 
      rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handlePrivateClasue(L, M)
      requires A in_keys(M)
 
-     rule handleFirstPrivateClause(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handleFirstPrivateClause(L, M)
+     rule handleFirstPrivateClause(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), A := A)) ~> handleFirstPrivateClause(L, M)
+     requires A in_keys(M)
+
+     rule handleLastPrivateClause(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handleLastPrivateClause(L, M)
+     requires A in_keys(M)
+
+     rule handleReductionClause(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handleLastPrivateClause(L, M)
      requires A in_keys(M)
 
      rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "PRIVATE:: Variable is not declared.") ~> handlePrivateClasue(L, M)
      requires notBool A in_keys(M)
      
      rule handleFirstPrivateClause(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleFirstPrivateClause(L, M)
-     requires notBool A in_keys(M)     
+     requires notBool A in_keys(M) 
+
+     rule handleLastPrivateClause(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
+     requires notBool A in_keys(M)  
+     
+     rule handleReductionClause(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
+     requires notBool A in_keys(M)          
                     
      rule ForClauseExpression(K:KItem) => Computation(K)
 

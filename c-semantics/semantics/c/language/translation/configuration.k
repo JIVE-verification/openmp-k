@@ -20,7 +20,7 @@ module C-CONFIGURATION
      // <for-loop-limit> 0 </for-loop-limit>
      // <for-loop-counter> 0 </for-loop-counter>
      // OPENMP DEFAULT THREADS: 5
-     <omp-default-threads> 4 </omp-default-threads>
+     <omp-default-threads> 5 </omp-default-threads>
      // tempVariableCounter
      <omp-temp-var>0</omp-temp-var>
      
