@@ -26,7 +26,6 @@ module C-STMT-LOOP
      <types> M:Map </types>
 
      syntax K ::= handleOmpClauses(List, Map) [function]
-     syntax K ::= extractNumThreads(List, Int) [function]
 
      rule handleOmpClauses(.List, M:Map) => .K 
 
@@ -40,8 +39,12 @@ module C-STMT-LOOP
 
      rule handleOmpClauses(ListItem(OmpNumThreads(N:KItem)) L:List, M:Map) => handleOmpClauses(L,M)
 
+     syntax K ::= extractNumThreads(List, Int) [function]
      rule extractNumThreads(ListItem(OmpNumThreads(N:KItem)) L:List, T:Int) => N
-     rule extractNumThreads(ListItem(K1:KItem) L:List, T:Int) => extractNumThreads(L, T)
+
+     rule extractNumThreads(ListItem(K1:KItem) L:List, T:Int) => extractNumThreads(L, T) 
+//          requires K1 =/=K OmpNumThreads
+          
      rule extractNumThreads(.List, T:Int) => T
 
      syntax K ::= handlePrivateClasue(List, Map) [function]
@@ -54,13 +57,15 @@ module C-STMT-LOOP
      rule handleLastPrivateClause(.List, M:Map) => .K
      rule handleReductionClause(.List, M:Map) => .K
 
-     rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handlePrivateClasue(L, M)
+     // declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K))
+
+     rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  OmpPrivateItem(A) ~> handlePrivateClasue(L, M)
      requires A in_keys(M)
 
-     rule handleFirstPrivateClause(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), A := A)) ~> handleFirstPrivateClause(L, M)
+     rule handleFirstPrivateClause(ListItem(A:CId) L:List, M:Map) =>  OmpFirstPrivateItem(A) ~> handleFirstPrivateClause(L, M)
      requires A in_keys(M)
 
-     rule handleLastPrivateClause(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handleLastPrivateClause(L, M)
+     rule handleLastPrivateClause(ListItem(A:CId) L:List, M:Map) =>  OmpLastPrivateItem(A) ~> handleLastPrivateClause(L, M)
      requires A in_keys(M)
 
      rule handleReductionClause(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handleLastPrivateClause(L, M)

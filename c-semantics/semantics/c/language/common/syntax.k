@@ -103,6 +103,9 @@ module C-SYNTAX
      To collect all clauses
      */
      syntax KItem ::= ompClauseExpr(K)
+     syntax KItem ::= OmpPrivateItem(CId)
+     syntax KItem ::= OmpFirstPrivateItem(CId)
+     syntax KItem ::= OmpLastPrivateItem(CId)
      
      /*
           testing
@@ -113,7 +116,7 @@ module C-SYNTAX
      syntax KItem ::= FORLOOPINFO(K,K,K)
      syntax KItem ::= POPLOOPONTHREAD(Int)
      // openmp temp-var
-     syntax CId ::= ompTempVar(Int)
+     // syntax CId ::= ompTempVar(Int)
 
      /*
      | BREAK of cabsloc

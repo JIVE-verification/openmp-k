@@ -126,7 +126,22 @@ module C-STMT-LOOP
      rule <k> ompClauseExpr(K:K)
                => K
           ...</k> 
+     rule 
+          <thread>...
+          <k> OmpPrivateItem(X:CId) => declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), .K))
+               ...</k>
+             <types>M:Map</types>  
+          ...</thread>
+     // int x = x;
+     // int _temp1 = x; int x = _temp1;
+     rule 
+          <thread>...
+          <k> OmpFirstPrivateItem(X:CId) => declareInternalVariable(Identifier("_temp1"), type(M[X]), initValue(X, type(M[X]), Initializer( Identifier("_temp1") := X))) ~> declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := Identifier("_temp1"))))
+               ...</k>
+             <types>M:Map</types>  
+          ...</thread>
 
+          
      rule [extract-total-threads]:
           <thread>...
           <thread-id> ThId:Int </thread-id>

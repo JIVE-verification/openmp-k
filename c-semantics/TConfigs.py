@@ -148,7 +148,7 @@ def main():
     #     ]
     timestamp = datetime.now().strftime("%Y%m%d%H%M")
     output_dir = "experiments/translation-" + args.cfile
-    Path(output_dir).mkdir(exist_ok=True)
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     depth_flag = "" if depth == 0 else f"--depth {depth} "
 
