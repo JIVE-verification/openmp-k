@@ -16,10 +16,11 @@ module C-STMT-LOOP
 
      rule For(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
           => Block(Tag, list(ListItem(E1) ListItem(For(E2, E3, B)))) 
-          
+     // parseNumThreads(OMP1, TT)     
+     // handleOmpClauses(OMP1, M)
      // for(int i=0; i< N; i++){} E1:: int i=0; // for(int i=0; i< N; i++){B} For(E1; E2; E3){B}
      rule <k> OMPFor(Tag:Int, list(OMP1:List), E1:KItem, E2:K, E3:K, B:K)
-               => Block(Tag, list(ListItem(E1) ListItem(blockOMP(TT, ompClauseExpr(handleOmpClauses(OMP1, M)), E2, E3, B))))
+               => Block(Tag, list(ListItem(E1) ListItem(blockOMP(parseNumThreads(OMP1, TT), ompClauseExpr(handleOmpClauses(OMP1, M)), E2, E3, B))))
      	...</k>
      <omp-default-threads> TT:Int </omp-default-threads>
      <omp-temp-var> V:Int => V +Int 1 </omp-temp-var>
@@ -37,15 +38,29 @@ module C-STMT-LOOP
 
      rule handleOmpClauses(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClause(L1, M) ~> handleOmpClauses(L,M)
 
-     rule handleOmpClauses(ListItem(OmpNumThreads(N:KItem)) L:List, M:Map) => handleOmpClauses(L,M)
+     rule handleOmpClauses(ListItem(OmpNumThreads(N:Int)) L:List, M:Map) => handleOmpClauses(L,M)
+     
+     syntax Int ::= parseNumThreads(List, Int) [function]
 
-     syntax K ::= extractNumThreads(List, Int) [function]
-     rule extractNumThreads(ListItem(OmpNumThreads(N:KItem)) L:List, T:Int) => N
+     rule parseNumThreads(ListItem(K1:KItem) L:List, T:Int) => parseNumThreads(L, T)
+     requires notBool isOmpNumThreads(K1)
+     
+     rule parseNumThreads(ListItem(K1:KItem) L:List, T:Int) => getNumThreads(K1)
+     requires isOmpNumThreads(K1)
+     
+     rule parseNumThreads(.List, T:Int) => T
+     
+     syntax Bool ::= isOmpNumThreads(KItem) [function]
+     rule isOmpNumThreads(OmpNumThreads(N:Int)) => true
+     rule isOmpNumThreads(_) => false [owise]
 
-     rule extractNumThreads(ListItem(K1:KItem) L:List, T:Int) => extractNumThreads(L, T) 
-//          requires K1 =/=K OmpNumThreads
-          
-     rule extractNumThreads(.List, T:Int) => T
+     syntax Int ::= getNumThreads(KItem) [function]
+     rule getNumThreads(OmpNumThreads(N:Int)) => N -Int 1
+     requires N >=Int 1
+
+     rule getNumThreads(OmpNumThreads(N:Int)) => 0
+     requires N <=Int 0
+
 
      syntax K ::= handlePrivateClasue(List, Map) [function]
      syntax K ::= handleFirstPrivateClause(List, Map) [function]

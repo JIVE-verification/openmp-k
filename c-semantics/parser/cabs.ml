@@ -258,7 +258,6 @@ and omp_clause =
 
 and omp_num_threads_clause = 
   | NT_INT of string
-  | NT_IDENT of string
 
 and for_clause = 
    FC_EXP of expression

@@ -516,7 +516,6 @@ and statement =
     | OMP_PRIVATE exp1  -> kapply1 KItem "OmpPrivateList" (list_of identifier exp1 KItem) 
     | OMP_FIRST_PRIVATE exp1  ->  kapply1 KItem "OmpFirstPrivateList" (list_of identifier exp1 KItem)  
     |OMP_NUM_THREADS NT_INT exp1 -> kapply1 KItem "OmpNumThreads" (ktoken_int_of_string exp1) 
-    |OMP_NUM_THREADS NT_IDENT exp1 -> kapply1 KItem "OmpNumThreads" (identifier exp1 KItem) 
     |OMP_REDUCTION (mod1, op1, exp1) -> kapply KItem "OmpReduction" [ktoken_string mod1; ktoken_string op1; list_of identifier exp1 KItem] 
     |OMP_LAST_PRIVATE (mod1, exp1) -> kapply KItem "OmpLastPrivateList" [ktoken_string mod1; list_of identifier exp1 KItem] in
     let statement_loc s l = kapply KItem "StatementLoc" [s KItem; cabs_loc l CabsLoc] in
@@ -526,7 +525,6 @@ and statement =
     | OMP_PRIVATE exp1  -> kapply1 KItem "OmpPrivateList" (list_of identifier exp1 KItem) 
     | OMP_FIRST_PRIVATE exp1  ->  kapply1 KItem "OmpFirstPrivateList" (list_of identifier exp1 KItem)  
     |OMP_NUM_THREADS NT_INT exp1 -> kapply1 KItem "OmpNumThreads" (ktoken_int_of_string exp1) 
-    |OMP_NUM_THREADS NT_IDENT exp1 -> kapply1 KItem "OmpNumThreads" (identifier exp1 KItem) 
     |OMP_REDUCTION (mod1, op1, exp1) -> kapply KItem "OmpReduction" [ktoken_string mod1; ktoken_string op1; list_of identifier exp1 KItem] 
     |OMP_LAST_PRIVATE (mod1, exp1) -> kapply KItem "OmpLastPrivateList" [ktoken_string mod1; list_of identifier exp1 KItem] in
     let statement_loc s l = kapply KItem "StatementLoc" [s KItem; cabs_loc l CabsLoc] in

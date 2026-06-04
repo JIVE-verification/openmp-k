@@ -932,7 +932,6 @@ omp_reduction_identiifer:
 
 omp_num_threads_clause:
     CST_INT   {NT_INT (fst $1) }
-  | IDENT     {NT_IDENT (fst $1)}
 
 // CST_INT {CONST_INT (fst $1)}
 

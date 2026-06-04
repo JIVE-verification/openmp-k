@@ -133,7 +133,7 @@ module C-STMT-LOOP
              <types>M:Map</types>  
           ...</thread>
      // int x = x;
-     // int _temp1 = x; int x = _temp1;
+     // int _temp1 = x; int x = _temp1; // delete _temp1;
      rule 
           <thread>...
           <k> OmpFirstPrivateItem(X:CId) => declareInternalVariable(Identifier("_temp1"), type(M[X]), initValue(X, type(M[X]), Initializer( Identifier("_temp1") := X))) ~> declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := Identifier("_temp1"))))
