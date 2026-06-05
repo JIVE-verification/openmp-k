@@ -126,17 +126,45 @@ module C-STMT-LOOP
      rule <k> ompClauseExpr(K:K)
                => K
           ...</k> 
-     rule 
-          <thread>...
-          <k> OmpPrivateItem(X:CId) => declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), .K))
+     
+     /*
+     https://github.com/JIVE-verification/openmp-k/blob/master/c-semantics/semantics/c/language/execution/expr/identifier.k#L18C6-L21C23
+     rule <k> X:CId => lv(lnew(Base), T) ...</k>
+          <env>... X |-> Base::SymBase ...</env>
+          <types>... X |-> T::Type ...</types>
+          [structural]
+     */
+
+     /*
+          https://github.com/JIVE-verification/openmp-k/blob/master/c-semantics/semantics/c/language/execution/stmt/block.k#L39
+          rule <k> popBlock => deleteObjects(Locals) ~> exitRestrictBlock(Locals) ~> updateScope ...</k>
+          (<block-control>...
+               <local-addresses> Locals::Set </local-addresses>
+          ...</block-control> => C)
+          <block-stack> ListItem(C:BlockControlCell) => .List ...</block-stack>
+          [structural]
+     */
+
+     rule  <thread>...
+               <k> OmpParentVar(X:CId) => lv(lnew(Base), T)
+               ...</k>
+               <block-stack> ListItem(
+                    <block-control>...
+                         <env>... X |-> Base::SymBase ...</env>
+                         <types>... X |-> T::Type ...</types>
+                    ...</block-control>) 
+               ...</block-stack>
+          ...</thread>
+
+     rule <thread>...
+          <k> OmpPrivateItem(X:CId) => declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), .K)) 
                ...</k>
              <types>M:Map</types>  
           ...</thread>
      // int x = x;
      // int _temp1 = x; int x = _temp1; // delete _temp1;
-     rule 
-          <thread>...
-          <k> OmpFirstPrivateItem(X:CId) => declareInternalVariable(Identifier("_temp1"), type(M[X]), initValue(X, type(M[X]), Initializer( Identifier("_temp1") := X))) ~> declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := Identifier("_temp1"))))
+     rule <thread>...
+          <k> OmpFirstPrivateItem(X:CId) => declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := OmpParentVar(X)))) 
                ...</k>
              <types>M:Map</types>  
           ...</thread>

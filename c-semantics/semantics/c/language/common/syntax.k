@@ -37,11 +37,11 @@ module C-SYNTAX
      syntax KItem ::= Computation(K) [latex({{#1}};), symbol]
      context Computation(HOLE:KItem => reval(HOLE)) [result(RValue)]
 
-     syntax KItem ::= OMPComputation(K) [latex({{#1}};), symbol]
-     context OMPComputation(HOLE:KItem => reval(HOLE)) [result(RValue)]
+//     syntax KItem ::= OMPComputation(K) [latex({{#1}};), symbol]
+//     context OMPComputation(HOLE:KItem => reval(HOLE)) [result(RValue)]
 
-     syntax KItem ::= PComputation(K) [latex({{#1}};), symbol]
-     context PComputation(HOLE:KItem => reval(HOLE)) [result(RValue)]
+//     syntax KItem ::= PComputation(K) [latex({{#1}};), symbol]
+//     context PComputation(HOLE:KItem => reval(HOLE)) [result(RValue)]
 
      syntax KItem ::= "Initializer" "(" K ":=" K ")" [strict(1)]
      context Initializer(_ := (HOLE:KItem => reval(HOLE))) [result(RValue)]
@@ -106,6 +106,7 @@ module C-SYNTAX
      syntax KItem ::= OmpPrivateItem(CId)
      syntax KItem ::= OmpFirstPrivateItem(CId)
      syntax KItem ::= OmpLastPrivateItem(CId)
+     syntax KItem ::= OmpParentVar(CId)
      
      /*
           testing
