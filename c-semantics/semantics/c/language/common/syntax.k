@@ -106,6 +106,8 @@ module C-SYNTAX
      syntax KItem ::= OmpPrivateItem(CId)
      syntax KItem ::= OmpFirstPrivateItem(CId)
      syntax KItem ::= OmpLastPrivateItem(CId)
+     syntax KItem ::= OmpReductionItemPlus(CId)
+     syntax KItem ::= OmpReductionItemProd(CId)
      syntax KItem ::= OmpParentVar(CId)
      
      /*

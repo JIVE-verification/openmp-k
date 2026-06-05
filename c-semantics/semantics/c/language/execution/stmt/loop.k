@@ -169,7 +169,25 @@ module C-STMT-LOOP
              <types>M:Map</types>  
           ...</thread>
 
-          
+         
+     rule <thread>...
+          <k> OmpReductionItemPlus(X:CId) ~> R:K  
+                    => declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := 0)))  
+                    ~> R ~> Computation(te( OmpParentVar(X) := OmpParentVar(X) + X, rvalType(type(M[X]))))
+               </k>
+             <types>M:Map</types>  
+          ...</thread>
+
+
+     rule <thread>...
+          <k> OmpReductionItemProd(X:CId) ~> R:K  
+                    => declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := 1)))  
+                    ~> R ~> Computation(te( OmpParentVar(X) := OmpParentVar(X) * X, rvalType(type(M[X]))))
+               </k>
+             <types>M:Map</types>  
+          ...</thread>
+
+
      rule [extract-total-threads]:
           <thread>...
           <thread-id> ThId:Int </thread-id>

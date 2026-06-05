@@ -36,8 +36,12 @@ module C-STMT-LOOP
 
      rule handleOmpClauses(ListItem(OmpLastPrivateList(S:String, list(L1:List))) L:List, M:Map) => handleLastPrivateClause(L1, M) ~> handleOmpClauses(L,M)
 
-     rule handleOmpClauses(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClause(L1, M) ~> handleOmpClauses(L,M)
+     rule handleOmpClauses(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClausePlus(L1, M) ~> handleOmpClauses(L,M)
+     requires S2 ==String "+"
 
+     rule handleOmpClauses(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClauseProd( L1, M) ~> handleOmpClauses(L,M)
+     requires S2 ==String "*"
+     
      rule handleOmpClauses(ListItem(OmpNumThreads(N:Int)) L:List, M:Map) => handleOmpClauses(L,M)
      
      syntax Int ::= parseNumThreads(List, Int) [function]
@@ -65,12 +69,16 @@ module C-STMT-LOOP
      syntax K ::= handlePrivateClasue(List, Map) [function]
      syntax K ::= handleFirstPrivateClause(List, Map) [function]
      syntax K ::= handleLastPrivateClause(List, Map) [function]
-     syntax K ::= handleReductionClause(List, Map) [function]
+
+     syntax K ::= handleReductionClausePlus(List, Map) [function]
+     syntax K ::= handleReductionClauseProd(List, Map) [function]
 
      rule handlePrivateClasue(.List, M:Map) => .K
      rule handleFirstPrivateClause(.List, M:Map) => .K
      rule handleLastPrivateClause(.List, M:Map) => .K
-     rule handleReductionClause(.List, M:Map) => .K
+
+     rule handleReductionClausePlus(.List, M:Map) => .K
+     rule handleReductionClauseProd(.List, M:Map) => .K
 
      // declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K))
 
@@ -83,7 +91,10 @@ module C-STMT-LOOP
      rule handleLastPrivateClause(ListItem(A:CId) L:List, M:Map) =>  OmpLastPrivateItem(A) ~> handleLastPrivateClause(L, M)
      requires A in_keys(M)
 
-     rule handleReductionClause(ListItem(A:CId) L:List, M:Map) =>  declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K)) ~> handleLastPrivateClause(L, M)
+     rule handleReductionClausePlus(ListItem(A:CId) L:List, M:Map) =>  OmpReductionItemPlus(A) ~> handleReductionClausePlus(L, M)
+     requires A in_keys(M)
+     
+     rule handleReductionClauseProd(ListItem(A:CId) L:List, M:Map) =>  OmpReductionItemProd(A) ~> handleReductionClauseProd(L, M)
      requires A in_keys(M)
 
      rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "PRIVATE:: Variable is not declared.") ~> handlePrivateClasue(L, M)
@@ -95,9 +106,13 @@ module C-STMT-LOOP
      rule handleLastPrivateClause(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
      requires notBool A in_keys(M)  
      
-     rule handleReductionClause(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
+     rule handleReductionClausePlus(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
      requires notBool A in_keys(M)          
-                    
+
+     rule handleReductionClauseProd(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
+     requires notBool A in_keys(M)          
+
+
      rule ForClauseExpression(K:KItem) => Computation(K)
 
      context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
