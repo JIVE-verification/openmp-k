@@ -16,34 +16,127 @@ module C-STMT-LOOP
 
      rule For(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
           => Block(Tag, list(ListItem(E1) ListItem(For(E2, E3, B)))) 
-     // parseNumThreads(OMP1, TT)     
-     // handleOmpClauses(OMP1, M)
+
      // for(int i=0; i< N; i++){} E1:: int i=0; // for(int i=0; i< N; i++){B} For(E1; E2; E3){B}
      rule <k> OMPFor(Tag:Int, list(OMP1:List), E1:KItem, E2:K, E3:K, B:K)
-               => Block(Tag, list(ListItem(E1) ListItem(blockOMP(parseNumThreads(OMP1, TT), ompClauseExpr(handleOmpClauses(OMP1, M)), E2, E3, B))))
+               => Block(Tag, list(ListItem(E1) ListItem(blockOMP(parseNumThreads(OMP1, TT), BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), E2, E3, B))))
      	...</k>
      <omp-default-threads> TT:Int </omp-default-threads>
-     <omp-temp-var> V:Int => V +Int 1 </omp-temp-var>
      <types> M:Map </types>
 
-     syntax K ::= handleOmpClauses(List, Map) [function]
+     /*************************
+     * Handling OMP Clauses - BEFORE
+     **************************/
+     syntax K ::= handleOmpClausesForBeforeOmp(List, Map) [function]
 
-     rule handleOmpClauses(.List, M:Map) => .K 
+     rule handleOmpClausesForBeforeOmp(.List, M:Map) => .K 
 
-     rule handleOmpClauses(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handlePrivateClasue(L1, M) ~> handleOmpClauses(L,M)
+     rule handleOmpClausesForBeforeOmp(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handlePrivateClasueBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
 
-     rule handleOmpClauses(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) => handleFirstPrivateClause(L1, M) ~> handleOmpClauses(L,M)
+     rule handleOmpClausesForBeforeOmp(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) => handleFirstPrivateClauseBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
 
-     rule handleOmpClauses(ListItem(OmpLastPrivateList(S:String, list(L1:List))) L:List, M:Map) => handleLastPrivateClause(L1, M) ~> handleOmpClauses(L,M)
+     rule handleOmpClausesForBeforeOmp(ListItem(OmpLastPrivateList(S:String, list(L1:List))) L:List, M:Map) => handleLastPrivateClauseBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
 
-     rule handleOmpClauses(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClausePlus(L1, M) ~> handleOmpClauses(L,M)
+     rule handleOmpClausesForBeforeOmp(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClausePlusBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
      requires S2 ==String "+"
 
-     rule handleOmpClauses(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClauseProd( L1, M) ~> handleOmpClauses(L,M)
+     rule handleOmpClausesForBeforeOmp(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClauseProdBefore( L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
      requires S2 ==String "*"
      
-     rule handleOmpClauses(ListItem(OmpNumThreads(N:Int)) L:List, M:Map) => handleOmpClauses(L,M)
+     rule handleOmpClausesForBeforeOmp(ListItem(OmpNumThreads(N:Int)) L:List, M:Map) => handleOmpClausesForBeforeOmp(L,M)
+
+     /*****************************
+     * Helper Function - Before
+     *****************************/
+
+     syntax K ::= handlePrivateClasueBefore(List, Map) [function]
+     syntax K ::= handleFirstPrivateClauseBefore(List, Map) [function]
+     syntax K ::= handleLastPrivateClauseBefore(List, Map) [function]
+     syntax K ::= handleReductionClausePlusBefore(List, Map) [function]
+     syntax K ::= handleReductionClauseProdBefore(List, Map) [function]
+
+     rule handlePrivateClasueBefore(.List, M:Map) => .K
+     rule handleFirstPrivateClauseBefore(.List, M:Map) => .K
+     rule handleLastPrivateClauseBefore(.List, M:Map) => .K
+
+     rule handleReductionClausePlusBefore(.List, M:Map) => .K
+     rule handleReductionClauseProdBefore(.List, M:Map) => .K
+
+     rule handlePrivateClasueBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), .K)) ~> handlePrivateClasueBefore(L, M)
+     requires X in_keys(M)
+
+     rule handleFirstPrivateClauseBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := OmpParentVar(X)))) ~> handleFirstPrivateClauseBefore(L, M)
+     requires X in_keys(M)
+
+     rule handleLastPrivateClauseBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := OmpParentVar(X)))) ~> handleFirstPrivateClauseBefore(L, M)
+     requires X in_keys(M)
+
+
+     rule handleReductionClausePlusBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := tv(0, utype(type(M[X])))))) ~> handleReductionClausePlusBefore(L, M)
+     requires X in_keys(M)
      
+     rule handleReductionClauseProdBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := tv(1, utype(type(M[X])))))) ~> handleReductionClauseProdBefore(L, M)
+     requires X in_keys(M)
+
+
+     /*************************
+     * Handling OMP Clauses - After
+     **************************/
+     syntax K ::= handleOmpClausesForAfterOmp(List, Map) [function]
+     // Terminate if empty List
+     rule handleOmpClausesForAfterOmp(.List, M:Map) => .K 
+     // ignore if private()
+     rule handleOmpClausesForAfterOmp(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
+     // ignore if firstprivate()
+     rule handleOmpClausesForAfterOmp(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) =>  handleOmpClausesForAfterOmp(L,M)
+     // ignore if lastprivate()
+     rule handleOmpClausesForAfterOmp(ListItem(OmpLastPrivateList(S:String, list(L1:List))) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
+     // add computation if reduction
+     rule handleOmpClausesForAfterOmp(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClausePlusAfter(L1, M) ~> handleOmpClausesForAfterOmp(L,M)
+     requires S2 ==String "+"
+     // add computation if reduction
+     rule handleOmpClausesForAfterOmp(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClauseProdAfter( L1, M) ~> handleOmpClausesForAfterOmp(L,M)
+     requires S2 ==String "*"
+     // ignore if rnum_threads()     
+     rule handleOmpClausesForAfterOmp(ListItem(OmpNumThreads(N:Int)) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
+     
+     /*****************************
+     * Helper Function - After
+     *****************************/
+     syntax K ::= handleReductionClausePlusAfter(List, Map) [function]
+     syntax K ::= handleReductionClauseProdAfter(List, Map) [function]
+
+     rule handleReductionClausePlusAfter(.List, M:Map) => .K
+     rule handleReductionClauseProdAfter(.List, M:Map) => .K
+     // add plus computation
+     rule handleReductionClausePlusAfter(ListItem(X:CId) L:List, M:Map) =>  Computation(te( OmpParentVar(X) := OmpParentVar(X) + X, rvalType(type(M[X])))) ~> handleReductionClausePlusAfter(L, M)
+     requires X in_keys(M)
+     // add product computation
+     rule handleReductionClauseProdAfter(ListItem(X:CId) L:List, M:Map) =>  Computation(te( OmpParentVar(X) := OmpParentVar(X) * X, rvalType(type(M[X])))) ~> handleReductionClauseProdAfter(L, M)
+     requires X in_keys(M)
+
+
+     // IF A DOES NOT EXIST
+     /**
+     rule handlePrivateClasueBefore(ListItem(X:CId) L:List, M:Map) =>  IMPL("JIVE1", "PRIVATE:: Variable is not declared.") ~> handlePrivateClasueBefore(L, M)
+     requires notBool X in_keys(M)
+     
+     rule handleFirstPrivateClauseBefore(ListItem(X:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleFirstPrivateClauseBefore(L, M)
+     requires notBool X in_keys(M) 
+
+     rule handleLastPrivateClause(ListItem(X:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
+     requires notBool X in_keys(M)  
+     
+     rule handleReductionClausePlus(ListItem(X:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
+     requires notBool X in_keys(M)          
+
+     rule handleReductionClauseProd(ListItem(X:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
+     requires notBool X in_keys(M)          
+     */
+
+     /****************************
+     *    Parsing num_threads()  *
+     *****************************/
      syntax Int ::= parseNumThreads(List, Int) [function]
 
      rule parseNumThreads(ListItem(K1:KItem) L:List, T:Int) => parseNumThreads(L, T)
@@ -66,60 +159,13 @@ module C-STMT-LOOP
      requires N <=Int 0
 
 
-     syntax K ::= handlePrivateClasue(List, Map) [function]
-     syntax K ::= handleFirstPrivateClause(List, Map) [function]
-     syntax K ::= handleLastPrivateClause(List, Map) [function]
-
-     syntax K ::= handleReductionClausePlus(List, Map) [function]
-     syntax K ::= handleReductionClauseProd(List, Map) [function]
-
-     rule handlePrivateClasue(.List, M:Map) => .K
-     rule handleFirstPrivateClause(.List, M:Map) => .K
-     rule handleLastPrivateClause(.List, M:Map) => .K
-
-     rule handleReductionClausePlus(.List, M:Map) => .K
-     rule handleReductionClauseProd(.List, M:Map) => .K
-
-     // declareInternalVariable(A, type(M[A]), initValue(A, type(M[A]), .K))
-
-     rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  OmpPrivateItem(A) ~> handlePrivateClasue(L, M)
-     requires A in_keys(M)
-
-     rule handleFirstPrivateClause(ListItem(A:CId) L:List, M:Map) =>  OmpFirstPrivateItem(A) ~> handleFirstPrivateClause(L, M)
-     requires A in_keys(M)
-
-     rule handleLastPrivateClause(ListItem(A:CId) L:List, M:Map) =>  OmpLastPrivateItem(A) ~> handleLastPrivateClause(L, M)
-     requires A in_keys(M)
-
-     rule handleReductionClausePlus(ListItem(A:CId) L:List, M:Map) =>  OmpReductionItemPlus(A) ~> handleReductionClausePlus(L, M)
-     requires A in_keys(M)
-     
-     rule handleReductionClauseProd(ListItem(A:CId) L:List, M:Map) =>  OmpReductionItemProd(A) ~> handleReductionClauseProd(L, M)
-     requires A in_keys(M)
-
-     rule handlePrivateClasue(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "PRIVATE:: Variable is not declared.") ~> handlePrivateClasue(L, M)
-     requires notBool A in_keys(M)
-     
-     rule handleFirstPrivateClause(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleFirstPrivateClause(L, M)
-     requires notBool A in_keys(M) 
-
-     rule handleLastPrivateClause(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
-     requires notBool A in_keys(M)  
-     
-     rule handleReductionClausePlus(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
-     requires notBool A in_keys(M)          
-
-     rule handleReductionClauseProd(ListItem(A:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
-     requires notBool A in_keys(M)          
-
-
      rule ForClauseExpression(K:KItem) => Computation(K)
 
      context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-     context blockOMP(_, _, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+     context blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
 
      context For(_, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]
-     context blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
+     context blockOMP(_, _, _, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
 
      rule <k> For(Control:RValue, Post:RValue, S:K)
                => #for(simplifyTruth(Control), Post, S, L)
@@ -130,33 +176,33 @@ module C-STMT-LOOP
      rule For(emptyValue, Post:RValue, S:K)
           => #for(Post, S)
      // for-testing
-     // rule <k> blockOMP(Th:Int, C:KItem, Control:K, Post:RValue, S:K)
+     // rule <k> blockOMP(Th:Int, B:KItem, A:KItem, Control:K, Post:RValue, S:K)
      //       =>  jive
      //     ...</k>
      //	<curr-program-loc> L::CabsLoc </curr-program-loc>
      //	requires Control =/=K emptyValue 
 
 
-     rule <k> blockOMP(Th:Int, C:KItem, Control:RValue, Post:RValue, S:K)
-            =>  #blockOMP(Th, C, simplifyTruth(Control), Post, S, L)
+     rule <k> blockOMP(Th:Int, B:KItem, A:KItem, Control:RValue, Post:RValue, S:K)
+            =>  #blockOMP(Th, B, A, simplifyTruth(Control), Post, S, L)
           ...</k>
      	<curr-program-loc> L::CabsLoc </curr-program-loc>
      	requires Control =/=K emptyValue      
                	  
-     rule blockOMP(Th:Int,  C:KItem, emptyValue, Post:RValue, S:K)
-          => #blockOMP(Th, C, Post, S)
+     rule blockOMP(Th:Int, B:KItem, A:KItem, emptyValue, Post:RValue, S:K)
+          => #blockOMP(Th, B, A, Post, S)
 
              
      syntax KItem ::= #for(K, RValue, K, CabsLoc) [klabel(#for4)]
                     | #for(RValue, K)             [klabel(#for2)]
                     
 
-     syntax KItem ::= #blockOMP(Int, KItem, K, RValue, K, CabsLoc) [klabel(#blockOMP6)]
-                    | #blockOMP(Int, KItem, RValue, K)             [klabel(##blockOMP4)]
+     syntax KItem ::= #blockOMP(Int, KItem, KItem, K, RValue, K, CabsLoc) [klabel(#blockOMP7)]
+                    | #blockOMP(Int, KItem, KItem, RValue, K)             [klabel(##blockOMP5)]
                      
                     
      context #for((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
-     context #blockOMP(_, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
+     context #blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
 
      
      rule (.K => elaborate(S)) ~> #for(_:RValue, _, S:K, _)
@@ -174,19 +220,19 @@ module C-STMT-LOOP
           <elab>... .K => For(emptyValue, Post, S) </elab>
 
 
-     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, ClauseExpr:KItem, _:RValue, _, S:K, _)
+     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, B:KItem, A:KItem, _:RValue, _, S:K, _)
      rule <k> elaborateDone(S:K)
-               ~> #blockOMP(Th:Int, ClauseExpr:KItem, Control:RValue, Post:RValue, _, L::CabsLoc)
+               ~> #blockOMP(Th:Int, B:KItem, A:KItem, Control:RValue, Post:RValue, _, L::CabsLoc)
                => lintZero(Control) ~> lintEmpty(S)
           ...</k>
-          <elab>... .K => blockOMP(Th, ClauseExpr, compoundExp(L ~> Control), Post, S) </elab>
+          <elab>... .K => blockOMP(Th, B, A, compoundExp(L ~> Control), Post, S) </elab>
 
-     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, ClauseExpr:KItem, _, S:K)
+     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, B:KItem, A:KItem, _, S:K)
      rule <k> elaborateDone(S:K)
-               ~> #blockOMP(Th:Int, ClauseExpr:KItem, Post:RValue, _)
+               ~> #blockOMP(Th:Int, B:KItem, A:KItem, Post:RValue, _)
                => lintEmpty(S)
           ...</k>
-          <elab>... .K => blockOMP(Th, ClauseExpr, emptyValue, Post, S) </elab>
+          <elab>... .K => blockOMP(Th, B, A, emptyValue, Post, S) </elab>
 
      context While((HOLE:KItem => reval(HOLE)), _) [result(RValue)]
      rule <k> While(B:RValue, S:K) => #while(simplifyTruth(B), S, L) ...</k>

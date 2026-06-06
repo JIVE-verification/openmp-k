@@ -91,18 +91,21 @@ module C-SYNTAX
      syntax KItem ::= OMPFor(K, K)
      syntax KItem ::= OMPFor(K,K,K)
      // Th, Clause, Condition, Post, Body
-     syntax KItem ::= blockOMP(Int, K, K, K, K)
      syntax KItem ::= blockOMP(Int, K, K, K, K, K)
-     syntax KItem ::= OMPForr(K, K)
-     syntax KItem ::= OMPForr(K,K,K)
+     syntax KItem ::= blockOMP(Int, K, K, K, K, K, K)
 
-     syntax KItem ::= OMPForrr(K, K)
-     syntax KItem ::= OMPForrr(K,K,K)
+//     syntax KItem ::= OMPForr(K, K)
+//     syntax KItem ::= OMPForr(K,K,K)
+
+//     syntax KItem ::= OMPForrr(K, K)
+//     syntax KItem ::= OMPForrr(K,K,K)
 
      /*
      To collect all clauses
      */
      syntax KItem ::= ompClauseExpr(K)
+     syntax KItem ::= BeforeOmp(K)
+     syntax KItem ::= AfterOmp(K)
      syntax KItem ::= OmpPrivateItem(CId)
      syntax KItem ::= OmpFirstPrivateItem(CId)
      syntax KItem ::= OmpLastPrivateItem(CId)
