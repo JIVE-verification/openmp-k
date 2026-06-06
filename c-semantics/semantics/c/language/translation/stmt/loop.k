@@ -68,7 +68,7 @@ module C-STMT-LOOP
      rule handleFirstPrivateClauseBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := OmpParentVar(X)))) ~> handleFirstPrivateClauseBefore(L, M)
      requires X in_keys(M)
 
-     rule handleLastPrivateClauseBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := OmpParentVar(X)))) ~> handleFirstPrivateClauseBefore(L, M)
+     rule handleLastPrivateClauseBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), .K)) ~> handleFirstPrivateClauseBefore(L, M)
      requires X in_keys(M)
 
 
@@ -90,7 +90,7 @@ module C-STMT-LOOP
      // ignore if firstprivate()
      rule handleOmpClausesForAfterOmp(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) =>  handleOmpClausesForAfterOmp(L,M)
      // ignore if lastprivate()
-     rule handleOmpClausesForAfterOmp(ListItem(OmpLastPrivateList(S:String, list(L1:List))) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
+     rule handleOmpClausesForAfterOmp(ListItem(OmpLastPrivateList(S:String, list(L1:List))) L:List, M:Map) => handleLastPrivateClauseAfter(L1, M) ~> handleOmpClausesForAfterOmp(L,M)
      // add computation if reduction
      rule handleOmpClausesForAfterOmp(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClausePlusAfter(L1, M) ~> handleOmpClausesForAfterOmp(L,M)
      requires S2 ==String "+"
@@ -103,11 +103,17 @@ module C-STMT-LOOP
      /*****************************
      * Helper Function - After
      *****************************/
+     syntax K ::= handleLastPrivateClauseAfter(List, Map) [function]
      syntax K ::= handleReductionClausePlusAfter(List, Map) [function]
      syntax K ::= handleReductionClauseProdAfter(List, Map) [function]
 
      rule handleReductionClausePlusAfter(.List, M:Map) => .K
      rule handleReductionClauseProdAfter(.List, M:Map) => .K
+     rule handleLastPrivateClauseAfter(.List, M:Map) => .K
+ 
+     // update after each private
+     rule handleLastPrivateClauseAfter(ListItem(X:CId) L:List, M:Map) =>  Computation(te( OmpParentVar(X) := OmpParentVar(X) + X, rvalType(type(M[X])))) ~> handleLastPrivateClauseAfter(L, M)
+     requires X in_keys(M)
      // add plus computation
      rule handleReductionClausePlusAfter(ListItem(X:CId) L:List, M:Map) =>  Computation(te( OmpParentVar(X) := OmpParentVar(X) + X, rvalType(type(M[X])))) ~> handleReductionClausePlusAfter(L, M)
      requires X in_keys(M)

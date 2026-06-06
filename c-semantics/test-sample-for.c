@@ -1,6 +1,7 @@
 #include <stdio.h>
-#define N 115
+
 int main() {
+    int N = 115;
     int a[N];
     #pragma omp parallel for
     for (int i = 0; i < N; i++) {
