@@ -37,12 +37,6 @@ module C-SYNTAX
      syntax KItem ::= Computation(K) [latex({{#1}};), symbol]
      context Computation(HOLE:KItem => reval(HOLE)) [result(RValue)]
 
-//     syntax KItem ::= OMPComputation(K) [latex({{#1}};), symbol]
-//     context OMPComputation(HOLE:KItem => reval(HOLE)) [result(RValue)]
-
-//     syntax KItem ::= PComputation(K) [latex({{#1}};), symbol]
-//     context PComputation(HOLE:KItem => reval(HOLE)) [result(RValue)]
-
      syntax KItem ::= "Initializer" "(" K ":=" K ")" [strict(1)]
      context Initializer(_ := (HOLE:KItem => reval(HOLE))) [result(RValue)]
 
@@ -94,12 +88,6 @@ module C-SYNTAX
      syntax KItem ::= blockOMP(Int, K, K, K, K, K)
      syntax KItem ::= blockOMP(Int, K, K, K, K, K, K)
 
-//     syntax KItem ::= OMPForr(K, K)
-//     syntax KItem ::= OMPForr(K,K,K)
-
-//     syntax KItem ::= OMPForrr(K, K)
-//     syntax KItem ::= OMPForrr(K,K,K)
-
      /*
      To collect all clauses
      */
@@ -118,12 +106,6 @@ module C-SYNTAX
      */
      syntax KItem ::= "jive"
      
-     syntax KItem ::= RUNONTHREAD(K,K,K)
-     syntax KItem ::= FORLOOPINFO(K,K,K)
-     syntax KItem ::= POPLOOPONTHREAD(Int)
-     // openmp temp-var
-     // syntax CId ::= ompTempVar(Int)
-
      /*
      | BREAK of cabsloc
      | CONTINUE of cabsloc

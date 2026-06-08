@@ -22,9 +22,6 @@ module C-ABSTRACT-SYNTAX
      syntax Constant ::= IntConstant
      syntax Constant ::= FloatConstant
 
-     // openmp temp-var
-//      syntax CId ::= ompTempVar(Int)
-
      // -------------------------------------------------
      // Below, I give the declaration as found in cabs.ml first, followed by
      // the K version

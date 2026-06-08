@@ -266,63 +266,7 @@ module C-STMT-LOOP
      rule <k> Continue() => .K ...</k>
           <elab>... .K => Continue() </elab>
 
-//      syntax String ::= Int2String ( Int )               [function, total, hook(STRING.int2string)]
-        syntax CId ::= String2Id (String) [function, total, hook(STRING.string2token)]
-       
-     // i < N => omp_temp_var
-     // OPENMP Fresh Variables
-//     		=> decl(int, "temp_" +String Int2String(V))
-//     		=> decl("int", "temp_")
-//			=> id("temp_")
-     syntax CId ::= "ompFreshVar"
-     rule <k> ompFreshVar => Assign(String2Id("temp" +String Int2String(V)), TT) ...</k>
-     <omp-temp-var> V:Int => V +Int 1 </omp-temp-var>
-     <omp-default-threads> TT:Int </omp-default-threads>
-     // decl(int, string)          
-          
-     //rule <k> OMPFor(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
-     //     => Block(Tag, list(ListItem(ompFreshVar) ListItem(TT) ListItem(E1) ListItem(For(E2, E3, B))))
-     //		... </k>
-// original 
-//     rule <k> OMPFor(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
-//          => Block(Tag, list(ListItem(handleE1(E1)) ListItem(PFor(E2, E3, B))))
-//      	 ...</k>
-          
-//     rule <k> OMPFor(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
-//          => handleE1(E1) ~> OMPForr(Tag, E1, E2, E3, B)
-//      	 ...</k>      	 
-//[function]
-//   syntax KItem ::= handleE2(KItem, KItem) [function]
 
-//     rule <k>
-//     		OMPFor(Tag:Int, DeclarationDefinition(InitNameGroup(T:Type, list(ListItem(InitName(N:KItem, Exp:KItem))))), E2:K, E3:K, B:K) 
-//     		=> Block(Tag, list(ListItem(DeclarationDefinition(InitNameGroup(T, list(ListItem(InitName(N, TT)))))) ListItem(PFor(E2, E3, B)))) 
-//     	   ...</k>
-//     <omp-default-threads> TT:Int </omp-default-threads>
-     
-//     rule <k>
-//     		handleE1(CodeLoc(DeclarationDefinition(InitNameGroup(T:Type, list(ListItem(InitName(N:KItem, Exp:KItem))))), L::CabsLoc))
-//     		=>  CodeLoc(DeclarationDefinition(InitNameGroup(T, list(ListItem(InitName(N, TT))))), L)
-//     	   ...</k>
-//     <omp-default-threads> TT:Int </omp-default-threads>
-     
-//     rule <k>
-//     		handleE1(CodeLoc(K:K, L:CabsLoc))
-//     		=>  CodeLoc(K, L)
-//     	   ...</k>
-//     <omp-default-threads> TT:Int </omp-default-threads>
-
-//     rule <k>
-//     		handleE1(CodeLoc(DeclarationDefinition(InitNameGroup(T:Type, list(ListItem(InitName(N:KItem, Exp:KItem))))), L:CabsLoc))
-//     		=>  CodeLoc(TT, L)
-//     	   ...</k>
-//        <omp-default-threads> TT:Int </omp-default-threads>
-// IT WORKED
-//	rule <k>
-//     		handleE1(CodeLoc(DeclarationDefinition(InitNameGroup(T, list(ListItem(InitName(N, Exp))))), L:CabsLoc))
-//     		=>  CodeLoc(DeclarationDefinition(InitNameGroup(T, list(ListItem(InitName(N, TT))))), L)
-//     	   ...</k>
-//        <omp-default-threads> TT:Int </omp-default-threads>
 
 
 endmodule
