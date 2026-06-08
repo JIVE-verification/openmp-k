@@ -111,8 +111,9 @@ module C-STMT-LOOP
      rule handleReductionClauseProdAfter(.List, M:Map) => .K
      rule handleLastPrivateClauseAfter(.List, M:Map) => .K
  
-     // update after each private
-     rule handleLastPrivateClauseAfter(ListItem(X:CId) L:List, M:Map) =>  Computation(te( OmpParentVar(X) := OmpParentVar(X) + X, rvalType(type(M[X])))) ~> handleLastPrivateClauseAfter(L, M)
+     // Computation(te( OmpParentVar(X) := OmpParentVar(X) + X, rvalType(type(M[X]))))
+     // update after each last-private
+     rule handleLastPrivateClauseAfter(ListItem(X:CId) L:List, M:Map) =>  OmpLastPrivateItem(X) ~> handleLastPrivateClauseAfter(L, M)
      requires X in_keys(M)
      // add plus computation
      rule handleReductionClausePlusAfter(ListItem(X:CId) L:List, M:Map) =>  Computation(te( OmpParentVar(X) := OmpParentVar(X) + X, rvalType(type(M[X])))) ~> handleReductionClausePlusAfter(L, M)

@@ -145,8 +145,9 @@ module C-STMT-LOOP
           <thread-status>
                Status:Map => Status[Th <- threadRunning]
           </thread-status>
-          <omp-current-threads> TotalThreads:Int => 0 </omp-current-threads>
+          <omp-current-threads> TotalThreads:Int</omp-current-threads>
           requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
+//          <omp-current-threads> TotalThreads:Int => 0 </omp-current-threads>
      
      rule [other-thread]:
           <thread>
@@ -175,7 +176,7 @@ module C-STMT-LOOP
           ...
                <thread-id> Fresh:Int </thread-id>
                <k>  
-                   B ~> declareInternalVariable(X, T, initValue(X, T, Initializer(Y := ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(Th, TT) ) ))) ) ~> For(compoundExp( L~> te((I < ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(Th +Int 1, TT) ) )) != CM, TT)), Post, S) ~> A ~> joinChild
+                   B ~> declareInternalVariable(X, T, initValue(X, T, Initializer(Y := ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(TotalThreads -Int Th, TT) ) ))) ) ~> For(compoundExp( L~> te((I < ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(TotalThreads -Int Th +Int 1, TT) ) )) != CM, TT)), Post, S) ~> A ~> joinChild
                </k>
                <thread-local>
                     C
@@ -212,7 +213,53 @@ module C-STMT-LOOP
                <child-threads> ... SetItem(ThId) => .Set ...</child-threads>
           ...
           </thread>
+// 
 
+     rule [update-last-private-if-last-iteration]:
+          <thread> ...
+               <thread-id> ThId:Int</thread-id>
+               <k>
+                    OmpLastPrivateItem(X:CId) => Computation(te(OmpParentVar(X) := OmpParentVar(X) + X, rvalType(T)))
+               ...</k>
+               <thread-local>
+               ...
+                    <function-control>
+                    ...
+                         <block-control>...
+                         <env>... X |-> Base::SymBase ...</env>
+                         <types>... X |-> T::Type ...</types>
+                         ...</block-control>
+                    ...
+                    </function-control>
+               ...
+               </thread-local>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires ThId ==Int (TotalThreads -Int 1)
+
+     rule [ignore-last-private-if-last-iteration]:
+          <thread> ...
+               <thread-id> ThId:Int</thread-id>
+               <k>
+                    OmpLastPrivateItem(X:CId) => .K
+               ...</k>
+               <thread-local>
+               ...
+                    <function-control>
+                    ...
+                         <block-control>...
+                         <env>... X |-> Base::SymBase ...</env>
+                         <types>... X |-> T::Type ...</types>
+                         ...</block-control>
+                    ...
+                    </function-control>
+               ...
+               </thread-local>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires ThId =/=Int (TotalThreads -Int 1)
 
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.1}{1}}}{
      The evaluation of the controlling expression takes place before each
