@@ -24,6 +24,14 @@ module C-STMT-LOOP
      <omp-default-threads> TT:Int </omp-default-threads>
      <types> M:Map </types>
 
+     // parallel{S} 
+     rule <k> OMPParallel(Tag:Int, list(OMP1:List), S:K)
+               => Block(Tag, list(ListItem(blockOmpParallel(parseNumThreads(OMP1, TT), BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), S))))
+     	...</k>
+     <omp-default-threads> TT:Int </omp-default-threads>
+     <types> M:Map </types>
+
+
      /*************************
      * Handling OMP Clauses - BEFORE
      **************************/
@@ -199,6 +207,11 @@ module C-STMT-LOOP
      rule blockOMP(Th:Int, B:KItem, A:KItem, emptyValue, Post:RValue, S:K)
           => #blockOMP(Th, B, A, Post, S)
 
+
+     rule <k> blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K)
+            =>  #blockOmpParallel(Th, B, A, S, L)
+          ...</k>
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>
              
      syntax KItem ::= #for(K, RValue, K, CabsLoc) [klabel(#for4)]
                     | #for(RValue, K)             [klabel(#for2)]
@@ -206,7 +219,8 @@ module C-STMT-LOOP
 
      syntax KItem ::= #blockOMP(Int, KItem, KItem, K, RValue, K, CabsLoc) [klabel(#blockOMP7)]
                     | #blockOMP(Int, KItem, KItem, RValue, K)             [klabel(##blockOMP5)]
-                     
+
+     syntax KItem ::= #blockOmpParallel(Int, KItem, KItem, K, CabsLoc) [klabel(#blockOmpParallel5)]                     
                     
      context #for((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
      context #blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
@@ -240,6 +254,14 @@ module C-STMT-LOOP
                => lintEmpty(S)
           ...</k>
           <elab>... .K => blockOMP(Th, B, A, emptyValue, Post, S) </elab>
+
+
+     rule (.K => elaborate(S)) ~> #blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K, _)
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpParallel(Th:Int, B:KItem, A:KItem,  _, L::CabsLoc)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpParallel(Th, B, A, S) </elab>
 
      context While((HOLE:KItem => reval(HOLE)), _) [result(RValue)]
      rule <k> While(B:RValue, S:K) => #while(simplifyTruth(B), S, L) ...</k>

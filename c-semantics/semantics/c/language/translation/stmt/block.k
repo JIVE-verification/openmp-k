@@ -27,5 +27,5 @@ module C-STMT-BLOCK
           <curr-scope> blockScope(F:CId, Base::SymBase, _) </curr-scope>
           <block-history> .List => ListItem(Tag) ...</block-history>
           <elab>... .K => pushBlock(Tag) </elab>
-
+     
 endmodule

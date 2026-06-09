@@ -254,7 +254,7 @@ module C-ABSTRACT-SYNTAX
      syntax KItem ::= DoWhile(K, KItem, CabsLoc)  [klabel(DoWhile3), symbol]
      syntax KItem ::= For(Int, KItem, K, K, K)  [klabel(For5), symbol]
      syntax KItem ::= OMPFor(Int, KItem, KItem, K, K, K)  [klabel(OMPFor6), symbol]
-     syntax KItem ::= OMPPARALLEL(Int, KItem, K)  [klabel(OMPPARALLEL3), symbol]
+     syntax KItem ::= OMPParallel(Int, KItem, K)  [klabel(OMPPARALLEL3), symbol]
 
      // gcc extension
      syntax KItem ::= CaseRange(KItem, KItem, KItem) [symbol]

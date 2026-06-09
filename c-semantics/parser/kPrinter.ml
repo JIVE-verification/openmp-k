@@ -547,7 +547,7 @@ and statement =
     | DOWHILE (exp, stat, loc, wloc)    -> statement_loc (kapply KItem "DoWhile3" [expression exp K; new_block_statement stat KItem; cabs_loc wloc CabsLoc]) loc
     | FOR (fc1, exp2, exp3, stat, loc)  -> statement_loc (for_statement fc1 exp2 exp3 stat) loc
     | OMPFOR (omp1, fc1, exp2, exp3, stat, loc)  -> statement_loc (omp_for_statement omp1 fc1 exp2 exp3 stat) loc
-    | OMPPARALLEL (omp1,stat, loc)  -> statement_loc (omp_parallel_statement omp1 stat) loc
+    | OMPPARALLEL (omp1, stat, loc)  -> statement_loc (omp_parallel_statement omp1 stat) loc
     | BREAK loc                         -> statement_loc (kapply0 KItem "Break") loc
     | CONTINUE loc                      -> statement_loc (kapply0 KItem "Continue") loc
     | RETURN (exp, loc)                 -> statement_loc (kapply KItem "Return" [expression exp K]) loc

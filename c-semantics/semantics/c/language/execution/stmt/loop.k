@@ -126,7 +126,7 @@ module C-STMT-LOOP
                ...</block-stack>
           ...</thread>
 
-     rule [extract-total-threads]:
+     rule [extract-total-threads-ompfor]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
           <k> blockOMP(Th:Int, B:K, A:K, Initial:K, Control:K, Post:K, S:K)
@@ -135,7 +135,17 @@ module C-STMT-LOOP
           <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>
           requires TotalThreads ==Int 0 
 
-     rule [zero-thread]:
+     rule [extract-total-threads-omp-parallel]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOmpParallel(Th:Int, B:K, A:K, S:K)
+               ...</k>
+          ...</thread>
+          <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>
+          requires TotalThreads ==Int 0
+
+
+     rule [zero-threadomp-for]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
           <k> blockOMP(Th:Int, B:K, A:K, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((I:KItem < N:KItem) != C:KItem, TT:UType)), Post:K, S:K)
@@ -148,8 +158,21 @@ module C-STMT-LOOP
           <omp-current-threads> TotalThreads:Int</omp-current-threads>
           requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
 //          <omp-current-threads> TotalThreads:Int => 0 </omp-current-threads>
-     
-     rule [other-thread]:
+
+     rule [zero-threadomp-parallel]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOmpParallel(Th:Int, B:K, A:K, S:K)
+               => B ~> S ~> A ~> waitingForChild
+               ...</k>
+          ...</thread>
+          <thread-status>
+               Status:Map => Status[Th <- threadRunning]
+          </thread-status>
+          <omp-current-threads> TotalThreads:Int</omp-current-threads>
+          requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
+
+     rule [other-thread-omp-for]:
           <thread>
           ...
                <thread-id> Parent:Int </thread-id>
@@ -188,6 +211,47 @@ module C-STMT-LOOP
           </thread>)
           requires Th =/=Int 0 andBool notBool hasLint andBool TotalThreads =/=Int 0
           [large, ndthread]
+
+     rule [other-thread-omp-parallel]:
+          <thread>
+          ...
+               <thread-id> Parent:Int </thread-id>
+               <thread-local> 
+                    C::Bag 
+                    <duration> _ </duration>
+                    <parent-thread> _ </parent-thread>
+                    <child-threads> ... .Set => SetItem(Fresh)</child-threads>
+               </thread-local>
+               <k> 
+                    blockOmpParallel(Th:Int, B:K, A:K,  S:K)
+                    => blockOmpParallel(Th -Int 1, B:K, A:K, S)
+               ...
+               </k>
+          ...
+          </thread>
+          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+          <thread-status>
+               Status:Map => Status[Fresh <- threadRunning]
+          </thread-status>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          (.Bag =>
+          <thread>
+          ...
+               <thread-id> Fresh:Int </thread-id>
+               <k>  
+                   B ~> S ~> A ~> joinChild
+               </k>
+               <thread-local>
+                    C
+                    <parent-thread> Parent </parent-thread>
+                    <child-threads> .Set </child-threads>
+                    <duration> threadLocal(Fresh:Int) </duration>
+               </thread-local>
+          ...
+          </thread>)
+          requires Th =/=Int 0 andBool notBool hasLint andBool TotalThreads =/=Int 0
+          [large, ndthread]
+
 
      rule [join-if-no-child]:
           <thread> ...

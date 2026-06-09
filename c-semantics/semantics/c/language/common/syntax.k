@@ -88,6 +88,8 @@ module C-SYNTAX
      syntax KItem ::= blockOMP(Int, K, K, K, K, K)
      syntax KItem ::= blockOMP(Int, K, K, K, K, K, K)
 
+     syntax KItem ::= blockOmpParallel(Int, K, K, K)
+
      /*
      To collect all clauses
      */

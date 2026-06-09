@@ -134,6 +134,8 @@ module C-PROCESS-LABEL
                </goto-calc>
           )
    
+          
+
      rule <k> waitingOnGotoMap ...</k>
           <goto-calc>
                <computation>
@@ -146,7 +148,6 @@ module C-PROCESS-LABEL
                     ListItem(Num::Int) OldBlockHistory::List
                </goto-block-history>
                <goto-loop-stack> OldLoopStack::List </goto-loop-stack>
-
           </goto-calc>
           (.Bag =>
                <goto-calc>
@@ -172,8 +173,53 @@ module C-PROCESS-LABEL
                     </goto-loop-stack>
                </goto-calc>
           )
-     
+                    
+          rule <k> waitingOnGotoMap ...</k>
+          <goto-calc>
+               <computation>
+                    (blockOmpParallel(Th:Int, BF:K, AT:K, S:K) => .K)
+                    ~> K:K
+               </computation>
+               <computation-tail> Tail:K </computation-tail>
+               B::Bag
+               <goto-block-history>
+                    ListItem(Num::Int) OldBlockHistory::List
+               </goto-block-history>
+          </goto-calc>
+          (.Bag =>
+               <goto-calc>
+                    <computation> S </computation>
+                    <computation-tail>
+                         Computation(.K)
+                         ~> K
+                         ~> Tail
+                    </computation-tail>
+                    B
+                    <goto-block-history>
+                         ListItem(Num) OldBlockHistory
+                    </goto-block-history>
+               </goto-calc>
+          )
 
+     /*
+     rule <k> waitingOnGotoMap ...</k>
+          <computation>
+               (Default(SwitchNum::Int, S:K) => S) ~> K:K
+          </computation>
+          <computation-tail> Tail:K </computation-tail>
+          <goto-loop-stack> LoopStack::List </goto-loop-stack>
+          <decl-stack> DeclStack::List </decl-stack>
+          <goto-block-history> BlockHistory::List </goto-block-history>
+          <curr-scope> blockScope(... functionLoc: Base::SymBase) </curr-scope>
+          <functions>...
+               Base |-> functionObject(... gotoMap: (
+                    M::Map => M[caseLabel(SwitchNum, defaultCase)
+                              <- gotoObject(BlockHistory,
+                              (S ~> K ~> Tail), LoopStack, DeclStack)]
+               ))
+          ...</functions>
+          requires notBool (caseLabel(SwitchNum, defaultCase) in_keys(M))
+     */
      rule <k> waitingOnGotoMap ...</k>
           <computation>
                (.K => S ~> loopMarked)
