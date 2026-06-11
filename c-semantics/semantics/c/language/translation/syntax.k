@@ -248,13 +248,18 @@ module C-ABSTRACT-SYNTAX
      /*
      | DOWHILE of expression * statement * cabsloc * cabsloc
      | FOR of for_clause * expression * expression * statement * cabsloc
-     | OMPFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
+     | OMPPARALLELFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
      | OMPPARALLEL of omp_clause list * statement * cabsloc
      */
      syntax KItem ::= DoWhile(K, KItem, CabsLoc)  [klabel(DoWhile3), symbol]
      syntax KItem ::= For(Int, KItem, K, K, K)  [klabel(For5), symbol]
+     syntax KItem ::= OMPParallelFor(Int, KItem, KItem, K, K, K)  [klabel(OMPParallelFor6), symbol]
      syntax KItem ::= OMPFor(Int, KItem, KItem, K, K, K)  [klabel(OMPFor6), symbol]
      syntax KItem ::= OMPParallel(Int, KItem, K)  [klabel(OMPPARALLEL3), symbol]
+     
+     // Tag, Clauses, BeforeOmpFor, AfterOmpFor, K
+     syntax KItem ::= OMPParallel2(Int, KItem, K)  [symbol]
+
 
      // gcc extension
      syntax KItem ::= CaseRange(KItem, KItem, KItem) [symbol]

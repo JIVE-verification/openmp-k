@@ -66,7 +66,7 @@ module C-STMT-LOOP
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
 
-     rule [include-i]:
+     rule [include-parallel-omp-i]:
                <k> Computation(te(X:CId := V:KItem, TT::UType)) ~> blockOMP(Th:Int, B:K, A:K, Control:K, Post:K, S:K)
                     => blockOMP(Th, B:K, A:K, declareInternalVariable ( X , type(TypesMap[X]) , initValue ( X , type(TypesMap[X]) , Initializer( X:=V) )), Control, Post, S)
                     ...</k>
@@ -79,9 +79,34 @@ module C-STMT-LOOP
                andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
           [structural]
 
-     rule [include-int-i]:
+     rule [include-parallel-omp-int-i]:
           <k> declareInternalVariable(X:CId, _, initValue(_, T::Type, Init:K)) ~> blockOMP(Th:Int, B:K, A:K, Control:K, Post:K, S:K)
                => blockOMP(Th, B:K, A:K, declareInternalVariable(X, T, initValue(X, T, Init)), Control, Post, S)
+               ...</k>
+          <env> Env::Map </env>
+          requires notBool isStaticType(T)
+               andBool notBool isExternType(T)
+               andBool notBool isFunctionType(T)
+               andBool notBool isVariablyModifiedType(T)
+               andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
+          [structural]
+
+     rule [include-ompfor-i]:
+               <k> Computation(te(X:CId := V:KItem, TT::UType)) ~> blockOmpFor(B:K, A:K, Control:K, Post:K, S:K)
+                    => blockOmpFor(B:K, A:K, declareInternalVariable ( X , type(TypesMap[X]) , initValue ( X , type(TypesMap[X]) , Initializer( X:=V) )), Control, Post, S)
+                    ...</k>
+               <env> Env::Map </env>
+               <types> TypesMap::Map </types>
+         requires notBool isStaticType(type(TypesMap[X]))
+               andBool notBool isExternType(type(TypesMap[X]))
+               andBool notBool isFunctionType(type(TypesMap[X]))
+               andBool notBool isVariablyModifiedType(type(TypesMap[X]))
+               andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
+          [structural]
+
+     rule [include-omp-for-int-i]:
+          <k> declareInternalVariable(X:CId, _, initValue(_, T::Type, Init:K)) ~> blockOmpFor(B:K, A:K, Control:K, Post:K, S:K)
+               => blockOmpFor(B:K, A:K, declareInternalVariable(X, T, initValue(X, T, Init)), Control, Post, S)
                ...</k>
           <env> Env::Map </env>
           requires notBool isStaticType(T)
@@ -145,7 +170,7 @@ module C-STMT-LOOP
           requires TotalThreads ==Int 0
 
 
-     rule [zero-threadomp-for]:
+     rule [zero-threadomp-parallel-for]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
           <k> blockOMP(Th:Int, B:K, A:K, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((I:KItem < N:KItem) != C:KItem, TT:UType)), Post:K, S:K)
@@ -157,6 +182,17 @@ module C-STMT-LOOP
           </thread-status>
           <omp-current-threads> TotalThreads:Int</omp-current-threads>
           requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
+//          <omp-current-threads> TotalThreads:Int => 0 </omp-current-threads>
+
+     rule [thread-omp-for]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOmpFor(B:K, A:K, declareInternalVariable(X:CId, _, initValue(_, T::Type, Initializer(Y:KItem := V:KItem))), compoundExp(L:CabsLoc ~> te((I:KItem < N:KItem) != CM:KItem, TT:UType)), Post:K, S:K)
+               => B ~> declareInternalVariable(X, T, initValue(X, T, Initializer(Y := ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(ThId, TT) ) ))) ) ~> For(compoundExp( L~> te((I < ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(ThId +Int 1, TT) ) )) != CM, TT)), Post, S) ~> A
+               ...</k>
+          ...</thread>
+          <omp-current-threads> TotalThreads:Int</omp-current-threads>
+          requires TotalThreads =/=Int 0
 //          <omp-current-threads> TotalThreads:Int => 0 </omp-current-threads>
 
      rule [zero-threadomp-parallel]:
@@ -172,7 +208,7 @@ module C-STMT-LOOP
           <omp-current-threads> TotalThreads:Int</omp-current-threads>
           requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
 
-     rule [other-thread-omp-for]:
+     rule [other-thread-omp-parallel-for]:
           <thread>
           ...
                <thread-id> Parent:Int </thread-id>

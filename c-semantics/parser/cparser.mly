@@ -843,7 +843,10 @@ statement:
 	        	         {DOWHILE (smooth_expression (fst $4), $2, (*handleLoc*) $1, $3)}
 |   KPRAGMA OMP PARALLEL FOR omp_clause FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
-	                         {OMPFOR ($5, $8, $9, $11, $13, (*handleLoc*) $6)}
+	                         {OMPPARALLELFOR ($5, $8, $9, $11, $13, (*handleLoc*) $6)}
+|   KPRAGMA OMP FOR omp_clause FOR LPAREN for_clause opt_expression
+	        SEMICOLON opt_expression RPAREN statement
+	                         {OMPFOR ($4, $7, $8, $10, $12, (*handleLoc*) $5)}
 |   KPRAGMA OMP PARALLEL omp_clause statement
 	                         {OMPPARALLEL ($4, $5, (*handleLoc*) $3)}
 |   FOR LPAREN for_clause opt_expression

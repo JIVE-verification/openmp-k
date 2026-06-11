@@ -11,14 +11,13 @@ module C-STMT-LOOP
      imports C-ERROR-SYNTAX
      imports C-DECL-INITIALIZER-SYNTAX
      imports C-DECL-LOCAL
-
      imports C-TRANSLATION-ERROR-SYNTAX
 
      rule For(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
           => Block(Tag, list(ListItem(E1) ListItem(For(E2, E3, B)))) 
 
      // for(int i=0; i< N; i++){} E1:: int i=0; // for(int i=0; i< N; i++){B} For(E1; E2; E3){B}
-     rule <k> OMPFor(Tag:Int, list(OMP1:List), E1:KItem, E2:K, E3:K, B:K)
+     rule <k> OMPParallelFor(Tag:Int, list(OMP1:List), E1:KItem, E2:K, E3:K, B:K)
                => Block(Tag, list(ListItem(E1) ListItem(blockOMP(parseNumThreads(OMP1, TT), BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), E2, E3, B))))
      	...</k>
      <omp-default-threads> TT:Int </omp-default-threads>
@@ -30,6 +29,16 @@ module C-STMT-LOOP
      	...</k>
      <omp-default-threads> TT:Int </omp-default-threads>
      <types> M:Map </types>
+
+
+          // for(int i=0; i< N; i++){} E1:: int i=0; // for(int i=0; i< N; i++){B} For(E1; E2; E3){B}
+     rule <k> OMPFor(Tag:Int, list(OMP1:List), E1:KItem, E2:K, E3:K, B:K)
+               => Block(Tag, list(ListItem(E1) ListItem(blockOmpFor(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), E2, E3, B))))
+     	...</k>
+     <types> M:Map </types>
+
+
+
 
 
      /*************************
@@ -174,13 +183,19 @@ module C-STMT-LOOP
      requires N <=Int 0
 
 
+     /******************************************************
+     *    
+     ******************************************************/
+
      rule ForClauseExpression(K:KItem) => Computation(K)
 
      context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
      context blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+     context blockOmpFor( _, _, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
 
      context For(_, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]
      context blockOMP(_, _, _, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
+     context blockOmpFor( _, _, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
 
      rule <k> For(Control:RValue, Post:RValue, S:K)
                => #for(simplifyTruth(Control), Post, S, L)
@@ -207,6 +222,14 @@ module C-STMT-LOOP
      rule blockOMP(Th:Int, B:KItem, A:KItem, emptyValue, Post:RValue, S:K)
           => #blockOMP(Th, B, A, Post, S)
 
+     rule <k> blockOmpFor(B:KItem, A:KItem, Control:RValue, Post:RValue, S:K)
+            =>  #blockOmpFor(B, A, simplifyTruth(Control), Post, S, L)
+          ...</k>
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>
+     	requires Control =/=K emptyValue      
+               	  
+     rule blockOmpFor(B:KItem, A:KItem, emptyValue, Post:RValue, S:K)
+          => #blockOmpFor(B, A, Post, S)
 
      rule <k> blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K)
             =>  #blockOmpParallel(Th, B, A, S, L)
@@ -218,12 +241,16 @@ module C-STMT-LOOP
                     
 
      syntax KItem ::= #blockOMP(Int, KItem, KItem, K, RValue, K, CabsLoc) [klabel(#blockOMP7)]
-                    | #blockOMP(Int, KItem, KItem, RValue, K)             [klabel(##blockOMP5)]
+                    | #blockOMP(Int, KItem, KItem, RValue, K)             [klabel(#blockOMP5)]
+
+     syntax KItem ::= #blockOmpFor(KItem, KItem, K, RValue, K, CabsLoc) [klabel(#blockOmpFor6)]
+                    | #blockOmpFor(KItem, KItem, RValue, K)             [klabel(#blockOmpFor4)]
 
      syntax KItem ::= #blockOmpParallel(Int, KItem, KItem, K, CabsLoc) [klabel(#blockOmpParallel5)]                     
                     
      context #for((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
      context #blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
+     context #blockOmpFor( _, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
 
      
      rule (.K => elaborate(S)) ~> #for(_:RValue, _, S:K, _)
@@ -254,6 +281,21 @@ module C-STMT-LOOP
                => lintEmpty(S)
           ...</k>
           <elab>... .K => blockOMP(Th, B, A, emptyValue, Post, S) </elab>
+
+
+     rule (.K => elaborate(S)) ~> #blockOmpFor( B:KItem, A:KItem, _:RValue, _, S:K, _)
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpFor( B:KItem, A:KItem, Control:RValue, Post:RValue, _, L::CabsLoc)
+               => lintZero(Control) ~> lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpFor(B, A, compoundExp(L ~> Control), Post, S) </elab>
+
+     rule (.K => elaborate(S)) ~> #blockOmpFor(B:KItem, A:KItem, _, S:K)
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpFor( B:KItem, A:KItem, Post:RValue, _)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpFor(B, A, emptyValue, Post, S) </elab>
 
 
      rule (.K => elaborate(S)) ~> #blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K, _)
@@ -291,5 +333,55 @@ module C-STMT-LOOP
 
 
 
+
+/* OMPParallel ( 2 , list ( .List ) , BlockStatement ( Block ( 3 , list ( .List ) , list ( ListItem ( CodeLoc ( BlockStatement (Block ( 4 , list ( .List ) , list ( ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "x" ) , JustBase ( ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) ,CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 7 , 9 , false ) ) )
+        ListItem ( CodeLoc ( Computation ( Identifier ( "x" ) := tv ( 10 , ut ( SetItem ( IntegerConstant ) , int ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 8 , 9 , false ) ) )
+        ListItem ( CodeLoc ( OMPFor ( 5 , list ( ListItem ( OmpReduction ( "omp_reduction_empty" , "+" , list ( ListItem ( Identifier ( "total" ) ) ) ) ) ) , CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "i" ) , JustBase ( ) , list ( .List ) ) , SingleInit ( tv ( 1 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 10 , 14 , false ) ) , Identifier ( "i" ) <= tv ( 5 , ut ( SetItem ( IntegerConstant ) , int ) ) , Identifier ( "i" ) ++ , BlockStatement ( Block ( 6 , list ( .List ) , list ( ListItem ( CodeLoc ( BlockStatement ( Block ( 7 , list ( .List ) , list ( ListItem ( CodeLoc ( Computation ( Identifier ( "total" ) += Identifier ( "x" ) * Identifier ( "i" ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 11 , 13 , false ) ) ) ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 10 , 38 , false ) ) ) ) ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 10 , 9 , false ) ) )
+        ListItem ( CodeLoc ( Computation ( Identifier ( "x" ) := Identifier ( "x" ) * tv ( 2 , ut ( SetItem ( IntegerConstant ) , int ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 13 , 9 , false ) ) ) ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 6 , 5 , false ) ) ) ) ) ) )
+*/
+
+/* OMPParallel ( 2 , list ( .List ) , BlockStatement ( Block ( 3 , list ( .List ) , list ( ListItem ( CodeLoc ( BlockStatement (Block ( 4 , list ( .List ) , list (S:List) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 6 , 5 , false ) ) ) ) ) ) )
+*/
+/*     rule OMPParallel( Tag:Int , list( C:List ) , BlockStatement( Block( Tag1:Int , list( B1:List ) , list( ListItem( CodeLoc( BlockStatement(Block( Tag2:Int , list( B2:List ) , list(S:List) ) ) , Line:CabsLoc ) ) ) ) ) )
+          => OMPParallel2( Tag, list(appendList(appendList(C, funBeforeOmpFor(S, .List)),funAfterOmpFor(S))) , BlockStatement( Block( Tag1, list( B1) , list( ListItem( CodeLoc( BlockStatement(Block( Tag2, list( B2) , list(funOmpFor(S)) ) ) , Line:CabsLoc ) ) ) ) ) )
+*/          
+          
+//          OMPParallel2( Tag, list(appendTwoList(C, funBeforeOmpFor(S, .List))) , BlockStatement( Block( Tag1, list( B1) , list( ListItem( CodeLoc( BlockStatement(Block( Tag2, list( B2) , list(appendTwoList(funOmpFor(S), funAfterOmpFor(S))) ) ) , Line:CabsLoc ) ) ) ) ) )
+          
+          
+//          list(ListItem(funBeforeOmpFor(S, .List)) ListItem(funOmpFor(S)) ListItem(funAfterOmpFor(S)))
+        
+     syntax List ::= appendList(List, List) [function]
+
+     rule appendList(L1:List, ListItem(K1:KItem)  L2:List) => appendList(L1 ListItem(K1), L2)
+     rule appendList(L1:List, .List) => L1
+     
+     syntax Bool ::= isOmpFor(KItem) [function]
+     rule isOmpFor(OMPFor(_, _, _, _, _, _)) => true
+     rule isOmpFor(_) => false [owise]
+
+
+     syntax List ::= funBeforeOmpFor(List, List) [function]
+     rule funBeforeOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List, A:List) => A
+     requires isOmpFor(K1)
+     rule funBeforeOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List, A:List) => funBeforeOmpFor(L, A ListItem(CodeLoc(K1, Line)))
+     requires notBool isOmpFor(K1)
+     rule funBeforeOmpFor(.List, A:List) => A
+
+
+     syntax List ::= funAfterOmpFor(List) [function]
+     rule funAfterOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => L
+     requires isOmpFor(K1)
+     rule funAfterOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => funAfterOmpFor(L)
+     requires notBool isOmpFor(K1)
+     rule funAfterOmpFor(.List) => .List
+
+
+     syntax List ::= funOmpFor(List) [function]
+     rule funOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => ListItem(CodeLoc(K1:KItem, Line:CabsLoc))
+     requires isOmpFor(K1)
+     rule funOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => funOmpFor(L)
+     requires notBool isOmpFor(K1)
+     rule funOmpFor(.List) => .List
 
 endmodule

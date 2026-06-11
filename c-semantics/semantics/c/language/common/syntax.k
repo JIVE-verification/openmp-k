@@ -88,6 +88,11 @@ module C-SYNTAX
      syntax KItem ::= blockOMP(Int, K, K, K, K, K)
      syntax KItem ::= blockOMP(Int, K, K, K, K, K, K)
 
+
+     // Clause, Condition, Post, Body // Don't Need the thread ID
+     syntax KItem ::= blockOmpFor(K, K, K, K, K)
+     syntax KItem ::= blockOmpFor(K, K, K, K, K, K)
+
      syntax KItem ::= blockOmpParallel(Int, K, K, K)
 
      /*

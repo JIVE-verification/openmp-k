@@ -228,6 +228,7 @@ and statement =
  | WHILE of expression * statement * cabsloc
  | DOWHILE of expression * statement * cabsloc * cabsloc
  | FOR of for_clause * expression * expression * statement * cabsloc
+ | OMPPARALLELFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
  | OMPFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
  | OMPPARALLEL of omp_clause list * statement * cabsloc
  | BREAK of cabsloc
