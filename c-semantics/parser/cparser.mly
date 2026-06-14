@@ -262,7 +262,7 @@ let trd3 (_, _, result) = result
 %token<Cabs.cabsloc> BREAK CONTINUE GOTO RETURN
 %token<Cabs.cabsloc> SWITCH CASE DEFAULT
 %token<Cabs.cabsloc> WHILE DO FOR
-%token<Cabs.cabsloc> KPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS REDUCTION OMP_REDUCTION_TASK OMP_LAST_PRIVATE OMP_LAST_PRIVATE_CONDITIONAL
+%token<Cabs.cabsloc> KPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS REDUCTION OMP_REDUCTION_TASK OMP_LAST_PRIVATE OMP_LAST_PRIVATE_CONDITIONAL THREADPRIVATE
 %token<Cabs.cabsloc> IF TRY EXCEPT FINALLY
 %token ELSE
 
@@ -397,7 +397,8 @@ global:
 | ASM LPAREN string_constant RPAREN SEMICOLON
                                         { GLOBASM (fst $3, (*handleLoc*) $1) }
 | pragma                                { $1 }
-
+| KPRAGMA OMP THREADPRIVATE LPAREN omp_threadprivate_args RPAREN 
+                                        {THREAD_PRIVATE ($5, $3)}  
 /* transformer for a toplevel construct */
 | AT_TRANSFORM LBRACE global RBRACE  IDENT/*to*/  LBRACE globals RBRACE {
     checkConnective(fst $5);
@@ -410,6 +411,13 @@ global:
   }
 | location error SEMICOLON { PRAGMA (VARIABLE "parse_error", $1) }
 ;
+
+omp_threadprivate_args:
+     /* empty */ {[]}
+  | IDENT                       { [fst $1 ]} /* private (i)*/
+  | IDENT COMMA omp_clause_args { let rest = $3 in (fst $1) :: rest} /* private (i, j)*/
+  ;
+
 
 id_or_typename:
     IDENT				{fst $1}

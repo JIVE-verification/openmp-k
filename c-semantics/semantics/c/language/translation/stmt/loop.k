@@ -332,6 +332,16 @@ module C-STMT-LOOP
           <elab>... .K => Continue() </elab>
 
 
+     rule <k> OmpThreadPrivateList(list(ListItem(X:CId) L:List))
+               => OmpThreadPrivateList(list(L))
+          ...</k>
+          <omp-global-thread-private> ThdPrvt:Map => ThdPrvt[X <- type(Types[X])] </omp-global-thread-private>
+          <external-types>Types:Map</external-types>
+          requires X in_keys(Types)
+
+     rule <k> OmpThreadPrivateList(list(.List))
+               => .K
+          ...</k>
 
 
 /* OMPParallel ( 2 , list ( .List ) , BlockStatement ( Block ( 3 , list ( .List ) , list ( ListItem ( CodeLoc ( BlockStatement (Block ( 4 , list ( .List ) , list ( ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "x" ) , JustBase ( ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) ,CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 7 , 9 , false ) ) )

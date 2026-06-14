@@ -260,6 +260,8 @@ module C-ABSTRACT-SYNTAX
      // Tag, Clauses, BeforeOmpFor, AfterOmpFor, K
      syntax KItem ::= OMPParallel2(Int, KItem, K)  [symbol]
 
+     syntax KItem ::= OmpThreadPrivateList(K) [symbol]
+     //https://github.com/JIVE-verification/openmp-k/blob/master/c-semantics/semantics/c/language/translation/decl/global.k#L102C6-L113C23
 
      // gcc extension
      syntax KItem ::= CaseRange(KItem, KItem, KItem) [symbol]

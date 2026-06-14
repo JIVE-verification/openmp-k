@@ -111,6 +111,7 @@ type token =
   | OMP_REDUCTION_TASK of (Cabs.cabsloc)
   | OMP_LAST_PRIVATE of (Cabs.cabsloc)
   | OMP_LAST_PRIVATE_CONDITIONAL of (Cabs.cabsloc)
+  | THREADPRIVATE of (Cabs.cabsloc)
   | IF of (Cabs.cabsloc)
   | TRY of (Cabs.cabsloc)
   | EXCEPT of (Cabs.cabsloc)

@@ -444,7 +444,7 @@ rule initial =
                                           initial lexbuf
                                            }
 |		blank			{ addWhite lexbuf; initial lexbuf}
-|               '\n'                    { E.newline ();
+|  '\n'                    { E.newline ();
                                           if !pragmaLine then
                                             begin
                                               pragmaLine := false;
@@ -459,7 +459,7 @@ rule initial =
                                           initial lexbuf
                                         }
 |		'#'			{ addWhite lexbuf; hash lexbuf}
-|               "_Pragma" 	        { PRAGMA (currentLoc ()) }
+|   "_Pragma" 	        { PRAGMA (currentLoc ()) }
 |		'\''			{ CST_CHAR (chr lexbuf, currentLoc ())}
 |		"L'"			{ CST_WCHAR (chr lexbuf, currentLoc ()) }
 |		'"'			{ addLexeme lexbuf; (* '"' *)
@@ -494,6 +494,7 @@ rule initial =
 |   "task"          {OMP_REDUCTION_TASK (currentLoc ())}
 |   "lastprivate"   {OMP_LAST_PRIVATE (currentLoc ())}
 |   "conditional"   {OMP_LAST_PRIVATE_CONDITIONAL (currentLoc ())}
+|   "threadprivate" {THREADPRIVATE (currentLoc ())}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}

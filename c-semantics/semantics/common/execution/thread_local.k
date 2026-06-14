@@ -16,6 +16,7 @@ module COMMON-THREAD-LOCAL
        // used for tracking the parent-child threads
        <parent-thread> -1 </parent-thread>
        <child-threads> .Set </child-threads>
+       <omp-local-thread-private>.List</omp-local-thread-private>
 
        // Used for verifying the aliasing restrictions on
        // restrict-qualified pointers.

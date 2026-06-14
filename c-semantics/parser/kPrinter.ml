@@ -500,6 +500,7 @@ and definition : definition -> csort -> unit printer =
     | ONLYTYPEDEF (a, b)      -> definition_loc (kapply KItem "OnlyTypedef" [specifier a KItem]) b
     | GLOBASM (a, b)          -> definition_loc (kapply KItem "GlobAsm" [ktoken_string a]) b
     | PRAGMA (a, b)           -> definition_loc (kapply KItem "Pragma" [expression a KItem]) b
+    | THREAD_PRIVATE (a, b)   -> definition_loc (kapply KItem "OmpThreadPrivateList" [list_of identifier a KItem]) b
     | LINKAGE (a, b, c)       -> definition_loc (kapply KItem "Linkage" [ktoken_string a; list_of definition c KItem]) b
     | STATIC_ASSERT (a, b, c) -> definition_loc (kapply KItem "StaticAssert" [expression a K; constant b KItem]) c
 

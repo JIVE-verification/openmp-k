@@ -107,6 +107,8 @@ module C-SYNTAX
      syntax KItem ::= OmpReductionItemPlus(CId)
      syntax KItem ::= OmpReductionItemProd(CId)
      syntax KItem ::= OmpParentVar(CId)
+     syntax KItem ::= OmpGlobalVar(CId)
+     
      
      /*
           testing

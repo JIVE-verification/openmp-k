@@ -25,6 +25,9 @@ module COMMON-CONFIGURATION
           // dummy link base |-> real base
           <linkings> .Map </linkings>
           <function-tus> .Map </function-tus>
+          // thread-private
+          <omp-global-thread-private> .Map </omp-global-thread-private>
+
      </global-state>
 
      <linking-state multiplicity="?" initial="">
@@ -78,6 +81,9 @@ module COMMON-CONFIGURATION
 
                // TODO(chathhorn): remove.
                <incomplete-tags> .Set </incomplete-tags>
+               
+               // trace omp-threadprivate
+               // <tu-omp-thread-private>.List</tu-omp-thread-private>
 
                // C++ stuff
                <namespaces>

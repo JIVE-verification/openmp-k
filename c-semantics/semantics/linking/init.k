@@ -186,6 +186,7 @@ module LINKING-INIT
                <odr-defs> OdrDefs1:Map </odr-defs>
                <linkings> Links1:Map </linkings>
                <function-tus> Funcs1:Map </function-tus>
+               <omp-global-thread-private> ThreadPrivates1:Map </omp-global-thread-private>
 
                <linking-state>
                     <external-decls> ExtDecls1:Map </external-decls>
@@ -215,6 +216,7 @@ module LINKING-INIT
                <odr-defs> OdrDefs2:Map </odr-defs>
                <linkings> Links2:Map </linkings>
                <function-tus> Funcs2:Map </function-tus>
+               <omp-global-thread-private> ThreadPrivates2:Map </omp-global-thread-private>
 
                <linking-state>
                     <external-decls> ExtDecls2:Map </external-decls>
@@ -249,6 +251,7 @@ module LINKING-INIT
                <odr-defs> mergeDefs(OdrDefs1, OdrDefs2) </odr-defs>
                <linkings> updateMap(Links1, Links2) </linkings>
                <function-tus> updateMap(Funcs1, Funcs2) </function-tus>
+               <omp-global-thread-private> updateMap(ThreadPrivates1, ThreadPrivates2)</omp-global-thread-private>
 
                <linking-state>
                     <external-decls> mergeDecls(ExtDecls1, ExtDecls2) </external-decls>
