@@ -13,6 +13,8 @@ module C-STMT-LOOP
      imports C-DECL-LOCAL
      imports C-TRANSLATION-ERROR-SYNTAX
 
+     imports C-ELABORATOR
+
      rule For(Tag:Int, E1:KItem, E2:K, E3:K, B:K)
           => Block(Tag, list(ListItem(E1) ListItem(For(E2, E3, B)))) 
 
@@ -304,6 +306,52 @@ module C-STMT-LOOP
                => lintEmpty(S)
           ...</k>
           <elab>... .K => blockOmpParallel(Th, B, A, S) </elab>
+
+
+     // TODO (cd-dpk) handle threadprivate
+     // if a variable is used inside #pragma thread, then the threadpriavte variable will behave like nonStatic variable
+     rule <k> X:CId => le(X, type(Types[X])) ...</k>
+          <elab-stack>
+               ListItem(elabFrame( #blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K, _) ~> K1:K, K2:K))
+               ...
+          </elab-stack>
+          <omp-global-thread-private> Types::Map</omp-global-thread-private>
+          <curr-tu> Tu::String </curr-tu>
+          <tu-id> Tu </tu-id>
+          <uses>... .Set => SetItem(X) ...</uses>
+          <enums> Enums::Map </enums>
+          requires notBool X in_keys(Enums)
+          andBool X in_keys (Types)
+          [structural]
+
+     rule <k> X:CId => le(X, type(Types[X])) ...</k>
+          <elab-stack>
+               ListItem(elabFrame( #blockOmpFor(B:KItem, A:KItem, _, S:K) ~> K1:K, K2:K))
+               ...
+          </elab-stack>
+          <omp-global-thread-private> Types::Map</omp-global-thread-private>
+          <curr-tu> Tu::String </curr-tu>
+          <tu-id> Tu </tu-id>
+          <uses>... .Set => SetItem(X) ...</uses>
+          <enums> Enums::Map </enums>
+          requires notBool X in_keys(Enums)
+          andBool X in_keys (Types)
+          [structural]
+     
+     rule <k> X:CId => le(X, type(Types[X])) ...</k>
+          <elab-stack>
+               ListItem(elabFrame( #blockOMP(Th:Int, B:KItem, A:KItem, _:RValue, _, S:K, _) ~> K1:K, K2:K))
+               ...
+          </elab-stack>
+          <omp-global-thread-private> Types::Map</omp-global-thread-private>
+          <curr-tu> Tu::String </curr-tu>
+          <tu-id> Tu </tu-id>
+          <uses>... .Set => SetItem(X) ...</uses>
+          <enums> Enums::Map </enums>
+          requires notBool X in_keys(Enums)
+          andBool X in_keys (Types)
+          [structural]
+     
 
      context While((HOLE:KItem => reval(HOLE)), _) [result(RValue)]
      rule <k> While(B:RValue, S:K) => #while(simplifyTruth(B), S, L) ...</k>

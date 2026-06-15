@@ -20,7 +20,7 @@ module C-CONFIGURATION
      // OPENMP DEFAULT THREADS: 5
      <omp-default-threads> 4 </omp-default-threads>
      // tempVariableCounter
-     <omp-temp-var>0</omp-temp-var>
+     //<omp-temp-var>0</omp-temp-var>
      
      <goto-map-calc color="cyan">
           <goto-calc multiplicity="*" color="cyan" type="Set">
