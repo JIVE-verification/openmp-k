@@ -15,8 +15,8 @@ module C-STMT-LOOP
     
      syntax KItem ::= "waitingForChild"
      syntax KItem ::= "joinChild"
-     syntax KItem ::= "handleOmpThreadPrivate"
-     syntax KItem ::= "extractOmpThreadPrivate"
+     syntax KItem ::= "handleInitOmpThreadPrivate"
+     syntax KItem ::= "extractToInitOmpThreadPrivate"
      syntax KItem ::= "extractToUpdateOmpThreadPrivate"
      syntax KItem ::= "handleToUpdateOmpThreadPrivate"
 
@@ -170,11 +170,27 @@ module C-STMT-LOOP
                ...</block-stack>
           ...</thread>
 
+     // if identifier X is global, declare an internal variable with X
      rule  <thread>...
                <k> OmpThreadPrivate(X:CId) => declareInternalVariable(X, type(Types[X]), initValue(X, type(Types[X]), Initializer(X := OmpGlobalVar(X))))
                ...</k>
+               <block-control>... 
+                    <env>... X |-> Base::SymBase ...</env> 
+               ...</block-control>
           ...</thread>
           <external-types>Types:Map</external-types>
+          requires isStaticDuration(Base)
+          
+     // if identifier X is not global, ignore declaring a private copy of that 
+     rule  <thread>...
+               <k> OmpThreadPrivate(X:CId) => .K
+               ...</k>
+                    <block-control>... 
+                         <env>... X |-> Base::SymBase ...</env> 
+                    ...</block-control>
+          ...</thread>
+          <external-types>Types:Map</external-types>
+          requires notBool isStaticDuration(Base)
 
      rule  <thread>...
                <k> OmpGlobalVar(X:CId) => lv(lnew(Base), T)
@@ -233,7 +249,7 @@ module C-STMT-LOOP
           <thread>...
           <thread-id> ThId:Int </thread-id>
           <k> blockOmpParallel(Th:Int, B:K, A:K, S:K)
-               => extractOmpThreadPrivate ~> B ~> S ~> A ~> waitingForChild ~> extractToUpdateOmpThreadPrivate
+               => extractToInitOmpThreadPrivate ~> B ~> S ~> A ~> waitingForChild ~> extractToUpdateOmpThreadPrivate
                ...</k>
           ...</thread>
           <thread-status>
@@ -309,7 +325,7 @@ module C-STMT-LOOP
           ...
                <thread-id> Fresh:Int </thread-id>
                <k>  
-                   extractOmpThreadPrivate ~> B ~> S ~> A ~> joinChild
+                   extractToInitOmpThreadPrivate ~> B ~> S ~> A ~> joinChild
                </k>
                <thread-local>
                     C
@@ -395,12 +411,11 @@ module C-STMT-LOOP
           <omp-current-threads> TotalThreads:Int </omp-current-threads>
           requires ThId =/=Int (TotalThreads -Int 1)
 
-     rule [thread-private-copy]:
+     rule [extract-thread-private-init]:
           <thread> ...
-               <thread-id> ThId:Int</thread-id>
                <k>
-                    extractOmpThreadPrivate ~> R:K
-                    => handleOmpThreadPrivate ~> R
+                    extractToInitOmpThreadPrivate ~> R:K
+                    => handleInitOmpThreadPrivate ~> R
                </k>
                <thread-local>
                ...
@@ -411,9 +426,8 @@ module C-STMT-LOOP
           </thread>
           <omp-global-thread-private> ThdPrvt:Map </omp-global-thread-private>
      
-     rule [thread-update-copy]:
+     rule [extract-thread-private-update]:
           <thread> ...
-               <thread-id> ThId:Int</thread-id>
                <k>
                     extractToUpdateOmpThreadPrivate ~> R:K
                     => handleToUpdateOmpThreadPrivate ~> R
@@ -427,40 +441,43 @@ module C-STMT-LOOP
           </thread>
           <omp-global-thread-private> ThdPrvt:Map </omp-global-thread-private>
 
-     rule [thread-private-init-not-empty]:
+     rule [handle-thread-private-init-not-empty-directbase]:
           <thread>...
                <thread-id> ThId:Int</thread-id>
                <k>
-                    handleOmpThreadPrivate ~> (.K => OmpThreadPrivate(X))
+                    handleInitOmpThreadPrivate ~> (.K => OmpThreadPrivate(X))
                ...</k>
                <thread-local>
                ...
+                    <env> ... X |-> Base:SymBase </env>
                     <omp-local-thread-private> ( ListItem(X:CId) => .List) L:List</omp-local-thread-private>
                ...
                </thread-local>
           ...
           </thread>
-     
-     rule [thread-private-update-not-empty]:
-          <thread>...
-               <thread-id> ThId:Int</thread-id>
-               <k>
-                    handleToUpdateOmpThreadPrivate ~> (.K => Computation(te(OmpGlobalVar(X) := X, rvalType(T))))
-               ...</k>
-               <thread-local>
-               ...
-                    <omp-local-thread-private> ( ListItem(X:CId) => .List) L:List</omp-local-thread-private>
-               ...
-               </thread-local>
-          ...
-          </thread>
-          <external-types>... X |-> T::Type ...</external-types> 
+          requires isStaticDuration(Base) 
 
-     rule [thread-private-init-empty]:
+     rule [handle-thread-private-init-not-empty-systembase]:
           <thread>...
                <thread-id> ThId:Int</thread-id>
                <k>
-                    handleOmpThreadPrivate => .K
+                    handleInitOmpThreadPrivate
+               ...</k>
+               <thread-local>
+               ...
+                    <env> ... X |-> Base:SymBase </env>
+                    <omp-local-thread-private> ( ListItem(X:CId) => .List) L:List</omp-local-thread-private>
+               ...
+               </thread-local>
+          ...
+          </thread>
+          requires notBool isStaticDuration(Base)
+     
+     rule [handle-thread-private-init-empty]:
+          <thread>...
+               <thread-id> ThId:Int</thread-id>
+               <k>
+                    handleInitOmpThreadPrivate => .K
                ...</k>
                <thread-local>
                ...
@@ -470,7 +487,49 @@ module C-STMT-LOOP
           ...
           </thread>
 
-     rule [thread-private-update-empty]:
+     rule [handle-thread-private-update-not-empty-directbase]:
+          <thread>...
+               <thread-id> ThId:Int</thread-id>
+               <k>
+                    handleToUpdateOmpThreadPrivate ~> (.K => Computation(te(OmpGlobalVar(X) := X, rvalType(T))))
+               ...</k>
+               <thread-local>
+               ...
+                    <omp-local-thread-private> ( ListItem(X:CId) => .List) L:List</omp-local-thread-private>
+                    <block-stack> ListItem(
+                         <block-control>...
+                              <env>... X |-> Base::SymBase ...</env>
+                         ...</block-control>) 
+                    ...</block-stack>
+               ...
+               </thread-local>
+          ...
+          </thread>
+          <external-types>... X |-> T::Type ...</external-types> 
+          requires isStaticDuration(Base)
+
+     rule [handle-thread-private-update-not-empty-systembase]:
+          <thread>...
+               <thread-id> ThId:Int</thread-id>
+               <k>
+                    handleToUpdateOmpThreadPrivate
+               ...</k>
+               <thread-local>
+               ...
+                    <omp-local-thread-private> ( ListItem(X:CId) => .List) L:List</omp-local-thread-private>
+                    <block-stack> ListItem(
+                         <block-control>...
+                              <env>... X |-> Base::SymBase ...</env>
+                         ...</block-control>) 
+                    ...</block-stack>
+               ...
+               </thread-local>
+          ...
+          </thread>
+          <external-types>... X |-> T::Type ...</external-types> 
+          requires notBool isStaticDuration(Base)
+
+     rule [handle-thread-private-update-empty]:
           <thread>...
                <thread-id> ThId:Int</thread-id>
                <k>
@@ -484,64 +543,6 @@ module C-STMT-LOOP
           ...
           </thread>
      
-
-/*     rule [thread-private-copy]:
-          <thread> ...
-               <thread-id> ThId:Int</thread-id>
-               <k>
-                    extractOmpThreadPrivate ~> R:K
-                    => handleOmpThreadPrivate ~> R
-               </k>
-               <thread-local>
-               ...
-                    <omp-local-thread-private> L:List => ThreadPrivateVarList</omp-local-thread-private>
-                    <function-control>
-                    ...
-                         <curr-tu> CurrentTU:String</curr-tu>
-                         ...
-                    </function-control>
-               ...
-               </thread-local>
-          ...
-          </thread>
-          <translation-units>
-          ...
-               <tu> 
-                    <tu-id> TargetTU:String </tu-id>
-                    <tu-omp-thread-private> ThreadPrivateVarList:List</tu-omp-thread-private>
-               </tu>
-          ...
-          </translation-units>
-          requires CurrentTU ==String TargetTU
-
-     rule [thread-private-handle-not-empty]:
-          <thread>...
-               <thread-id> ThId:Int</thread-id>
-               <k>
-                    handleOmpThreadPrivate => OmpThreadPrivate(X)
-               ...</k>
-               <thread-local>
-               ...
-                    <omp-local-thread-private> ( ListItem(X:CId) => .List) L:List</omp-local-thread-private>
-               ...
-               </thread-local>
-          ...
-          </thread>
-
-     rule [thread-private-handle-empty]:
-          <thread>...
-               <thread-id> ThId:Int</thread-id>
-               <k>
-                    handleOmpThreadPrivate => jive
-               ...</k>
-               <thread-local>
-               ...
-                    <omp-local-thread-private> .List</omp-local-thread-private>
-               ...
-               </thread-local>
-          ...
-          </thread>
-*/
 
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.1}{1}}}{
      The evaluation of the controlling expression takes place before each

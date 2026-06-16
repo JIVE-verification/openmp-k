@@ -9,3 +9,8 @@ benchmark-data
 ---
 non-determinism
 SIMPL language
+
+
+> next construct
+#pragma omp task
+

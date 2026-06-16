@@ -300,28 +300,32 @@ module C-STMT-LOOP
           <elab>... .K => blockOmpFor(B, A, emptyValue, Post, S) </elab>
 
 
-     rule (.K => elaborate(S)) ~> #blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K, _)
+     rule <k>
+          (.K => elaborate(S)) ~> #blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K, _)
+          ...</k>
+          <omp-block-history>(.List => ListItem(blockOmpParallel(Th, B, A, S))) O:List</omp-block-history>
+
      rule <k> elaborateDone(S:K)
                ~> #blockOmpParallel(Th:Int, B:KItem, A:KItem,  _, L::CabsLoc)
                => lintEmpty(S)
           ...</k>
           <elab>... .K => blockOmpParallel(Th, B, A, S) </elab>
+          <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
 
 
      // TODO (cd-dpk) handle threadprivate
-     // if a variable is used inside #pragma thread, then the threadpriavte variable will behave like nonStatic variable
+     // if a thread-private(static) variable is used inside #pragma, then the threadpriavte variable will behave like nonStatic variable
      rule <k> X:CId => le(X, type(Types[X])) ...</k>
-          <elab-stack>
-               ListItem(elabFrame( #blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K, _) ~> K1:K, K2:K))
-               ...
-          </elab-stack>
           <omp-global-thread-private> Types::Map</omp-global-thread-private>
+          <omp-block-history> L:List</omp-block-history>
+          <env>... X |-> Base:DirectBase ...</env>
           <curr-tu> Tu::String </curr-tu>
           <tu-id> Tu </tu-id>
           <uses>... .Set => SetItem(X) ...</uses>
           <enums> Enums::Map </enums>
           requires notBool X in_keys(Enums)
           andBool X in_keys (Types)
+          andBool notBool isEmptyList(L) 
           [structural]
 
      rule <k> X:CId => le(X, type(Types[X])) ...</k>
@@ -352,6 +356,11 @@ module C-STMT-LOOP
           andBool X in_keys (Types)
           [structural]
      
+
+     syntax Bool ::= isEmptyList(List) [function]
+
+     rule isEmptyList(ListItem(K1:KItem) L:List) => false
+     rule isEmptyList(.List) => true
 
      context While((HOLE:KItem => reval(HOLE)), _) [result(RValue)]
      rule <k> While(B:RValue, S:K) => #while(simplifyTruth(B), S, L) ...</k>
