@@ -540,7 +540,17 @@ and statement =
     let statement_loc s l = kapply KItem "StatementLoc" [s KItem; cabs_loc l CabsLoc] in
   let omp_parallel_statement omp1 stat sort = new_counter >>= fun counter ->
     kapply KItem "OMPPARALLEL3" [ktoken_int counter; list_of omp_parallel_clause omp1 KItem; new_block_statement stat K] sort in
-  
+  let omp_section_statement stat sort = new_counter >>= fun counter ->
+    kapply KItem "OMPSection2" [ktoken_int counter; new_block_statement stat K] sort in
+  let omp_sections_statement omp1 stat sort = new_counter >>= fun counter ->
+    kapply KItem "OMPSections3" [ktoken_int counter; list_of omp_parallel_clause omp1 KItem; list_of omp_section_statement stat K] sort in
+  let omp_parallel_sections_statement omp1 stat sort = new_counter >>= fun counter ->
+    kapply KItem "OMPParallelSections3" [ktoken_int counter; list_of omp_parallel_clause omp1 KItem; list_of omp_section_statement stat K] sort in
+  let omp_single_statement omp1 stat sort = new_counter >>= fun counter ->
+    kapply KItem "OMPSingle3" [ktoken_int counter; list_of omp_parallel_clause omp1 KItem; new_block_statement stat K] sort in
+  let omp_task_statement omp1 stat sort = new_counter >>= fun counter ->
+    kapply KItem "OMPTask3" [ktoken_int counter; list_of omp_parallel_clause omp1 KItem; new_block_statement stat K] sort in
+
   let switch exp stat sort = push_switch >>= fun id ->
     kapply KItem "Switch" [ktoken_int id; expression exp K; new_block_statement stat K] sort
     >> pop_switch in
@@ -559,6 +569,12 @@ and statement =
     | OMPPARALLELFOR (omp1, fc1, exp2, exp3, stat, loc)  -> statement_loc (omp_parallel_for_statement omp1 fc1 exp2 exp3 stat) loc
     | OMPFOR (omp1, fc1, exp2, exp3, stat, loc)  -> statement_loc (omp_for_statement omp1 fc1 exp2 exp3 stat) loc
     | OMPPARALLEL (omp1, stat, loc)  -> statement_loc (omp_parallel_statement omp1 stat) loc
+    | OMPSECTIONS (omp1, stat, loc)  -> statement_loc (omp_sections_statement omp1 stat) loc  
+    | OMPPARALLELSECTIONS (omp1, stat, loc)  -> statement_loc (omp_parallel_sections_statement omp1 stat) loc 
+    | OMPSINGLE (omp1, stat, loc)  -> statement_loc (omp_single_statement omp1 stat) loc     
+    | OMPTASK (omp1, stat, loc)  -> statement_loc (omp_task_statement omp1 stat) loc   
+    | OMPTASKWAIT (omp1, loc)  -> statement_loc (kapply KItem "OMPTaskWait1" [list_of omp_parallel_clause omp1 KItem]) loc     
+    | OMPBARRIER (loc)  -> statement_loc (kapply0 KItem "OMPBarrier") loc  
     | BREAK loc                         -> statement_loc (kapply0 KItem "Break") loc
     | CONTINUE loc                      -> statement_loc (kapply0 KItem "Continue") loc
     | RETURN (exp, loc)                 -> statement_loc (kapply KItem "Return" [expression exp K]) loc

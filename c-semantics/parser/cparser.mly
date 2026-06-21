@@ -262,7 +262,8 @@ let trd3 (_, _, result) = result
 %token<Cabs.cabsloc> BREAK CONTINUE GOTO RETURN
 %token<Cabs.cabsloc> SWITCH CASE DEFAULT
 %token<Cabs.cabsloc> WHILE DO FOR
-%token<Cabs.cabsloc> KPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS REDUCTION OMP_REDUCTION_TASK OMP_LAST_PRIVATE OMP_LAST_PRIVATE_CONDITIONAL THREADPRIVATE
+%token<Cabs.cabsloc> KPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS REDUCTION OMP_LAST_PRIVATE OMP_LAST_PRIVATE_CONDITIONAL THREADPRIVATE
+%token<Cabs.cabsloc> SECTIONS SECTION SINGLE TASK TASKWAIT BARRIER
 %token<Cabs.cabsloc> IF TRY EXCEPT FINALLY
 %token ELSE
 
@@ -820,7 +821,7 @@ block_element_list:
 /*(* GCC accepts a label at the end of a block *)*/
 |   IDENT COLON	                         { [ LABEL (fst $1, NOP (snd $1),
                                                     snd $1)] }
-|   pragma block_element_list            { $2 }
+| pragma block_element_list            { $2 }
 ;
 
 local_labels:
@@ -857,6 +858,18 @@ statement:
 	                         {OMPFOR ($4, $7, $8, $10, $12, (*handleLoc*) $5)}
 |   KPRAGMA OMP PARALLEL omp_clause statement
 	                         {OMPPARALLEL ($4, $5, (*handleLoc*) $3)}
+|   KPRAGMA OMP PARALLEL SECTIONS omp_clause LBRACE omp_sections RBRACE
+	                         {OMPPARALLELSECTIONS ($5, $7, (*handleLoc*) $4)}
+|   KPRAGMA OMP SECTIONS omp_clause LBRACE omp_sections RBRACE
+	                         {OMPSECTIONS ($4, $6, (*handleLoc*) $3)}
+|   KPRAGMA OMP SINGLE omp_clause statement
+	                         {OMPSINGLE ($4, $5, (*handleLoc*) $3)}
+|   KPRAGMA OMP TASK omp_clause statement
+	                         {OMPTASK ($4, $5, (*handleLoc*) $3)}   
+|   KPRAGMA OMP TASKWAIT omp_clause
+	                         {OMPTASKWAIT ($4, (*handleLoc*) $3)}                          
+|   KPRAGMA OMP BARRIER
+	                         {OMPBARRIER ((*handleLoc*) $3)}
 |   FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
 	                         {FOR ($3, $4, $6, $8, (*handleLoc*) $1)}
@@ -906,6 +919,10 @@ for_clause:
 |   declaration                  { FC_DECL $1 }
 ;
 
+omp_sections:
+  /* empty */ {[]} 
+  | KPRAGMA OMP SECTION statement omp_sections { $4 :: $5}
+
 /*OPENMP*/
 omp_clause:
      /* empty */ {[]}   
@@ -928,7 +945,7 @@ omp_last_private_modifier:
 
 omp_reduction_modifier:
     /* empty */ {"omp_reduction_empty"}
-  | OMP_REDUCTION_TASK COMMA {"omp_reduction_task"}
+  | TASK COMMA {"omp_reduction_task"}
   ;
 
 omp_reduction_identiifer:

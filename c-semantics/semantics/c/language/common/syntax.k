@@ -92,8 +92,18 @@ module C-SYNTAX
      // Clause, Condition, Post, Body // Don't Need the thread ID
      syntax KItem ::= blockOmpFor(K, K, K, K, K)
      syntax KItem ::= blockOmpFor(K, K, K, K, K, K)
-
+     
+     // num of threads, clauses before block, clauses after block, block
      syntax KItem ::= blockOmpParallel(Int, K, K, K)
+
+     // num of threads, clauses before block, clauses after block, block
+     syntax KItem ::= blockOmpParallelSections(Int, K, K, K)
+
+     // before omp clause, after omp clause, list of omp section
+     syntax KItem ::= blockOmpSections(K, K, K)
+     
+     // omp section
+     syntax KItem ::= blockOmpSection(K)
 
      /*
      To collect all clauses

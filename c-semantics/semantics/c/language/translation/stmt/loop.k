@@ -32,18 +32,320 @@ module C-STMT-LOOP
      <omp-default-threads> TT:Int </omp-default-threads>
      <types> M:Map </types>
 
-
           // for(int i=0; i< N; i++){} E1:: int i=0; // for(int i=0; i< N; i++){B} For(E1; E2; E3){B}
      rule <k> OMPFor(Tag:Int, list(OMP1:List), E1:KItem, E2:K, E3:K, B:K)
                => Block(Tag, list(ListItem(E1) ListItem(blockOmpFor(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), E2, E3, B))))
      	...</k>
      <types> M:Map </types>
 
+     rule <k> OMPSection(Tag:Int, S:K)
+               => Block(Tag, list(ListItem(blockOmpSection(S))))
+     	...</k>
+
+     // parallel sections{S} 
+     rule <k> OMPParallelSections(Tag:Int, list(OMP1:List), list(S:List))
+               => Block(Tag, list(ListItem(blockOmpParallelSections(parseNumThreads(OMP1, TT), BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), listToK(S)))))
+     	...</k>
+     <omp-default-threads> TT:Int </omp-default-threads>
+     <types> M:Map </types>
+
+
+     // sections{S}
+     rule <k> OMPSections(Tag:Int, list(OMP1:List), list(S:List))
+               => Block(Tag, list(ListItem(blockOmpSections(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), listToK(S)))))
+     	...</k>
+          <types> M:Map </types>
+
+     // section{S}
+     rule <k> OMPSection(Tag:Int, S:K)
+               => Block(Tag, list(ListItem(blockOmpSection(S))))
+     	...</k>
+
+     rule ForClauseExpression(K:KItem) => Computation(K)
+
+     context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+     context blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+     context blockOmpFor( _, _, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+
+     context For(_, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]
+     context blockOMP(_, _, _, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
+     context blockOmpFor( _, _, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
+
+     rule <k> For(Control:RValue, Post:RValue, S:K)
+               => #for(simplifyTruth(Control), Post, S, L)
+          ...</k>
+          <curr-program-loc> L::CabsLoc </curr-program-loc>
+          requires Control =/=K emptyValue
+     
+     rule For(emptyValue, Post:RValue, S:K)
+          => #for(Post, S)
+     // for-testing
+     // rule <k> blockOMP(Th:Int, B:KItem, A:KItem, Control:K, Post:RValue, S:K)
+     //       =>  jive
+     //     ...</k>
+     //	<curr-program-loc> L::CabsLoc </curr-program-loc>
+     //	requires Control =/=K emptyValue 
+
+
+     rule <k> blockOMP(Th:Int, B:KItem, A:KItem, Control:RValue, Post:RValue, S:K)
+            =>  #blockOMP(Th, B, A, simplifyTruth(Control), Post, S, L)
+          ...</k>
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>
+     	requires Control =/=K emptyValue      
+               	  
+     rule blockOMP(Th:Int, B:KItem, A:KItem, emptyValue, Post:RValue, S:K)
+          => #blockOMP(Th, B, A, Post, S)
+
+     rule <k> blockOmpFor(B:KItem, A:KItem, Control:RValue, Post:RValue, S:K)
+            =>  #blockOmpFor(B, A, simplifyTruth(Control), Post, S, L)
+          ...</k>
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>
+     	requires Control =/=K emptyValue      
+               	  
+     rule blockOmpFor(B:KItem, A:KItem, emptyValue, Post:RValue, S:K)
+          => #blockOmpFor(B, A, Post, S)
+
+     rule <k> blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K)
+            =>  #blockOmpParallel(Th, B, A, S, L)
+          ...</k>
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>
+
+     rule <k> blockOmpParallelSections(Th:Int, B:KItem, A:KItem, S:K)
+            =>  #blockOmpParallelSections(Th, B, A, S, L)
+          ...</k>
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>
+
+     rule <k> blockOmpSections(B:KItem, A:KItem, S:K)
+            =>  #blockOmpSections(B, A, S, L)
+          ...</k>
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>
+             
+     rule <k> blockOmpSection(S:K)
+            =>  #blockOmpSection(S, L)
+          ...</k>
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>
+
+          
+     syntax KItem ::= #for(K, RValue, K, CabsLoc) [klabel(#for4)]
+                    | #for(RValue, K)             [klabel(#for2)]
+                    
+
+     syntax KItem ::= #blockOMP(Int, KItem, KItem, K, RValue, K, CabsLoc) [klabel(#blockOMP7)]
+                    | #blockOMP(Int, KItem, KItem, RValue, K)             [klabel(#blockOMP5)]
+
+     syntax KItem ::= #blockOmpFor(KItem, KItem, K, RValue, K, CabsLoc) [klabel(#blockOmpFor6)]
+                    | #blockOmpFor(KItem, KItem, RValue, K)             [klabel(#blockOmpFor4)]
+
+     syntax KItem ::= #blockOmpParallel(Int, KItem, KItem, K, CabsLoc) [klabel(#blockOmpParallel5)]     
+
+     syntax KItem ::= #blockOmpParallelSections(Int, KItem, KItem, K, CabsLoc) [klabel(#blockOmpParallelSections5)]
+
+     syntax KItem ::= #blockOmpSections(KItem, KItem, K, CabsLoc) [klabel(#blockOmpSections4)]   
+
+     syntax KItem ::= #blockOmpSection(K, CabsLoc) [klabel(#blockOmpSection2)]   
+
+                    
+     context #for((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
+     context #blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
+     context #blockOmpFor( _, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
+
+     
+     rule (.K => elaborate(S)) ~> #for(_:RValue, _, S:K, _)
+     rule <k> elaborateDone(S:K)
+               ~> #for(Control:RValue, Post:RValue, _, L::CabsLoc)
+               => lintZero(Control) ~> lintEmpty(S)
+          ...</k>
+          <elab>... .K => For(compoundExp(L ~> Control), Post, S) </elab>
+
+     rule (.K => elaborate(S)) ~> #for(_, S:K)
+     rule <k> elaborateDone(S:K)
+               ~> #for(Post:RValue, _)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => For(emptyValue, Post, S) </elab>
+
+
+     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, B:KItem, A:KItem, _:RValue, _, S:K, _)
+     rule <k> elaborateDone(S:K)
+               ~> #blockOMP(Th:Int, B:KItem, A:KItem, Control:RValue, Post:RValue, _, L::CabsLoc)
+               => lintZero(Control) ~> lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOMP(Th, B, A, compoundExp(L ~> Control), Post, S) </elab>
+
+     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, B:KItem, A:KItem, _, S:K)
+     rule <k> elaborateDone(S:K)
+               ~> #blockOMP(Th:Int, B:KItem, A:KItem, Post:RValue, _)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOMP(Th, B, A, emptyValue, Post, S) </elab>
+
+
+     rule (.K => elaborate(S)) ~> #blockOmpFor( B:KItem, A:KItem, _:RValue, _, S:K, _)
+
+
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpFor( B:KItem, A:KItem, Control:RValue, Post:RValue, _, L::CabsLoc)
+               => lintZero(Control) ~> lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpFor(B, A, compoundExp(L ~> Control), Post, S) </elab>
+
+     rule (.K => elaborate(S)) ~> #blockOmpFor(B:KItem, A:KItem, _, S:K)
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpFor( B:KItem, A:KItem, Post:RValue, _)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpFor(B, A, emptyValue, Post, S) </elab>
+          
+
+     rule <k>
+          (.K => elaborate(S)) ~> #blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K, _)
+          ...</k>
+          <omp-block-history>(.List => ListItem(blockOmpParallel(Th, B, A, S))) O:List</omp-block-history>
+
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpParallel(Th:Int, B:KItem, A:KItem,  _, L::CabsLoc)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpParallel(Th, B, A, S) </elab>
+          <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
+
+     rule <k>
+          (.K => elaborate(S)) ~> #blockOmpParallelSections(Th:Int, B:KItem, A:KItem, S:K, _)
+          ...</k>
+          <omp-block-history>(.List => ListItem(blockOmpParallelSections(Th, B, A, S))) O:List</omp-block-history>
+
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpParallelSections(Th:Int, B:KItem, A:KItem,  _, L::CabsLoc)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpParallelSections(Th, B, A, S) </elab>
+          <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
+
+     rule <k>
+          (.K => elaborate(S)) ~> #blockOmpSections(B:KItem, A:KItem, S:K, _)
+          ...</k>
+          <omp-block-history>(.List => ListItem(blockOmpSections(B, A, S))) O:List</omp-block-history>
+
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpSections(B:KItem, A:KItem,  _, L::CabsLoc)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpSections(B, A, S) </elab>
+          <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
+
+     rule <k>
+          (.K => elaborate(S)) ~> #blockOmpSection(S:K, _)
+          ...</k>
+          <omp-block-history>(.List => ListItem(blockOmpSection(S))) O:List</omp-block-history>
+
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpSection(_, L::CabsLoc)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpSection(S) </elab>
+          <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
+
+     // TODO (cd-dpk) handle threadprivate
+     // if a thread-private(static) variable is used inside #pragma, then the threadpriavte variable will behave like nonStatic variable
+     rule <k> X:CId => le(X, type(Types[X])) ...</k>
+          <omp-global-thread-private> Types::Map</omp-global-thread-private>
+          <omp-block-history> L:List</omp-block-history>
+          <env>... X |-> Base:DirectBase ...</env>
+          <curr-tu> Tu::String </curr-tu>
+          <tu-id> Tu </tu-id>
+          <uses>... .Set => SetItem(X) ...</uses>
+          <enums> Enums::Map </enums>
+          requires notBool X in_keys(Enums)
+          andBool X in_keys (Types)
+          andBool notBool isEmptyList(L) 
+          [structural]     
+
+     syntax Bool ::= isEmptyList(List) [function]
+
+     rule isEmptyList(ListItem(K1:KItem) L:List) => false
+     rule isEmptyList(.List) => true
+
+     context While((HOLE:KItem => reval(HOLE)), _) [result(RValue)]
+     rule <k> While(B:RValue, S:K) => #while(simplifyTruth(B), S, L) ...</k>
+          <curr-program-loc> L::CabsLoc </curr-program-loc>
+
+     syntax KItem ::= #while(K, K, CabsLoc)
+     context #while((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+     rule (.K => elaborate(S)) ~> #while(_:RValue, S:K, _)
+     rule <k> elaborateDone(S:K) ~> #while(B:RValue, _, L::CabsLoc)
+               => lintZero(B) ~> lintEmpty(S)
+          ...</k>
+          <elab>... .K => While(compoundExp(L ~> B), S) </elab>
+
+     context DoWhile((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+     rule DoWhile(B:RValue, S:KItem, L:CabsLoc) => #doWhile(simplifyTruth(B), S, L)
+
+     syntax KItem ::= #doWhile(K, K, CabsLoc)
+     context #doWhile((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
+     rule (.K => elaborate(S)) ~> #doWhile(_:RValue, S:K, _)
+     rule <k> elaborateDone(S:K) ~> #doWhile(B:RValue, _, L:CabsLoc)
+               => lintZero(B) ~> lintEmpty(S)
+          ...</k>
+          <elab>... .K => DoWhile(compoundExp(L ~> B), S) </elab>
+
+     rule <k> Continue() => .K ...</k>
+          <elab>... .K => Continue() </elab>
+
+
+     rule <k> OmpThreadPrivateList(list(ListItem(X:CId) L:List))
+               => OmpThreadPrivateList(list(L))
+          ...</k>
+          <omp-global-thread-private> ThdPrvt:Map => ThdPrvt[X <- type(Types[X])] </omp-global-thread-private>
+          <external-types>Types:Map</external-types>
+          requires X in_keys(Types)
+
+     rule <k> OmpThreadPrivateList(list(.List))
+               => .K
+          ...</k>        
+
+
+
+    /******************************************************
+     *    Helping Function
+     ******************************************************/
+
+     syntax List ::= appendList(List, List) [function]
+
+     rule appendList(L1:List, ListItem(K1:KItem)  L2:List) => appendList(L1 ListItem(K1), L2)
+     rule appendList(L1:List, .List) => L1
+     
+     syntax Bool ::= isOmpFor(KItem) [function]
+     rule isOmpFor(OMPFor(_, _, _, _, _, _)) => true
+     rule isOmpFor(_) => false [owise]
+
+
+     syntax List ::= funBeforeOmpFor(List, List) [function]
+     rule funBeforeOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List, A:List) => A
+     requires isOmpFor(K1)
+     rule funBeforeOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List, A:List) => funBeforeOmpFor(L, A ListItem(CodeLoc(K1, Line)))
+     requires notBool isOmpFor(K1)
+     rule funBeforeOmpFor(.List, A:List) => A
+
+
+     syntax List ::= funAfterOmpFor(List) [function]
+     rule funAfterOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => L
+     requires isOmpFor(K1)
+     rule funAfterOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => funAfterOmpFor(L)
+     requires notBool isOmpFor(K1)
+     rule funAfterOmpFor(.List) => .List
+
+
+     syntax List ::= funOmpFor(List) [function]
+     rule funOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => ListItem(CodeLoc(K1:KItem, Line:CabsLoc))
+     requires isOmpFor(K1)
+     rule funOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => funOmpFor(L)
+     requires notBool isOmpFor(K1)
+     rule funOmpFor(.List) => .List
 
 
 
 
-     /*************************
+      /*************************
      * Handling OMP Clauses - BEFORE
      **************************/
      syntax K ::= handleOmpClausesForBeforeOmp(List, Map) [function]
@@ -183,272 +485,5 @@ module C-STMT-LOOP
 
      rule getNumThreads(OmpNumThreads(N:Int)) => 0
      requires N <=Int 0
-
-
-     /******************************************************
-     *    
-     ******************************************************/
-
-     rule ForClauseExpression(K:KItem) => Computation(K)
-
-     context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-     context blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-     context blockOmpFor( _, _, (HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-
-     context For(_, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]
-     context blockOMP(_, _, _, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
-     context blockOmpFor( _, _, _, (HOLE:KItem => reval(HOLE)), _) [result(RValue)]    
-
-     rule <k> For(Control:RValue, Post:RValue, S:K)
-               => #for(simplifyTruth(Control), Post, S, L)
-          ...</k>
-          <curr-program-loc> L::CabsLoc </curr-program-loc>
-          requires Control =/=K emptyValue
-     
-     rule For(emptyValue, Post:RValue, S:K)
-          => #for(Post, S)
-     // for-testing
-     // rule <k> blockOMP(Th:Int, B:KItem, A:KItem, Control:K, Post:RValue, S:K)
-     //       =>  jive
-     //     ...</k>
-     //	<curr-program-loc> L::CabsLoc </curr-program-loc>
-     //	requires Control =/=K emptyValue 
-
-
-     rule <k> blockOMP(Th:Int, B:KItem, A:KItem, Control:RValue, Post:RValue, S:K)
-            =>  #blockOMP(Th, B, A, simplifyTruth(Control), Post, S, L)
-          ...</k>
-     	<curr-program-loc> L::CabsLoc </curr-program-loc>
-     	requires Control =/=K emptyValue      
-               	  
-     rule blockOMP(Th:Int, B:KItem, A:KItem, emptyValue, Post:RValue, S:K)
-          => #blockOMP(Th, B, A, Post, S)
-
-     rule <k> blockOmpFor(B:KItem, A:KItem, Control:RValue, Post:RValue, S:K)
-            =>  #blockOmpFor(B, A, simplifyTruth(Control), Post, S, L)
-          ...</k>
-     	<curr-program-loc> L::CabsLoc </curr-program-loc>
-     	requires Control =/=K emptyValue      
-               	  
-     rule blockOmpFor(B:KItem, A:KItem, emptyValue, Post:RValue, S:K)
-          => #blockOmpFor(B, A, Post, S)
-
-     rule <k> blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K)
-            =>  #blockOmpParallel(Th, B, A, S, L)
-          ...</k>
-     	<curr-program-loc> L::CabsLoc </curr-program-loc>
-             
-     syntax KItem ::= #for(K, RValue, K, CabsLoc) [klabel(#for4)]
-                    | #for(RValue, K)             [klabel(#for2)]
-                    
-
-     syntax KItem ::= #blockOMP(Int, KItem, KItem, K, RValue, K, CabsLoc) [klabel(#blockOMP7)]
-                    | #blockOMP(Int, KItem, KItem, RValue, K)             [klabel(#blockOMP5)]
-
-     syntax KItem ::= #blockOmpFor(KItem, KItem, K, RValue, K, CabsLoc) [klabel(#blockOmpFor6)]
-                    | #blockOmpFor(KItem, KItem, RValue, K)             [klabel(#blockOmpFor4)]
-
-     syntax KItem ::= #blockOmpParallel(Int, KItem, KItem, K, CabsLoc) [klabel(#blockOmpParallel5)]                     
-                    
-     context #for((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
-     context #blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
-     context #blockOmpFor( _, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
-
-     
-     rule (.K => elaborate(S)) ~> #for(_:RValue, _, S:K, _)
-     rule <k> elaborateDone(S:K)
-               ~> #for(Control:RValue, Post:RValue, _, L::CabsLoc)
-               => lintZero(Control) ~> lintEmpty(S)
-          ...</k>
-          <elab>... .K => For(compoundExp(L ~> Control), Post, S) </elab>
-
-     rule (.K => elaborate(S)) ~> #for(_, S:K)
-     rule <k> elaborateDone(S:K)
-               ~> #for(Post:RValue, _)
-               => lintEmpty(S)
-          ...</k>
-          <elab>... .K => For(emptyValue, Post, S) </elab>
-
-
-     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, B:KItem, A:KItem, _:RValue, _, S:K, _)
-     rule <k> elaborateDone(S:K)
-               ~> #blockOMP(Th:Int, B:KItem, A:KItem, Control:RValue, Post:RValue, _, L::CabsLoc)
-               => lintZero(Control) ~> lintEmpty(S)
-          ...</k>
-          <elab>... .K => blockOMP(Th, B, A, compoundExp(L ~> Control), Post, S) </elab>
-
-     rule (.K => elaborate(S)) ~> #blockOMP(Th:Int, B:KItem, A:KItem, _, S:K)
-     rule <k> elaborateDone(S:K)
-               ~> #blockOMP(Th:Int, B:KItem, A:KItem, Post:RValue, _)
-               => lintEmpty(S)
-          ...</k>
-          <elab>... .K => blockOMP(Th, B, A, emptyValue, Post, S) </elab>
-
-
-     rule (.K => elaborate(S)) ~> #blockOmpFor( B:KItem, A:KItem, _:RValue, _, S:K, _)
-     rule <k> elaborateDone(S:K)
-               ~> #blockOmpFor( B:KItem, A:KItem, Control:RValue, Post:RValue, _, L::CabsLoc)
-               => lintZero(Control) ~> lintEmpty(S)
-          ...</k>
-          <elab>... .K => blockOmpFor(B, A, compoundExp(L ~> Control), Post, S) </elab>
-
-     rule (.K => elaborate(S)) ~> #blockOmpFor(B:KItem, A:KItem, _, S:K)
-     rule <k> elaborateDone(S:K)
-               ~> #blockOmpFor( B:KItem, A:KItem, Post:RValue, _)
-               => lintEmpty(S)
-          ...</k>
-          <elab>... .K => blockOmpFor(B, A, emptyValue, Post, S) </elab>
-
-
-     rule <k>
-          (.K => elaborate(S)) ~> #blockOmpParallel(Th:Int, B:KItem, A:KItem, S:K, _)
-          ...</k>
-          <omp-block-history>(.List => ListItem(blockOmpParallel(Th, B, A, S))) O:List</omp-block-history>
-
-     rule <k> elaborateDone(S:K)
-               ~> #blockOmpParallel(Th:Int, B:KItem, A:KItem,  _, L::CabsLoc)
-               => lintEmpty(S)
-          ...</k>
-          <elab>... .K => blockOmpParallel(Th, B, A, S) </elab>
-          <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
-
-
-     // TODO (cd-dpk) handle threadprivate
-     // if a thread-private(static) variable is used inside #pragma, then the threadpriavte variable will behave like nonStatic variable
-     rule <k> X:CId => le(X, type(Types[X])) ...</k>
-          <omp-global-thread-private> Types::Map</omp-global-thread-private>
-          <omp-block-history> L:List</omp-block-history>
-          <env>... X |-> Base:DirectBase ...</env>
-          <curr-tu> Tu::String </curr-tu>
-          <tu-id> Tu </tu-id>
-          <uses>... .Set => SetItem(X) ...</uses>
-          <enums> Enums::Map </enums>
-          requires notBool X in_keys(Enums)
-          andBool X in_keys (Types)
-          andBool notBool isEmptyList(L) 
-          [structural]
-
-     rule <k> X:CId => le(X, type(Types[X])) ...</k>
-          <elab-stack>
-               ListItem(elabFrame( #blockOmpFor(B:KItem, A:KItem, _, S:K) ~> K1:K, K2:K))
-               ...
-          </elab-stack>
-          <omp-global-thread-private> Types::Map</omp-global-thread-private>
-          <curr-tu> Tu::String </curr-tu>
-          <tu-id> Tu </tu-id>
-          <uses>... .Set => SetItem(X) ...</uses>
-          <enums> Enums::Map </enums>
-          requires notBool X in_keys(Enums)
-          andBool X in_keys (Types)
-          [structural]
-     
-     rule <k> X:CId => le(X, type(Types[X])) ...</k>
-          <elab-stack>
-               ListItem(elabFrame( #blockOMP(Th:Int, B:KItem, A:KItem, _:RValue, _, S:K, _) ~> K1:K, K2:K))
-               ...
-          </elab-stack>
-          <omp-global-thread-private> Types::Map</omp-global-thread-private>
-          <curr-tu> Tu::String </curr-tu>
-          <tu-id> Tu </tu-id>
-          <uses>... .Set => SetItem(X) ...</uses>
-          <enums> Enums::Map </enums>
-          requires notBool X in_keys(Enums)
-          andBool X in_keys (Types)
-          [structural]
-     
-
-     syntax Bool ::= isEmptyList(List) [function]
-
-     rule isEmptyList(ListItem(K1:KItem) L:List) => false
-     rule isEmptyList(.List) => true
-
-     context While((HOLE:KItem => reval(HOLE)), _) [result(RValue)]
-     rule <k> While(B:RValue, S:K) => #while(simplifyTruth(B), S, L) ...</k>
-          <curr-program-loc> L::CabsLoc </curr-program-loc>
-
-     syntax KItem ::= #while(K, K, CabsLoc)
-     context #while((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-     rule (.K => elaborate(S)) ~> #while(_:RValue, S:K, _)
-     rule <k> elaborateDone(S:K) ~> #while(B:RValue, _, L::CabsLoc)
-               => lintZero(B) ~> lintEmpty(S)
-          ...</k>
-          <elab>... .K => While(compoundExp(L ~> B), S) </elab>
-
-     context DoWhile((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-     rule DoWhile(B:RValue, S:KItem, L:CabsLoc) => #doWhile(simplifyTruth(B), S, L)
-
-     syntax KItem ::= #doWhile(K, K, CabsLoc)
-     context #doWhile((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
-     rule (.K => elaborate(S)) ~> #doWhile(_:RValue, S:K, _)
-     rule <k> elaborateDone(S:K) ~> #doWhile(B:RValue, _, L:CabsLoc)
-               => lintZero(B) ~> lintEmpty(S)
-          ...</k>
-          <elab>... .K => DoWhile(compoundExp(L ~> B), S) </elab>
-
-     rule <k> Continue() => .K ...</k>
-          <elab>... .K => Continue() </elab>
-
-
-     rule <k> OmpThreadPrivateList(list(ListItem(X:CId) L:List))
-               => OmpThreadPrivateList(list(L))
-          ...</k>
-          <omp-global-thread-private> ThdPrvt:Map => ThdPrvt[X <- type(Types[X])] </omp-global-thread-private>
-          <external-types>Types:Map</external-types>
-          requires X in_keys(Types)
-
-     rule <k> OmpThreadPrivateList(list(.List))
-               => .K
-          ...</k>
-
-
-/* OMPParallel ( 2 , list ( .List ) , BlockStatement ( Block ( 3 , list ( .List ) , list ( ListItem ( CodeLoc ( BlockStatement (Block ( 4 , list ( .List ) , list ( ListItem ( CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "x" ) , JustBase ( ) , list ( .List ) ) , NoInit ( ) ) ) ) ) ) ,CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 7 , 9 , false ) ) )
-        ListItem ( CodeLoc ( Computation ( Identifier ( "x" ) := tv ( 10 , ut ( SetItem ( IntegerConstant ) , int ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 8 , 9 , false ) ) )
-        ListItem ( CodeLoc ( OMPFor ( 5 , list ( ListItem ( OmpReduction ( "omp_reduction_empty" , "+" , list ( ListItem ( Identifier ( "total" ) ) ) ) ) ) , CodeLoc ( DeclarationDefinition ( InitNameGroup ( Specifier ( list ( ListItem ( Int ( ) ) ) ) , list ( ListItem ( InitName ( Name ( Identifier ( "i" ) , JustBase ( ) , list ( .List ) ) , SingleInit ( tv ( 1 , ut ( SetItem ( IntegerConstant ) , int ) ) ) ) ) ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 10 , 14 , false ) ) , Identifier ( "i" ) <= tv ( 5 , ut ( SetItem ( IntegerConstant ) , int ) ) , Identifier ( "i" ) ++ , BlockStatement ( Block ( 6 , list ( .List ) , list ( ListItem ( CodeLoc ( BlockStatement ( Block ( 7 , list ( .List ) , list ( ListItem ( CodeLoc ( Computation ( Identifier ( "total" ) += Identifier ( "x" ) * Identifier ( "i" ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 11 , 13 , false ) ) ) ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 10 , 38 , false ) ) ) ) ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 10 , 9 , false ) ) )
-        ListItem ( CodeLoc ( Computation ( Identifier ( "x" ) := Identifier ( "x" ) * tv ( 2 , ut ( SetItem ( IntegerConstant ) , int ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 13 , 9 , false ) ) ) ) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 6 , 5 , false ) ) ) ) ) ) )
-*/
-
-/* OMPParallel ( 2 , list ( .List ) , BlockStatement ( Block ( 3 , list ( .List ) , list ( ListItem ( CodeLoc ( BlockStatement (Block ( 4 , list ( .List ) , list (S:List) ) ) , CabsLoc ( "test-parallel-for3.c" , "/home/user/mounted/test-parallel-for3.c" , 6 , 5 , false ) ) ) ) ) ) )
-*/
-/*     rule OMPParallel( Tag:Int , list( C:List ) , BlockStatement( Block( Tag1:Int , list( B1:List ) , list( ListItem( CodeLoc( BlockStatement(Block( Tag2:Int , list( B2:List ) , list(S:List) ) ) , Line:CabsLoc ) ) ) ) ) )
-          => OMPParallel2( Tag, list(appendList(appendList(C, funBeforeOmpFor(S, .List)),funAfterOmpFor(S))) , BlockStatement( Block( Tag1, list( B1) , list( ListItem( CodeLoc( BlockStatement(Block( Tag2, list( B2) , list(funOmpFor(S)) ) ) , Line:CabsLoc ) ) ) ) ) )
-*/          
-          
-//          OMPParallel2( Tag, list(appendTwoList(C, funBeforeOmpFor(S, .List))) , BlockStatement( Block( Tag1, list( B1) , list( ListItem( CodeLoc( BlockStatement(Block( Tag2, list( B2) , list(appendTwoList(funOmpFor(S), funAfterOmpFor(S))) ) ) , Line:CabsLoc ) ) ) ) ) )
-          
-          
-//          list(ListItem(funBeforeOmpFor(S, .List)) ListItem(funOmpFor(S)) ListItem(funAfterOmpFor(S)))
-        
-     syntax List ::= appendList(List, List) [function]
-
-     rule appendList(L1:List, ListItem(K1:KItem)  L2:List) => appendList(L1 ListItem(K1), L2)
-     rule appendList(L1:List, .List) => L1
-     
-     syntax Bool ::= isOmpFor(KItem) [function]
-     rule isOmpFor(OMPFor(_, _, _, _, _, _)) => true
-     rule isOmpFor(_) => false [owise]
-
-
-     syntax List ::= funBeforeOmpFor(List, List) [function]
-     rule funBeforeOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List, A:List) => A
-     requires isOmpFor(K1)
-     rule funBeforeOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List, A:List) => funBeforeOmpFor(L, A ListItem(CodeLoc(K1, Line)))
-     requires notBool isOmpFor(K1)
-     rule funBeforeOmpFor(.List, A:List) => A
-
-
-     syntax List ::= funAfterOmpFor(List) [function]
-     rule funAfterOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => L
-     requires isOmpFor(K1)
-     rule funAfterOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => funAfterOmpFor(L)
-     requires notBool isOmpFor(K1)
-     rule funAfterOmpFor(.List) => .List
-
-
-     syntax List ::= funOmpFor(List) [function]
-     rule funOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => ListItem(CodeLoc(K1:KItem, Line:CabsLoc))
-     requires isOmpFor(K1)
-     rule funOmpFor(ListItem(CodeLoc(K1:KItem, Line:CabsLoc)) L:List) => funOmpFor(L)
-     requires notBool isOmpFor(K1)
-     rule funOmpFor(.List) => .List
 
 endmodule

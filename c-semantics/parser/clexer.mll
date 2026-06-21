@@ -491,10 +491,15 @@ rule initial =
 |   "firstprivate"  {FIRSTPRIVATE (currentLoc ())}
 |   "num_threads"   {NUMTHREADS (currentLoc ())}
 |   "reduction"     {REDUCTION (currentLoc ())}
-|   "task"          {OMP_REDUCTION_TASK (currentLoc ())}
 |   "lastprivate"   {OMP_LAST_PRIVATE (currentLoc ())}
 |   "conditional"   {OMP_LAST_PRIVATE_CONDITIONAL (currentLoc ())}
 |   "threadprivate" {THREADPRIVATE (currentLoc ())}
+|   "sections"      {SECTIONS (currentLoc ())}
+|   "section"       {SECTION (currentLoc ())}
+|   "task"          {TASK (currentLoc ())}
+|   "single"          {SINGLE (currentLoc ())}
+|   "taskwait"          {TASKWAIT (currentLoc ())}
+|   "barrier"          {BARRIER (currentLoc ())}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}

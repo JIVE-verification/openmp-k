@@ -256,7 +256,14 @@ module C-ABSTRACT-SYNTAX
      syntax KItem ::= OMPParallelFor(Int, KItem, KItem, K, K, K)  [klabel(OMPParallelFor6), symbol]
      syntax KItem ::= OMPFor(Int, KItem, KItem, K, K, K)  [klabel(OMPFor6), symbol]
      syntax KItem ::= OMPParallel(Int, KItem, K)  [klabel(OMPPARALLEL3), symbol]
-     
+     syntax KItem ::= OMPParallelSections(Int, KItem, K)  [klabel(OMPParallelSections3), symbol]
+     syntax KItem ::= OMPSections(Int, KItem, K)  [klabel(OMPSections3), symbol]
+     syntax KItem ::= OMPSection(Int, K)  [klabel(OMPSection2), symbol]
+     syntax KItem ::= OMPSingle(Int, KItem, K)  [klabel(OMPSingle3), symbol]
+     syntax KItem ::= OMPTask(Int, KItem, K)  [klabel(OMPTask3), symbol]
+     syntax KItem ::= OMPTaskWait(KItem)  [klabel(OMPTaskWait1), symbol]
+     syntax KItem ::= OMPBarrier() [klabel(OMPBarrier), symbol]
+
      // Tag, Clauses, BeforeOmpFor, AfterOmpFor, K
      syntax KItem ::= OMPParallel2(Int, KItem, K)  [symbol]
 

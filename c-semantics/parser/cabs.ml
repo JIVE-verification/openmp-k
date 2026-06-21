@@ -232,6 +232,13 @@ and statement =
  | OMPPARALLELFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
  | OMPFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
  | OMPPARALLEL of omp_clause list * statement * cabsloc
+ | OMPSECTIONS of omp_clause list * statement list* cabsloc
+ | OMPPARALLELSECTIONS of omp_clause list * statement list* cabsloc
+ | OMPSECTION of statement * cabsloc
+ | OMPSINGLE of omp_clause list * statement * cabsloc
+ | OMPTASK of omp_clause list * statement * cabsloc
+ | OMPTASKWAIT of omp_clause list * cabsloc
+ | OMPBARRIER of cabsloc
  | BREAK of cabsloc
  | CONTINUE of cabsloc
  | RETURN of expression * cabsloc
