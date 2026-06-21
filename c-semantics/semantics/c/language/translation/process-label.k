@@ -242,7 +242,7 @@ module C-PROCESS-LABEL
           rule <k> waitingOnGotoMap ...</k>
           <goto-calc>
                <computation>
-                    (blockOmpParallelSections(Th:Int, BF:K, AT:K, S:K) => .K)
+                    (blockOmpParallelSections(Th:Int, BF:K, AT:K, list(S:List)) => .K)
                     ~> K:K
                </computation>
                <computation-tail> Tail:K </computation-tail>
@@ -253,7 +253,7 @@ module C-PROCESS-LABEL
           </goto-calc>
           (.Bag =>
                <goto-calc>
-                    <computation> S </computation>
+                    <computation> listToK(S) </computation>
                     <computation-tail>
                          Computation(.K)
                          ~> K

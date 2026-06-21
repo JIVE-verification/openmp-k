@@ -200,6 +200,10 @@ module C-STMT-LOOP
           <external-defs>... X |-> Base::SymBase ...</external-defs>
 
      
+     rule <k>
+          blockOmpSection(S:K) => S
+          ...</k>
+
 
      rule [extract-total-threads-ompfor]:
           <thread>...
@@ -214,6 +218,16 @@ module C-STMT-LOOP
           <thread>...
           <thread-id> ThId:Int </thread-id>
           <k> blockOmpParallel(Th:Int, B:K, A:K, S:K)
+               ...</k>
+          ...</thread>
+          <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>
+          requires TotalThreads ==Int 0
+
+
+     rule [extract-total-threads-omp-parallel-sections]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOmpParallelSections(Th:Int, B:K, A:K, S:K)
                ...</k>
           ...</thread>
           <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>
@@ -250,6 +264,19 @@ module C-STMT-LOOP
           <thread-id> ThId:Int </thread-id>
           <k> blockOmpParallel(Th:Int, B:K, A:K, S:K)
                => extractToInitOmpThreadPrivate ~> B ~> S ~> A ~> waitingForChild ~> extractToUpdateOmpThreadPrivate
+               ...</k>
+          ...</thread>
+          <thread-status>
+               Status:Map => Status[Th <- threadRunning]
+          </thread-status>
+          <omp-current-threads> TotalThreads:Int</omp-current-threads>
+          requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
+
+     rule [zero-threadomp-parallel-sections]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOmpParallelSections(Th:Int, B:K, A:K, list(S:List))
+               => extractToInitOmpThreadPrivate ~> B ~> listToK(S) ~> A ~> waitingForChild ~> extractToUpdateOmpThreadPrivate
                ...</k>
           ...</thread>
           <thread-status>
@@ -337,6 +364,62 @@ module C-STMT-LOOP
           </thread>)
           requires Th =/=Int 0 andBool notBool hasLint andBool TotalThreads =/=Int 0
           [large, ndthread]
+
+     rule [other-thread-omp-parallel-sections-not-empty-sections]:
+          <thread>
+          ...
+               <thread-id> Parent:Int </thread-id>
+               <thread-local> 
+                    C::Bag 
+                    <duration> _ </duration>
+                    <parent-thread> _ </parent-thread>
+                    <child-threads> ... .Set => SetItem(Fresh)</child-threads>
+               </thread-local>
+               <k> 
+                    blockOmpParallelSections(Th:Int, B:K, A:K,  list(ListItem(S1:KItem) LL:List))
+                    => blockOmpParallelSections(Th -Int 1, B:K, A:K, list(LL))
+               ...
+               </k>
+          ...
+          </thread>
+          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+          <thread-status>
+               Status:Map => Status[Fresh <- threadRunning]
+          </thread-status>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          (.Bag =>
+          <thread>
+          ...
+               <thread-id> Fresh:Int </thread-id>
+               <k>  
+                   extractToInitOmpThreadPrivate ~> B ~> S1 ~> A ~> joinChild
+               </k>
+               <thread-local>
+                    C
+                    <parent-thread> Parent </parent-thread>
+                    <child-threads> .Set </child-threads>
+                    <duration> threadLocal(Fresh:Int) </duration>
+               </thread-local>
+          ...
+          </thread>)
+          requires Th =/=Int 0 andBool notBool hasLint andBool TotalThreads =/=Int 0
+          [large, ndthread]
+
+     rule [other-thread-omp-parallel-sections-empty-sections]:
+          <thread>
+          ...
+               <thread-id> Parent:Int </thread-id>
+               <k> 
+                    blockOmpParallelSections(Th:Int, B:K, A:K,  list(.List))
+                    => blockOmpParallelSections(Th -Int 1, B:K, A:K, list(.List))
+               ...
+               </k>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires Th =/=Int 0 andBool notBool hasLint andBool TotalThreads =/=Int 0
+          [large, ndthread]
+
 
 
      rule [join-if-no-child]:

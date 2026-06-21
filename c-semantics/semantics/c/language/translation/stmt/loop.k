@@ -44,7 +44,7 @@ module C-STMT-LOOP
 
      // parallel sections{S} 
      rule <k> OMPParallelSections(Tag:Int, list(OMP1:List), list(S:List))
-               => Block(Tag, list(ListItem(blockOmpParallelSections(parseNumThreads(OMP1, TT), BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), listToK(S)))))
+               => Block(Tag, list(ListItem(blockOmpParallelSections(parseNumThreads(OMP1, TT), BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), list(S)))))
      	...</k>
      <omp-default-threads> TT:Int </omp-default-threads>
      <types> M:Map </types>
@@ -52,7 +52,7 @@ module C-STMT-LOOP
 
      // sections{S}
      rule <k> OMPSections(Tag:Int, list(OMP1:List), list(S:List))
-               => Block(Tag, list(ListItem(blockOmpSections(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), listToK(S)))))
+               => Block(Tag, list(ListItem(blockOmpSections(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), list(S)))))
      	...</k>
           <types> M:Map </types>
 
@@ -110,8 +110,8 @@ module C-STMT-LOOP
           ...</k>
      	<curr-program-loc> L::CabsLoc </curr-program-loc>
 
-     rule <k> blockOmpParallelSections(Th:Int, B:KItem, A:KItem, S:K)
-            =>  #blockOmpParallelSections(Th, B, A, S, L)
+     rule <k> blockOmpParallelSections(Th:Int, B:KItem, A:KItem, list(S:List))
+            =>  #blockOmpParallelSections(Th, B, A, list(S), list(.List), L)
           ...</k>
      	<curr-program-loc> L::CabsLoc </curr-program-loc>
 
@@ -138,7 +138,7 @@ module C-STMT-LOOP
 
      syntax KItem ::= #blockOmpParallel(Int, KItem, KItem, K, CabsLoc) [klabel(#blockOmpParallel5)]     
 
-     syntax KItem ::= #blockOmpParallelSections(Int, KItem, KItem, K, CabsLoc) [klabel(#blockOmpParallelSections5)]
+     syntax KItem ::= #blockOmpParallelSections(Int, KItem, KItem, KItem, KItem, CabsLoc) [klabel(#blockOmpParallelSections6)]
 
      syntax KItem ::= #blockOmpSections(KItem, KItem, K, CabsLoc) [klabel(#blockOmpSections4)]   
 
@@ -209,6 +209,32 @@ module C-STMT-LOOP
           <elab>... .K => blockOmpParallel(Th, B, A, S) </elab>
           <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
 
+//     ListItem(OMPSection(Tag:Int, S:K), L::CabsLoc)
+//     ListItem(OMPSection(Tag, S), L)
+
+     rule <k> #blockOmpParallelSections(Th:Int, B:KItem, A:KItem, list(ListItem(OMPSection(Tag:Int, S:K)) LL:List), list(RR:List), L::CabsLoc) 
+                    => elaborate(S) ~> #blockOmpParallelSections(Th, B, A, list(LL), list(RR), L)
+          ...</k>
+          <omp-block-history>(.List => ListItem(blockOmpParallelSections(Th, B, A, list(appendList(RR, ListItem(OMPSection(Tag, S)) LL))))) O:List</omp-block-history>
+
+     syntax KItem ::= testKItem(K)
+
+
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpParallelSections(Th:Int, B:KItem, A:KItem,  list(LL:List), list(RR:List), L::CabsLoc)
+               => #blockOmpParallelSections(Th, B, A,  list(LL), list(RR ListItem(blockOmpSection(S))), L) ~> lintEmpty(S)
+          ...</k>
+          <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
+          requires notBool isEmptyList(LL)
+
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpParallelSections(Th:Int, B:KItem, A:KItem,  list(LL:List), list(RR:List), L::CabsLoc)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpParallelSections(Th, B, A, list(RR ListItem(blockOmpSection(S)))) </elab>
+          <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
+          requires isEmptyList(LL)
+/*     
      rule <k>
           (.K => elaborate(S)) ~> #blockOmpParallelSections(Th:Int, B:KItem, A:KItem, S:K, _)
           ...</k>
@@ -220,6 +246,8 @@ module C-STMT-LOOP
           ...</k>
           <elab>... .K => blockOmpParallelSections(Th, B, A, S) </elab>
           <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
+*/
+
 
      rule <k>
           (.K => elaborate(S)) ~> #blockOmpSections(B:KItem, A:KItem, S:K, _)
