@@ -2,14 +2,13 @@
 
 int main() {
 
-    #pragma omp parallel sections num_threads(5)
+    #pragma omp parallel sections num_threads(3)
     {
         #pragma omp section
         {
             int sum = 0;
             for (int i = 1; i <= 10; i++)
                 sum += i;
-
             printf("Section 1: sum = %d\n", sum);
         }
 
@@ -18,28 +17,24 @@ int main() {
             int product = 1;
             for (int i = 1; i <= 5; i++)
                 product *= i;
-
             printf("Section 2: product = %d\n", product);
         }
 
         #pragma omp section
         {
             int square = 12 * 12;
-
             printf("Section 3: square = %d\n", square);
         }
         
         #pragma omp section
         {
             int cube = 12 * 12 * 12;
-
             printf("Section 4: cube = %d\n", cube);
         }
         
         #pragma omp section
         {
             int quadraple = 12 * 12 * 12 * 12;
-
             printf("Section 5: quadraple = %d\n", quadraple);
         }
     }

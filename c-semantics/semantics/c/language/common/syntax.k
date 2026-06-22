@@ -105,6 +105,12 @@ module C-SYNTAX
      // omp section
      syntax KItem ::= blockOmpSection(K)
 
+     // omp single ::= before omp clause, after omp clause, statement
+     syntax KItem ::= blockOmpSingle(K, K, K)
+
+     // omp single ::= before omp clause, after omp clause, statement, line number
+     syntax KItem ::= blockOmpSingle(K, K, K, K)
+
      /*
      To collect all clauses
      */

@@ -61,6 +61,13 @@ module C-STMT-LOOP
                => Block(Tag, list(ListItem(blockOmpSection(S))))
      	...</k>
 
+     // single()
+     rule <k> OMPSingle(Tag:Int, list(OMP1:List), S:K)
+               => Block(Tag, list(ListItem(blockOmpSingle(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), S))))
+     	...</k>
+          <types> M:Map </types>
+
+
      rule ForClauseExpression(K:KItem) => Computation(K)
 
      context For((HOLE:KItem => reval(HOLE)), _, _) [result(RValue)]
@@ -125,6 +132,10 @@ module C-STMT-LOOP
           ...</k>
      	<curr-program-loc> L::CabsLoc </curr-program-loc>
 
+     rule <k> blockOmpSingle(B:KItem, A:KItem, S:K)
+            =>  #blockOmpSingle(B, A, S, L)
+          ...</k>
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>     
           
      syntax KItem ::= #for(K, RValue, K, CabsLoc) [klabel(#for4)]
                     | #for(RValue, K)             [klabel(#for2)]
@@ -144,6 +155,7 @@ module C-STMT-LOOP
 
      syntax KItem ::= #blockOmpSection(K, CabsLoc) [klabel(#blockOmpSection2)]   
 
+     syntax KItem ::= #blockOmpSingle(KItem, KItem, K, CabsLoc) [klabel(#blockOmpSingle4)]   
                     
      context #for((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
      context #blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
@@ -209,8 +221,6 @@ module C-STMT-LOOP
           <elab>... .K => blockOmpParallel(Th, B, A, S) </elab>
           <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
 
-//     ListItem(OMPSection(Tag:Int, S:K), L::CabsLoc)
-//     ListItem(OMPSection(Tag, S), L)
 
      rule <k> #blockOmpParallelSections(Th:Int, B:KItem, A:KItem, list(ListItem(OMPSection(Tag:Int, S:K)) LL:List), list(RR:List), L::CabsLoc) 
                     => elaborate(S) ~> #blockOmpParallelSections(Th, B, A, list(LL), list(RR), L)
@@ -234,19 +244,6 @@ module C-STMT-LOOP
           <elab>... .K => blockOmpParallelSections(Th, B, A, list(RR ListItem(blockOmpSection(S)))) </elab>
           <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
           requires isEmptyList(LL)
-/*     
-     rule <k>
-          (.K => elaborate(S)) ~> #blockOmpParallelSections(Th:Int, B:KItem, A:KItem, S:K, _)
-          ...</k>
-          <omp-block-history>(.List => ListItem(blockOmpParallelSections(Th, B, A, S))) O:List</omp-block-history>
-
-     rule <k> elaborateDone(S:K)
-               ~> #blockOmpParallelSections(Th:Int, B:KItem, A:KItem,  _, L::CabsLoc)
-               => lintEmpty(S)
-          ...</k>
-          <elab>... .K => blockOmpParallelSections(Th, B, A, S) </elab>
-          <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
-*/
 
 
      rule <k>
@@ -271,6 +268,18 @@ module C-STMT-LOOP
                => lintEmpty(S)
           ...</k>
           <elab>... .K => blockOmpSection(S) </elab>
+          <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
+
+     rule <k>
+          (.K => elaborate(S)) ~> #blockOmpSingle(B:KItem, A:KItem, S:K, L::CabsLoc)
+          ...</k>
+          <omp-block-history>(.List => ListItem(blockOmpSingle(B, A, S, L))) O:List</omp-block-history>
+
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpSingle(B:KItem, A:KItem,  _, L::CabsLoc)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpSingle(B, A, S, L) </elab>
           <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
 
      // TODO (cd-dpk) handle threadprivate

@@ -422,6 +422,36 @@ module C-STMT-LOOP
 
 
 
+     rule [proceed-omp-single-if-not-handled]:
+          <thread> ...
+               <k>
+                    blockOmpSingle(B:K, A:K, S:K, L::CabsLoc) => extractToInitOmpThreadPrivate ~> B ~> S ~> A
+               ...</k>
+          ...
+          </thread>
+          <omp-single-block-history> (.List => ListItem(L)) SB:List </omp-single-block-history>
+          requires notBool inList(SB, L)
+
+     rule [ignore-omp-single-if-handled]:
+          <thread> ...
+               <k>
+                    blockOmpSingle(B:K, A:K, S:K, L::CabsLoc) => .K
+               ...</k>
+          ...
+          </thread>
+          <omp-single-block-history> SB:List </omp-single-block-history>
+          requires inList(SB, L)
+
+     syntax Bool ::= inList(List, KItem) [function]
+
+     rule inList(ListItem(L::CabsLoc) LL:List, L1::CabsLoc) => true
+     requires L ==K L1
+
+     rule inList(ListItem(L::CabsLoc) LL:List, L1::CabsLoc) => inList(LL, L1) 
+     requires L =/=K L1
+
+     rule inList(.List, L1::CabsLoc) => false 
+
      rule [join-if-no-child]:
           <thread> ...
                <k>

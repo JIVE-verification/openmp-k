@@ -25,6 +25,8 @@ module C-CONFIGURATION
      <next-thread-id color="black"> 1 </next-thread-id>
      // <curr-exec-thread-id color="black"> 0 </curr-exec-thread-id>
      <omp-current-threads> 0 </omp-current-threads>
+     // #pragma omp single 
+     <omp-single-block-history> .List </omp-single-block-history>
 
      <for-thread-op> .K </for-thread-op>
      <compile-time-evaluation> true </compile-time-evaluation>

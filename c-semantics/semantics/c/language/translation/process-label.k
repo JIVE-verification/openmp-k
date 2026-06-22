@@ -296,6 +296,33 @@ module C-PROCESS-LABEL
           rule <k> waitingOnGotoMap ...</k>
           <goto-calc>
                <computation>
+                    (blockOmpSingle(BF:K, AT:K, S:K, L:CabsLoc) => .K)
+                    ~> K:K
+               </computation>
+               <computation-tail> Tail:K </computation-tail>
+               B::Bag
+               <goto-block-history>
+                    ListItem(Num::Int) OldBlockHistory::List
+               </goto-block-history>
+          </goto-calc>
+          (.Bag =>
+               <goto-calc>
+                    <computation> S </computation>
+                    <computation-tail>
+                         Computation(.K)
+                         ~> K
+                         ~> Tail
+                    </computation-tail>
+                    B
+                    <goto-block-history>
+                         ListItem(Num) OldBlockHistory
+                    </goto-block-history>
+               </goto-calc>
+          )
+
+          rule <k> waitingOnGotoMap ...</k>
+          <goto-calc>
+               <computation>
                     (blockOmpSection(S:K) => .K)
                     ~> K:K
                </computation>
