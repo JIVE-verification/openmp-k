@@ -515,6 +515,7 @@ and statement =
     kapply KItem "For5" [ktoken_int counter; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in
   let omp_clause = function
     |OMP_PRIVATE exp1  -> kapply1 KItem "OmpPrivateList" (list_of identifier exp1 KItem) 
+    |OMP_SHARED exp1  -> kapply1 KItem "OmpSharedList" (list_of identifier exp1 KItem)
     |OMP_FIRST_PRIVATE exp1  ->  kapply1 KItem "OmpFirstPrivateList" (list_of identifier exp1 KItem)  
     |OMP_NUM_THREADS NT_INT exp1 -> kapply1 KItem "OmpNumThreads" (ktoken_int_of_string exp1) 
     |OMP_REDUCTION (mod1, op1, exp1) -> kapply KItem "OmpReduction" [ktoken_string mod1; ktoken_string op1; list_of identifier exp1 KItem] 
@@ -524,6 +525,7 @@ and statement =
     kapply KItem "OMPParallelFor6" [ktoken_int counter; list_of omp_clause omp1 KItem; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in
   let omp_for_clause = function
     |OMP_PRIVATE exp1  -> kapply1 KItem "OmpPrivateList" (list_of identifier exp1 KItem) 
+    |OMP_SHARED exp1  -> kapply1 KItem "OmpSharedList" (list_of identifier exp1 KItem)    
     |OMP_FIRST_PRIVATE exp1  ->  kapply1 KItem "OmpFirstPrivateList" (list_of identifier exp1 KItem)  
     |OMP_NUM_THREADS NT_INT exp1 -> kapply1 KItem "OmpNumThreads" (ktoken_int_of_string exp1) 
     |OMP_REDUCTION (mod1, op1, exp1) -> kapply KItem "OmpReduction" [ktoken_string mod1; ktoken_string op1; list_of identifier exp1 KItem] 
@@ -532,8 +534,9 @@ and statement =
   let omp_for_statement omp1 fc1 exp2 exp3 stat sort = new_counter >>= fun counter ->
     kapply KItem "OMPFor6" [ktoken_int counter; list_of omp_for_clause omp1 KItem; for_clause fc1 KItem; expression exp2 K; expression exp3 K; new_block_statement stat K] sort in  
   let omp_parallel_clause = function
-    | OMP_PRIVATE exp1  -> kapply1 KItem "OmpPrivateList" (list_of identifier exp1 KItem) 
-    | OMP_FIRST_PRIVATE exp1  ->  kapply1 KItem "OmpFirstPrivateList" (list_of identifier exp1 KItem)  
+    |OMP_PRIVATE exp1  -> kapply1 KItem "OmpPrivateList" (list_of identifier exp1 KItem) 
+    |OMP_SHARED exp1  -> kapply1 KItem "OmpSharedList" (list_of identifier exp1 KItem)
+    |OMP_FIRST_PRIVATE exp1  ->  kapply1 KItem "OmpFirstPrivateList" (list_of identifier exp1 KItem)  
     |OMP_NUM_THREADS NT_INT exp1 -> kapply1 KItem "OmpNumThreads" (ktoken_int_of_string exp1) 
     |OMP_REDUCTION (mod1, op1, exp1) -> kapply KItem "OmpReduction" [ktoken_string mod1; ktoken_string op1; list_of identifier exp1 KItem] 
     |OMP_LAST_PRIVATE (mod1, exp1) -> kapply KItem "OmpLastPrivateList" [ktoken_string mod1; list_of identifier exp1 KItem] in

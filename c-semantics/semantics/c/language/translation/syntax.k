@@ -430,6 +430,7 @@ module C-ABSTRACT-SYNTAX
      */
 
      syntax KItem ::= OmpPrivateList(K) [symbol]
+     syntax KItem ::= OmpSharedList(K) [symbol]
      syntax KItem ::= OmpFirstPrivateList(K) [symbol]
      syntax KItem ::= OmpLastPrivateList(String, K) [symbol]
      syntax KItem ::= OmpNumThreads(Int) [symbol]

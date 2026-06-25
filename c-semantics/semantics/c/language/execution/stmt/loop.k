@@ -421,6 +421,15 @@ module C-STMT-LOOP
           [large, ndthread]
 
 
+     rule [handle-omp-shared-inside-thread]:
+          <thread> ...
+               <k>
+                    OmpSharedVar(X:CId) => .K
+               ...</k>
+          ...
+          </thread>
+
+
 
      rule [proceed-omp-single-if-not-handled]:
           <thread> ...
@@ -441,6 +450,114 @@ module C-STMT-LOOP
           </thread>
           <omp-single-block-history> SB:List </omp-single-block-history>
           requires inList(SB, L)
+
+     // blockOmpTask(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), S)
+
+     rule [enqueue-omp-task-if-multiple-threads]:
+          <thread>...
+               <k>
+                    blockOmpTask(B:K, A:K, S:K) => .K
+               ...</k>
+               <thread-local>
+                    TL::Bag
+                    <function-control>
+                         ...
+                         BCC:BlockControlCell
+                    </function-control>
+               </thread-local>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          <next-task-id> TId:Int => TId +Int 1</next-task-id>
+          <omp-task-list>
+               (.List => 
+                    ListItem(
+                    <omp-task>
+                         <task-id> TId </task-id>
+                         <task-computation> .K </task-computation>
+                         <task-block-control> BCC </task-block-control>
+                    </omp-task>
+                    )
+               )
+               LL:List
+          </omp-task-list>
+          requires TotalThreads =/=Int 0
+
+
+/*
+<omp-task-list> (.List => ListItem(BC)) ...</omp-task-list>
+               <env> Env:Map</env>
+               <renv> REnv:Map</renv>
+               <types> TypeMap:Map </types>
+
+<omp-task-list>
+               (.List => 
+                    ListItem(
+                    <omp-task>
+                         <task-id> TId </task-id>
+                         <task-computation> blockOmpTask(B, A, S) </task-computation>
+                         <task-block-control> Env </task-block-control> 
+                         <renv>REnv </renv>
+                         <types>TypeMap </types> 
+                    </omp-task>
+                    )
+               )
+               LL:List
+          </omp-task-list>
+
+*/  
+
+// TaskBlockControlCell
+
+     rule [execute-omp-task-if-single-thread]:
+          <thread> ...
+               <k>
+                    blockOmpTask(B:K, A:K, S:K) => extractToInitOmpThreadPrivate ~> B ~> S ~> A
+               ...</k>
+               <thread-local>
+                    TL::Bag
+                    <function-control>
+                         ...
+                         BCC:BlockControlCell
+                    </function-control>
+               </thread-local>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>   
+          <next-task-id> TId:Int => TId +Int 1</next-task-id>
+          <omp-task-list>
+               (.List => 
+                    ListItem(
+                    <omp-task>
+                         <task-id> TId </task-id>
+                         <task-computation> .K </task-computation>
+                         <task-block-control> BCC </task-block-control>
+                    </omp-task>
+                    )
+               )
+               LL:List
+          </omp-task-list>
+          requires TotalThreads ==Int 0
+
+     rule [ignore-omp-taskwait-if-single-thread]:
+          <thread> ...
+               <k>
+                    lineOmpTaskWait(B:K) => .K
+               ...</k>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires TotalThreads ==Int 0
+
+     rule [handle-omp-taskwait-if-multiple-thread]:
+          <thread> ...
+               <k>
+                    lineOmpTaskWait(B:K) => .K
+               ...</k>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires TotalThreads ==Int 0
 
      syntax Bool ::= inList(List, KItem) [function]
 

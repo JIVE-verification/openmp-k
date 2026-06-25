@@ -111,6 +111,11 @@ module C-SYNTAX
      // omp single ::= before omp clause, after omp clause, statement, line number
      syntax KItem ::= blockOmpSingle(K, K, K, K)
 
+     // omp task ::= before omp clause, after omp clause, statement,
+     syntax KItem ::= blockOmpTask(K, K, K)
+
+     // omp task wait
+     syntax KItem ::= lineOmpTaskWait(K)
      /*
      To collect all clauses
      */
@@ -124,6 +129,7 @@ module C-SYNTAX
      syntax KItem ::= OmpReductionItemProd(CId)
      syntax KItem ::= OmpParentVar(CId)
      syntax KItem ::= OmpGlobalVar(CId)
+     syntax KItem ::= OmpSharedVar(CId)
      
      
      /*

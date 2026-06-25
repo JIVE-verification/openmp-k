@@ -67,6 +67,19 @@ module C-STMT-LOOP
      	...</k>
           <types> M:Map </types>
 
+     // task
+     rule <k> OMPTask(Tag:Int, list(OMP1:List), S:K)
+               => Block(Tag, list(ListItem(blockOmpTask(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), S))))
+     	...</k>
+          <types> M:Map </types>
+
+     // taskwait
+
+     rule <k> OMPTaskWait(list(OMP1:List))
+               => lineOmpTaskWait(AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)))
+     	...</k>
+          <types> M:Map </types>
+
 
      rule ForClauseExpression(K:KItem) => Computation(K)
 
@@ -135,7 +148,12 @@ module C-STMT-LOOP
      rule <k> blockOmpSingle(B:KItem, A:KItem, S:K)
             =>  #blockOmpSingle(B, A, S, L)
           ...</k>
-     	<curr-program-loc> L::CabsLoc </curr-program-loc>     
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>  
+
+     rule <k> blockOmpTask(B:KItem, A:KItem, S:K)
+            =>  #blockOmpTask(B, A, S, L)
+          ...</k>
+     	<curr-program-loc> L::CabsLoc </curr-program-loc>          
           
      syntax KItem ::= #for(K, RValue, K, CabsLoc) [klabel(#for4)]
                     | #for(RValue, K)             [klabel(#for2)]
@@ -156,7 +174,9 @@ module C-STMT-LOOP
      syntax KItem ::= #blockOmpSection(K, CabsLoc) [klabel(#blockOmpSection2)]   
 
      syntax KItem ::= #blockOmpSingle(KItem, KItem, K, CabsLoc) [klabel(#blockOmpSingle4)]   
-                    
+
+     syntax KItem ::= #blockOmpTask(KItem, KItem, K, CabsLoc) [klabel(#blockOmpTask4)]   
+
      context #for((HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
      context #blockOMP(_, _, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
      context #blockOmpFor( _, _, (HOLE:KItem => reval(HOLE)), _, _, _) [result(RValue)]
@@ -282,6 +302,23 @@ module C-STMT-LOOP
           <elab>... .K => blockOmpSingle(B, A, S, L) </elab>
           <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
 
+     rule <k>
+          (.K => elaborate(S)) ~> #blockOmpTask(B:KItem, A:KItem, S:K, L::CabsLoc)
+          ...</k>
+          <omp-block-history>(.List => ListItem(blockOmpTask(B, A, S))) O:List</omp-block-history>
+
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpTask(B:KItem, A:KItem,  _, L::CabsLoc)
+               => lintEmpty(S)
+          ...</k>
+          <elab>... .K => blockOmpTask(B, A, S) </elab>
+          <omp-block-history>(ListItem(K1:KItem) => .List) O:List</omp-block-history>
+
+     rule <k> lineOmpTaskWait(B:KItem)
+               => .K
+          ...</k>
+          <elab>... .K => lineOmpTaskWait(B) </elab>
+
      // TODO (cd-dpk) handle threadprivate
      // if a thread-private(static) variable is used inside #pragma, then the threadpriavte variable will behave like nonStatic variable
      rule <k> X:CId => le(X, type(Types[X])) ...</k>
@@ -391,6 +428,8 @@ module C-STMT-LOOP
 
      rule handleOmpClausesForBeforeOmp(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handlePrivateClasueBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
 
+     rule handleOmpClausesForBeforeOmp(ListItem(OmpSharedList(list(L1:List))) L:List, M:Map) => handleSharedClasueBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
+
      rule handleOmpClausesForBeforeOmp(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) => handleFirstPrivateClauseBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
 
      rule handleOmpClausesForBeforeOmp(ListItem(OmpLastPrivateList(S:String, list(L1:List))) L:List, M:Map) => handleLastPrivateClauseBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
@@ -408,12 +447,15 @@ module C-STMT-LOOP
      *****************************/
 
      syntax K ::= handlePrivateClasueBefore(List, Map) [function]
+     syntax K ::= handleSharedClasueBefore(List, Map) [function]
      syntax K ::= handleFirstPrivateClauseBefore(List, Map) [function]
      syntax K ::= handleLastPrivateClauseBefore(List, Map) [function]
      syntax K ::= handleReductionClausePlusBefore(List, Map) [function]
      syntax K ::= handleReductionClauseProdBefore(List, Map) [function]
+     
 
      rule handlePrivateClasueBefore(.List, M:Map) => .K
+     rule handleSharedClasueBefore(.List, M:Map) => .K
      rule handleFirstPrivateClauseBefore(.List, M:Map) => .K
      rule handleLastPrivateClauseBefore(.List, M:Map) => .K
 
@@ -421,6 +463,9 @@ module C-STMT-LOOP
      rule handleReductionClauseProdBefore(.List, M:Map) => .K
 
      rule handlePrivateClasueBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), .K)) ~> handlePrivateClasueBefore(L, M)
+     requires X in_keys(M)
+
+     rule handleSharedClasueBefore(ListItem(X:CId) L:List, M:Map) =>  OmpSharedVar(X) ~> handleSharedClasueBefore(L, M)
      requires X in_keys(M)
 
      rule handleFirstPrivateClauseBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Initializer(X := OmpParentVar(X)))) ~> handleFirstPrivateClauseBefore(L, M)
@@ -445,6 +490,8 @@ module C-STMT-LOOP
      rule handleOmpClausesForAfterOmp(.List, M:Map) => .K 
      // ignore if private()
      rule handleOmpClausesForAfterOmp(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
+     // ignore if shared
+     rule handleOmpClausesForAfterOmp(ListItem(OmpSharedList(list(L1:List))) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
      // ignore if firstprivate()
      rule handleOmpClausesForAfterOmp(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) =>  handleOmpClausesForAfterOmp(L,M)
      // ignore if lastprivate()

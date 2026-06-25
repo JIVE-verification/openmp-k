@@ -117,6 +117,7 @@ type token =
   | TASK of (Cabs.cabsloc)
   | TASKWAIT of (Cabs.cabsloc)
   | BARRIER of (Cabs.cabsloc)
+  | SHARED of (Cabs.cabsloc)
   | IF of (Cabs.cabsloc)
   | TRY of (Cabs.cabsloc)
   | EXCEPT of (Cabs.cabsloc)

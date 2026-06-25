@@ -7,7 +7,7 @@ int counter2 = 10;
 
 int main() {
     int a = 10;
-    #pragma omp parallel num_threads(4)
+    #pragma omp parallel num_threads(6)
     {
         for (int i = 0; i < 3; i++) {
             counter1 = counter1 + a + i;

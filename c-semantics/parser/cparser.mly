@@ -263,7 +263,7 @@ let trd3 (_, _, result) = result
 %token<Cabs.cabsloc> SWITCH CASE DEFAULT
 %token<Cabs.cabsloc> WHILE DO FOR
 %token<Cabs.cabsloc> KPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS REDUCTION OMP_LAST_PRIVATE OMP_LAST_PRIVATE_CONDITIONAL THREADPRIVATE
-%token<Cabs.cabsloc> SECTIONS SECTION SINGLE TASK TASKWAIT BARRIER
+%token<Cabs.cabsloc> SECTIONS SECTION SINGLE TASK TASKWAIT BARRIER SHARED
 %token<Cabs.cabsloc> IF TRY EXCEPT FINALLY
 %token ELSE
 
@@ -931,6 +931,7 @@ omp_clause:
   | NUMTHREADS LPAREN omp_num_threads_clause RPAREN omp_clause { (OMP_NUM_THREADS $3) :: $5 }
   | REDUCTION LPAREN omp_reduction_modifier omp_reduction_identiifer COLON omp_clause_args RPAREN omp_clause {(OMP_REDUCTION( $3, $4, $6)) :: $8}
   | OMP_LAST_PRIVATE LPAREN omp_last_private_modifier omp_clause_args RPAREN omp_clause {OMP_LAST_PRIVATE($3, $4) :: $6};
+  | SHARED LPAREN omp_clause_args RPAREN omp_clause { (OMP_SHARED $3) :: $5}
 
 omp_clause_args:
      /* empty */ {[]}

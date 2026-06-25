@@ -264,6 +264,7 @@ and omp_clause =
   | OMP_NUM_THREADS of omp_num_threads_clause
   | OMP_REDUCTION of string * string * string list
   | OMP_LAST_PRIVATE of string * string list
+  | OMP_SHARED of string list
 
 and omp_num_threads_clause = 
   | NT_INT of string

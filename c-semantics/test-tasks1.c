@@ -38,8 +38,6 @@ int main() {
             printf("All tasks completed\n");
         }
         
-        #pragma omp barrier
-        printf("Threads passed the barrier\n");
     }
 
     return 0;

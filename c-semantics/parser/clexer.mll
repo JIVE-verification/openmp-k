@@ -500,6 +500,7 @@ rule initial =
 |   "single"          {SINGLE (currentLoc ())}
 |   "taskwait"          {TASKWAIT (currentLoc ())}
 |   "barrier"          {BARRIER (currentLoc ())}
+|   "shared"          {SHARED (currentLoc ())}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}
