@@ -12,6 +12,7 @@ module C-STMT-LOOP
      imports SYMLOC
      imports C-MEMORY-ALLOC-SYNTAX
      imports C-ENV-SYNTAX
+     imports BOOL
     
      syntax KItem ::= "waitingForChild"
      syntax KItem ::= "joinChild"
@@ -19,6 +20,9 @@ module C-STMT-LOOP
      syntax KItem ::= "extractToInitOmpThreadPrivate"
      syntax KItem ::= "extractToUpdateOmpThreadPrivate"
      syntax KItem ::= "handleToUpdateOmpThreadPrivate"
+
+     syntax KItem ::= "taskStorageCreated"
+     syntax KItem ::= OmpTaskVarsToCopy(K)
 
      syntax KItem ::= OmpThreadPrivate(CId)
 
@@ -429,8 +433,6 @@ module C-STMT-LOOP
           ...
           </thread>
 
-
-
      rule [proceed-omp-single-if-not-handled]:
           <thread> ...
                <k>
@@ -453,7 +455,140 @@ module C-STMT-LOOP
 
      // blockOmpTask(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), S)
 
-     rule [enqueue-omp-task-if-multiple-threads]:
+
+     rule [copy-vars-omp-task-if-multiple-thread]:
+          <thread>...
+               <k>
+                    blockOmpTask(B:K, A:K, S:K)  => OmpTaskVarsToCopy(keys_list(Ids)) ~> taskStorageCreated ~> blockOmpTask(B, A, S)
+               ...</k>
+               <thread-local>
+                    TL::Bag
+                    <function-control>
+                         FC::Bag
+                         <block-control> 
+                            <env>
+                                Ids::Map
+                            </env>
+                            BC::Bag
+                         </block-control>
+                         <block-stack>
+                              .List => ListItem(<block-control> <env> Ids</env> BC </block-control>)
+                         ...</block-stack>
+                    </function-control>
+               </thread-local>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires TotalThreads =/=Int 0
+
+
+     rule [copy-individual-var-omp-task-if-var-thread-or-auto-duration]:
+          <thread>...
+               <k>
+                    OmpTaskVarsToCopy(ListItem(X:CId) L:List) =>  declareInternalVariable(X, T, initValue(X, T, Initializer(X := OmpParentVar(X)))) ~> OmpTaskVarsToCopy(L)  
+               ...</k>
+               <thread-local>
+               ...
+                    <function-control>
+                    ...
+                         <block-control>...
+                         <env>... X |-> Base::SymBase ...</env>
+                         <types>... X |-> T::Type ...</types>
+                         ...</block-control>
+                    ...
+                    </function-control>
+               ...
+               </thread-local>
+          ...
+          </thread>
+          requires (isThreadDuration(loc(Base, 0))  orBool isAutoDuration(loc(Base, 0)))
+          andBool isVar(X)
+
+     syntax Bool ::= isVar(K1:KItem) [function]
+
+     rule isVar(Identifier(_)) => true
+     rule isVar(_) => false [owise]
+
+     rule [ignore-copy-individual-var-omp-task-if-var-thread-or-auto-duration-other-type]:
+          <thread>...
+               <k>
+                    OmpTaskVarsToCopy(ListItem(X:CId) L:List) => OmpTaskVarsToCopy(L)  
+               ...</k>
+               <thread-local>
+               ...
+                    <function-control>
+                    ...
+                         <block-control>...
+                         <env>... X |-> Base::SymBase ...</env>
+                         <types>... X |-> T::Type ...</types>
+                         ...</block-control>
+                    ...
+                    </function-control>
+               ...
+               </thread-local>
+          ...
+          </thread>
+          requires notBool isThreadDuration(loc(Base, 0)) orBool notBool isAutoDuration(loc(Base, 0))
+          orBool notBool isVar(X)
+
+
+
+//     rule isThreadDuration(loc(obj(... d: threadLocal(_)), _)) => true
+
+
+     rule [copy-task-if-all-vars-are-copied]:
+          <thread>...
+               <k>
+                    (OmpTaskVarsToCopy(.List) => .K ) ~> taskStorageCreated ~> blockOmpTask(B:K, A:K, S:K)  
+               ...</k>
+               <thread-local>
+                    TL::Bag
+                    <function-control>
+                         FC::Bag
+                         <block-control> 
+                            <env> Ids::Map</env>
+                            BC::Bag
+                         </block-control>
+                    </function-control>
+               </thread-local>
+          ...
+          </thread>
+          <next-task-id> TId:Int => TId +Int 1</next-task-id>          
+          <omp-task-list>
+               (.List => 
+                    ListItem(
+                    <omp-task>
+                         <task-id> TId </task-id>
+                         <task-computation> S </task-computation>
+                         <task-block-control> <block-control>  <env> Ids</env>  BC</block-control> </task-block-control>
+                    </omp-task>
+                    )
+               )
+               LL:List
+          </omp-task-list>
+
+     rule [retrieve-previous-block-control-after-creating-task]:
+          <thread>...
+               <k>
+                    taskStorageCreated ~> blockOmpTask(B:K, A:K, S:K)  => .K
+               ...</k>
+               <thread-local>
+                    TL::Bag
+                    <function-control>
+                         ...
+                        (_:BlockControlCell => L)
+                        <block-stack>
+                            ListItem(L:BlockControlCell) => .List
+                        ...</block-stack>     
+                    </function-control>
+                         </thread-local>
+          ...
+          </thread>
+
+
+
+
+/*     rule [enqueue-omp-task-if-multiple-threads]:
           <thread>...
                <k>
                     blockOmpTask(B:K, A:K, S:K) => .K
@@ -483,7 +618,7 @@ module C-STMT-LOOP
           </omp-task-list>
           requires TotalThreads =/=Int 0
 
-
+*/
 /*
 <omp-task-list> (.List => ListItem(BC)) ...</omp-task-list>
                <env> Env:Map</env>

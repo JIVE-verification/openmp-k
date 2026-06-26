@@ -12,6 +12,16 @@ SIMPL language
 https://kframework.org/k-distribution/pl-tutorial/2_languages/1_simple/1_untyped/simple-untyped/
 
 
+O Constructs Done
+#pragma omp for
+
+#pragma omp parallel
+
+O clauses Done:
+private, firstprivate, lastprivate, reduction, threadprivate
+
 > next construct
 #pragma omp task
 
+> next TODO
+threads interleaving

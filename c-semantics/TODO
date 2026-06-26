@@ -10,3 +10,190 @@ Each blockOMP
 
 // [o] Extract the 0 from int i=0
 // [x] Extract the N from i < N
+
+
+Professor, as we discussed about how to define the #pragma omp task
+```
+#include <stdio.h>
+
+int main() {
+
+    #pragma omp parallel num_threads(2)
+    {
+    	int n = 0;
+        #pragma omp task
+        {
+            n=10;
+            printf("Task 1, n=%d\n", n);
+        }
+
+        for (int i = 0; i < 5; i++) { }
+        
+        #pragma omp task
+        {
+            printf("Task 2, n=%d\n", n);
+        }
+
+        #pragma omp taskwait
+    }
+
+    return 0;
+}
+```
+According to our discussion we decided that 
+we will set this two task as: 
+blockOmpTask(_, _, int n = 0 ~> n=10 ~> printf("Task 1, n=%d\n", n))
+
+blockOmpTask(_, _, int n = 0 ~>  for (int i = 0; i < 5; i++) { } ~> printf("Task 2, n=%d\n", n))
+
+But, due to this for-loop is executed with task 2. That is not accepted. As it is doing the same computation twice. 
+
+Then I thought it this way, when we are creating a task we treat avaiable all variables as firstprivate to that specific task region. 
+This way, we will create new storage for existing variables. and store their object location in the block-control cell. When the task will execute, 
+we will take the task's associated <block-control> cell . These are propable rules for doing that: 
+
+```
+rule [copy-vars-omp-task]:
+          <thread>...
+               <k>
+                    (.K => copyAllVars(map2List(Ids)) ~> taskStorageCreated) ~> blockOmpTask(B:K, A:K, S:K)  
+               ...</k>
+               <thread-local>
+                    TL::Bag
+                    <function-control>
+                         ...
+                         <block-control> 
+                            <env>
+                                Ids:: Map
+                            </env>
+                            BC::Bag
+                         </block-control>
+                    </function-control>
+                    <block-stack>
+                        .List => ListItem(<block-control> <env> Ids</env> BC </block-control>)
+                    ...</block-stack>
+               </thread-local>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires TotalThreads =/=Int 0
+
+
+rule [copy-individual-var-omp-task]:
+          <thread>...
+               <k>
+                    copyAllVars(ListItem(X:CId) L:List) =>  X := OmpParentVar(X) ~> copyAllVars(L)  
+               ...</k>
+          ...
+          </thread>
+
+rule [copy-task-if-all-vars-are-copied]:
+          <thread>...
+               <k>
+                    (copyAllVars(.List) => .K ) ~> taskStorageCreated ~> blockOmpTask(B:K, A:K, S:K)  
+               ...</k>
+               <thread-local>
+                    TL::Bag
+                    <function-control>
+                         ...
+                         <block-control> 
+                            <env> Ids:: Map</env>
+                            BC::Bag
+                         </block-control>
+                    </function-control>
+               </thread-local>
+          ...
+          </thread>
+          <next-task-id> TId:Int => TId +Int 1</next-task-id>          
+          <omp-task-list>
+               (.List => 
+                    ListItem(
+                    <omp-task>
+                         <task-id> TId </task-id>
+                         <task-computation> S </task-computation>
+                         <task-block-control> <block-control>  <env> Ids</env>  BC</block-control> </task-block-control>
+                    </omp-task>
+                    )
+               )
+               LL:List
+          </omp-task-list>
+
+
+rule [enqueue-omp-task-if-multiple-threads]:
+          <thread>...
+               <k>
+                    taskStorageCreated ~> blockOmpTask(B:K, A:K, S:K)  => .K
+               ...</k>
+               <thread-local>
+                    TL::Bag
+                    <function-control>
+                         ...
+                        (_:BlockControlCell => L)
+                        <block-stack>
+                            ListItem(L:BlockControlCell) => .List
+                        ...</block-stack>     
+                    </function-control>
+                         </thread-local>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires TotalThreads =/=Int 0
+```
+
+when tasks are taken from the queue, they will replace the <block-control> cell with associated task's <block-control> cell and pushed it into <block-control-stack>
+
+
+
+
+
+
+
+
+
+
+
+     rule <k> pushLocals => .K ...</k>
+          <block-control> C::Bag <local-types> LocalTypes:Set => .Set </local-types> </block-control>
+          <block-stack>
+               .List => ListItem(<block-control> C <local-types> LocalTypes </local-types> </block-control>)
+          ...</block-stack>
+
+     rule <k> popLocals => .K ...</k>
+          (_:BlockControlCell => L)
+          <block-stack>
+               ListItem(L:BlockControlCell) => .List
+          ...</block-stack>
+
+
+
+
+
+<k>
+blockOmpTask(B:K, A:K, S:K)
+...</k>
+              <block-control>
+                <env>
+                  funLabel (  ) |-> obj ( 3 , 16 , auto ( 0 ) )
+                  Identifier ( "i" ) |-> obj ( 10 , 4 , auto ( 0 ) )
+                  Identifier ( "main" ) |-> obj ( 146 , 0 , static ( "test-single2.c322e6697-6e03-11f1-a99e-ea70837f7e97" ) )
+                  Identifier ( "printf" ) |-> obj ( 0 , 0 , builtinSymbol ( "printf" ) )
+                  Identifier ( "product" ) |-> obj ( 5 , 4 , auto ( 0 ) )
+                  Identifier ( "sum" ) |-> obj ( 4 , 4 , auto ( 0 ) )
+                </env>
+                <renv>
+                  obj ( 3 , 16 , auto ( 0 ) ) |-> funLabel (  )
+                  obj ( 4 , 4 , auto ( 0 ) ) |-> Identifier ( "sum" )
+                  obj ( 5 , 4 , auto ( 0 ) ) |-> Identifier ( "product" )
+                  obj ( 10 , 4 , link ( "test-single2.c322e6697-6e03-11f1-a99e-ea70837f7e97" ) ) |-> Identifier ( "stdin" )
+                  obj ( 10 , 4 , auto ( 0 ) ) |-> Identifier ( "i" )
+                  obj ( 11 , 4 , link ( "test-single2.c322e6697-6e03-11f1-a99e-ea70837f7e97" ) ) |-> Identifier ( "stdout" )
+                  obj ( 12 , 4 , link ( "test-single2.c322e6697-6e03-11f1-a99e-ea70837f7e97" ) ) |-> Identifier ( "stderr" )
+                </renv>
+                <types>
+                  funLabel (  ) |-> t ( quals ( .Set ) , .Set , no-type (  ) )
+                  Identifier ( "i" ) |-> t ( quals ( .Set ) , .Set , int (  ) )
+                  Identifier ( "main" ) |-> t ( quals ( .Set ) , SetItem ( oldStyle (  ) ) , functionType ( ut ( .Set , int (  ) ) , ListItem ( typedDeclaration ( t ( quals ( .Set ) , .Set , void (  ) ) , #NoName (  ) ) ) ) )
+                  Identifier ( "printf" ) |-> t ( quals ( .Set ) , .Set , functionType ( ut ( .Set , int (  ) ) , _List_ ( ListItem ( t ( quals ( SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , 20 , 25 , "false" ) ) ) ) , SetItem ( RestrictReserved ( "__restrict__" , CabsLoc ( "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , "/home/user/mounted/dist/profiles/x86-gcc-limited-libc/include/library/stdio.h" , 20 , 25 , "false" ) ) ) , pointerType ( t ( quals ( SetItem ( Const (  ) ) ) , .Set , char (  ) ) ) ) ) , ListItem ( variadic (  ) ) ) ) )
+                  Identifier ( "product" ) |-> t ( quals ( .Set ) , .Set , int (  ) )
+                  Identifier ( "sum" ) |-> t ( quals ( .Set ) , .Set , int (  ) )
+                </types>
