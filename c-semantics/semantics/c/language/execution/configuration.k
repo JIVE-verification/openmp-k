@@ -28,6 +28,7 @@ module C-CONFIGURATION
      // #pragma omp single 
      <omp-single-block-history> .List </omp-single-block-history>
 
+     <omp-team> .List </omp-team>
 
      // #pragma omp task
      <next-task-id> 1 </next-task-id>

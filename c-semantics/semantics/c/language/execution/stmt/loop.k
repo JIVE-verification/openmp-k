@@ -270,6 +270,7 @@ module C-STMT-LOOP
                Status:Map => Status[Th <- threadRunning]
           </thread-status>
           <omp-current-threads> TotalThreads:Int</omp-current-threads>
+          <omp-team> (.List => ListItem(ThId)) ...</omp-team>
           requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
 
      rule [zero-threadomp-parallel-sections]:
@@ -343,6 +344,7 @@ module C-STMT-LOOP
           ...
           </thread>
           <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+          <omp-team> (.List => ListItem(Fresh)) ...</omp-team>
           <thread-status>
                Status:Map => Status[Fresh <- threadRunning]
           </thread-status>
@@ -451,63 +453,14 @@ module C-STMT-LOOP
           <omp-single-block-history> SB:List </omp-single-block-history>
           requires inList(SB, L)
 
-     // blockOmpTask(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), S)
-
-     rule [enqueue-omp-task-if-multiple-threads]:
-          <thread>...
-               <k>
-                    blockOmpTask(B:K, A:K, S:K) => .K
-               ...</k>
-               <thread-local>
-                    TL::Bag
-                    <function-control>
-                         ...
-                         BCC:BlockControlCell
-                    </function-control>
-               </thread-local>
-          ...
-          </thread>
-          <omp-current-threads> TotalThreads:Int </omp-current-threads>
-          <next-task-id> TId:Int => TId +Int 1</next-task-id>
-          <omp-task-list>
-               (.List => 
-                    ListItem(
-                    <omp-task>
-                         <task-id> TId </task-id>
-                         <task-computation> .K </task-computation>
-                         <task-block-control> BCC </task-block-control>
-                    </omp-task>
-                    )
-               )
-               LL:List
-          </omp-task-list>
-          requires TotalThreads =/=Int 0
-
-
-/*
-<omp-task-list> (.List => ListItem(BC)) ...</omp-task-list>
-               <env> Env:Map</env>
-               <renv> REnv:Map</renv>
-               <types> TypeMap:Map </types>
-
-<omp-task-list>
-               (.List => 
-                    ListItem(
-                    <omp-task>
-                         <task-id> TId </task-id>
-                         <task-computation> blockOmpTask(B, A, S) </task-computation>
-                         <task-block-control> Env </task-block-control> 
-                         <renv>REnv </renv>
-                         <types>TypeMap </types> 
-                    </omp-task>
-                    )
-               )
-               LL:List
-          </omp-task-list>
-
-*/  
+// blockOmpTask(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), S)=
 
 // TaskBlockControlCell
+
+
+     /**************************************
+     * OMP Task Single Thread 
+     ***************************************/
 
      rule [execute-omp-task-if-single-thread]:
           <thread> ...
@@ -524,20 +477,158 @@ module C-STMT-LOOP
           ...
           </thread>
           <omp-current-threads> TotalThreads:Int </omp-current-threads>   
-          <next-task-id> TId:Int => TId +Int 1</next-task-id>
+          requires TotalThreads ==Int 0
+
+
+     /**************************************
+     * OMP Task multiple thread ::  Creation Starts
+     ***************************************/
+
+
+     syntax KItem ::= "taskStorageCreated"
+     syntax KItem ::= OmpTaskVarsToCopy(K)
+
+
+     // copy the current block control into the block-stack
+     // and initiate copying env
+
+     rule [start-to-store-omp-task-if-multiple-thread]:
+          <thread>...
+               <k>
+                    blockOmpTask(B:K, A:K, S:K)  => OmpTaskVarsToCopy(keys_list(Ids)) ~> taskStorageCreated ~> blockOmpTask(B, A, S)
+               ...</k>
+               <thread-local>
+                    TL::Bag
+                    <function-control>
+                         FC::Bag
+                         <block-control> 
+                            <env>
+                                Ids::Map
+                            </env>
+                            BC::Bag
+                         </block-control>
+                         <block-stack>
+                              (.List => ListItem(<block-control> <env> Ids</env> BC </block-control>))
+                         ...</block-stack>
+                    </function-control>
+               </thread-local>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires TotalThreads =/=Int 0
+
+
+     // start to copy var
+     // if Identifier inside <env> is from isAutoDuration or isThreadDuration
+     rule [copy-individual-var-omp-task-nonempty-vars-to-copy]:
+          <thread>...
+               <k>
+                    OmpTaskVarsToCopy(ListItem(X:CId) L:List) =>  declareInternalVariable(X, T, initValue(X, T, Initializer(X := OmpParentVar(X)))) ~> OmpTaskVarsToCopy(L) 
+               ...</k>
+               <thread-local>
+               ...
+                    <function-control>
+                    ...
+                         <block-control>...
+                         <env>... X |-> Base::SymBase ...</env>
+                         <types>... X |-> T::Type ...</types>
+                         ...</block-control>
+                    ...
+                    </function-control>
+               ...
+               </thread-local>
+          ...
+          </thread>
+          requires (isThreadDuration(loc(Base, 0))  orBool isAutoDuration(loc(Base, 0)))
+          andBool isVar(X)
+
+     syntax Bool ::= isVar(K1:KItem) [function]
+     rule isVar(Identifier(_)) => true
+     rule isVar(_) => false [owise]
+ 
+     // ignore copy var
+     // if Identifier(X) inside <env> is not from isAutoDuration or isThreadDuration
+     rule [ignore-individual-var-omp-task-nonempty-vars-to-copy]:
+          <thread>...
+               <k>
+                    OmpTaskVarsToCopy(ListItem(X:CId) L:List) => OmpTaskVarsToCopy(L)  
+               ...</k>
+               <thread-local>
+               ...
+                    <function-control>
+                    ...
+                         <block-control>...
+                         <env>... X |-> Base::SymBase ...</env>
+                         <types>... X |-> T::Type ...</types>
+                         ...</block-control>
+                    ...
+                    </function-control>
+               ...
+               </thread-local>
+          ...
+          </thread>
+          requires notBool isThreadDuration(loc(Base, 0)) orBool notBool isAutoDuration(loc(Base, 0))
+          orBool notBool isVar(X)
+
+     // push the the task with associated block-control 
+     rule [push-omp-task-into-list-after-storage-creation]:
+          <thread>...
+               <k>
+                    (OmpTaskVarsToCopy(.List) => .K ) ~> taskStorageCreated ~> blockOmpTask(B:K, A:K, S:K)  
+               ...</k>
+               <thread-local>
+                    TL::Bag
+                    <function-control>
+                         FC::Bag
+                         <block-control> 
+                            <env> Ids::Map</env>
+                            BC::Bag
+                         </block-control>
+                    </function-control>
+               </thread-local>
+          ...
+          </thread>
+          <next-task-id> TId:Int => TId +Int 1</next-task-id>          
           <omp-task-list>
                (.List => 
                     ListItem(
                     <omp-task>
                          <task-id> TId </task-id>
-                         <task-computation> .K </task-computation>
-                         <task-block-control> BCC </task-block-control>
+                         <task-computation> S </task-computation>
+                         <task-block-control> <block-control>  <env> Ids</env>  BC</block-control> </task-block-control>
                     </omp-task>
                     )
                )
                LL:List
           </omp-task-list>
-          requires TotalThreads ==Int 0
+
+     rule [retrieve-previous-block-control-after-creating-task-storage]:
+          <thread>...
+               <k>
+                    taskStorageCreated ~> blockOmpTask(B:K, A:K, S:K)  => .K
+               ...</k>
+               <thread-local>
+                    TL::Bag
+                    <function-control>
+                         ...
+                        (_:BlockControlCell => L)
+                        <block-stack>
+                            ListItem(L:BlockControlCell) => .List
+                        ...</block-stack>     
+                    </function-control>
+                         </thread-local>
+          ...
+          </thread>
+
+
+
+     /**************************************
+     * OMP Task multiple thread ::  Creation finishes
+     ***************************************/
+
+     /***************************************
+     * Omp Taskwait Single Thread
+     ****************************************/
 
      rule [ignore-omp-taskwait-if-single-thread]:
           <thread> ...
@@ -549,17 +640,63 @@ module C-STMT-LOOP
           <omp-current-threads> TotalThreads:Int </omp-current-threads>
           requires TotalThreads ==Int 0
 
-/*     rule [handle-omp-taskwait-if-multiple-thread]:
+     
+     /***************************************
+     * Omp Taskwait Multiple Thread
+     ****************************************/
+
+     rule [ignore-omp-taskwait-if-multiple-thread-empty-task-list]:
           <thread> ...
                <k>
-                    lineOmpTaskWait(B:K) => jive
+                    lineOmpTaskWait(B:K) => .K
                ...</k>
           ...
           </thread>
           <omp-current-threads> TotalThreads:Int </omp-current-threads>
           <omp-task-list> .List </omp-task-list>
-          requires TotalThreads ==Int 0
-*/
+          requires TotalThreads =/=Int 0
+
+     syntax KItem ::= "taskCompleted"
+
+     // push the current block-control (TdBC) into block-stack
+     // push task-block-control (TkBC) into thread's block-control cell (TdBC)
+     rule [handle-omp-taskwait-if-multiple-thread-nonempty-task-list]:
+          <thread> ...
+               <k>
+                    lineOmpTaskWait(B:K) => S ~> taskCompleted ~> lineOmpTaskWait(B)   
+               ...</k>
+               (TdBC:BlockControlCell => TkBC)
+               <block-stack>
+               (.List => ListItem(TdBC))
+               ...
+               </block-stack>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          <omp-task-list> 
+               (ListItem(
+                    <omp-task>
+                         <task-id> TId:Int </task-id>
+                         <task-computation> S:K </task-computation>
+                         <task-block-control> TkBC:BlockControlCell </task-block-control>
+                    </omp-task>
+               ) => .List)
+          ...</omp-task-list>
+          requires TotalThreads =/=Int 0
+
+     rule [handle-omp-taskwait-get-last-block-control]:
+          <thread> ...
+               <k>
+                    taskCompleted => .K   
+               ...</k>
+               (_:BlockControlCell => TdBC)
+               <block-stack>
+                    ListItem(TdBC:BlockControlCell)
+                    ...
+               </block-stack>
+          ...
+          </thread>
+     
      syntax Bool ::= inList(List, KItem) [function]
 
      rule inList(ListItem(L::CabsLoc) LL:List, L1::CabsLoc) => true
