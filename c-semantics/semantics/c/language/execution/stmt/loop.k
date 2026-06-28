@@ -549,16 +549,17 @@ module C-STMT-LOOP
           <omp-current-threads> TotalThreads:Int </omp-current-threads>
           requires TotalThreads ==Int 0
 
-     rule [handle-omp-taskwait-if-multiple-thread]:
+/*     rule [handle-omp-taskwait-if-multiple-thread]:
           <thread> ...
                <k>
-                    lineOmpTaskWait(B:K) => .K
+                    lineOmpTaskWait(B:K) => jive
                ...</k>
           ...
           </thread>
           <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          <omp-task-list> .List </omp-task-list>
           requires TotalThreads ==Int 0
-
+*/
      syntax Bool ::= inList(List, KItem) [function]
 
      rule inList(ListItem(L::CabsLoc) LL:List, L1::CabsLoc) => true
