@@ -2,8 +2,8 @@
 
 int main() {
     int sum = 0;
-
-    #pragma omp parallel
+    
+    #pragma omp parallel num_threads(4)
     {
         sum += 10;
     }

@@ -32,7 +32,7 @@ module C-CONFIGURATION
      <next-task-id> 1 </next-task-id>
 
      // to extra store the block-control cell
-     <omp-block-stack> .List </omp-block-stack>
+     // <omp-block-stack> .List </omp-block-stack>
 
      <for-thread-op> .K </for-thread-op>
      <compile-time-evaluation> true </compile-time-evaluation>

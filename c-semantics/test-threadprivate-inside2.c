@@ -6,11 +6,13 @@ int counter2=10;
 #pragma omp threadprivate(counter1, counter2)
 
 int main() {
-    int a=100;
+    int a=10;
     #pragma omp parallel num_threads(4)
     {
-	counter1 = a + 5;
-	counter2 = a + 1;
+    	int counter1 = 7;
+    	int counter2 = 11;
+	counter1 = counter1 + a;
+	counter2 = counter2 + a;
 	printf("IN> C1=%d, C2=%d\n", counter1, counter2);
     }
     printf("OUT>C1=%d, C2=%d\n", counter1, counter2);

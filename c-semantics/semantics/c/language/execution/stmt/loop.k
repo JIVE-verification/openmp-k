@@ -79,11 +79,6 @@ module C-STMT-LOOP
                     ...</k>
                <env> Env::Map </env>
                <types> TypesMap::Map </types>
-         requires notBool isStaticType(type(TypesMap[X]))
-               andBool notBool isExternType(type(TypesMap[X]))
-               andBool notBool isFunctionType(type(TypesMap[X]))
-               andBool notBool isVariablyModifiedType(type(TypesMap[X]))
-               andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
           [structural]
 
      rule [include-parallel-omp-int-i]:
@@ -91,36 +86,21 @@ module C-STMT-LOOP
                => blockOMP(Th, B:K, A:K, declareInternalVariable(X, T, initValue(X, T, Init)), Control, Post, S)
                ...</k>
           <env> Env::Map </env>
-          requires notBool isStaticType(T)
-               andBool notBool isExternType(T)
-               andBool notBool isFunctionType(T)
-               andBool notBool isVariablyModifiedType(T)
-               andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
           [structural]
 
      rule [include-ompfor-i]:
                <k> Computation(te(X:CId := V:KItem, TT::UType)) ~> blockOmpFor(B:K, A:K, Control:K, Post:K, S:K)
-                    => blockOmpFor(B:K, A:K, declareInternalVariable ( X , type(TypesMap[X]) , initValue ( X , type(TypesMap[X]) , Initializer( X:=V) )), Control, Post, S)
+                    => blockOmpFor(B, A, declareInternalVariable ( X , type(TypesMap[X]) , initValue ( X , type(TypesMap[X]) , Initializer( X:=V) )), Control, Post, S)
                     ...</k>
                <env> Env::Map </env>
                <types> TypesMap::Map </types>
-         requires notBool isStaticType(type(TypesMap[X]))
-               andBool notBool isExternType(type(TypesMap[X]))
-               andBool notBool isFunctionType(type(TypesMap[X]))
-               andBool notBool isVariablyModifiedType(type(TypesMap[X]))
-               andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
           [structural]
 
      rule [include-omp-for-int-i]:
           <k> declareInternalVariable(X:CId, _, initValue(_, T::Type, Init:K)) ~> blockOmpFor(B:K, A:K, Control:K, Post:K, S:K)
-               => blockOmpFor(B:K, A:K, declareInternalVariable(X, T, initValue(X, T, Init)), Control, Post, S)
+               => blockOmpFor(B, A, declareInternalVariable(X, T, initValue(X, T, Init)), Control, Post, S)
                ...</k>
           <env> Env::Map </env>
-          requires notBool isStaticType(T)
-               andBool notBool isExternType(T)
-               andBool notBool isFunctionType(T)
-               andBool notBool isVariablyModifiedType(T)
-               andBool notBool (isCompoundLiteralId(X) andBool X in_keys(Env))
           [structural]
 
      rule <k>

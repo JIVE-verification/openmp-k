@@ -3,7 +3,7 @@
 int main() {
     int sum = 0;
 
-    #pragma omp parallel
+    #pragma omp parallel num_threads(3)
     {
         sum += 10;
     }
