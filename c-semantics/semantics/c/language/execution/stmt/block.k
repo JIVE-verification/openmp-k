@@ -25,6 +25,14 @@ module C-STMT-BLOCK
                     <block-history> History </block-history>
                </block-control>)
           ...</block-stack>
+          <omp-block-stack> .List
+               => ListItem(<block-control>
+                    C
+                    <local-vars> Vars </local-vars>
+                    <local-addresses> Addresses </local-addresses>
+                    <block-history> History </block-history>
+               </block-control>)
+          ...</omp-block-stack>
           [structural]
 
      syntax KItem ::= "updateScope"

@@ -28,26 +28,18 @@ module C-CONFIGURATION
      // #pragma omp single 
      <omp-single-block-history> .List </omp-single-block-history>
 
-
      // #pragma omp task
      <next-task-id> 1 </next-task-id>
 
-     // store all omp-task cells
-     <omp-task-list> .List </omp-task-list>
-
-     // an individual task cell
-     <omp-task>
-          <task-id> 1 </task-id>
-          <task-computation> .K </task-computation>
-          <task-block-control> .K </task-block-control>
-     </omp-task>
-
-     
-               
+     // to extra store the block-control cell
+     <omp-block-stack> .List </omp-block-stack>
 
      <for-thread-op> .K </for-thread-op>
      <compile-time-evaluation> true </compile-time-evaluation>
      
+
+
+
      <thread-info color="yellow">
           <thread-status color="yellow"> .Map </thread-status>
           <mutexes color="yellow"> .Map </mutexes>
