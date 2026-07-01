@@ -1,6 +1,11 @@
 #include <stdio.h>
 
-#define DIPOK 100
+int main() {
+    int i;
 
-int a; int b;
-int c;
+    for (i = 0; i < 10; i++) {
+        printf("Iteration %d\n", i);
+    }
+
+    return 0;
+}

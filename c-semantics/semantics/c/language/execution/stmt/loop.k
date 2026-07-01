@@ -139,17 +139,6 @@ module C-STMT-LOOP
           ...</thread>
 
 
-     rule  <thread>...
-               <k> OmpParentVar(X:CId) => lv(lnew(Base), T)
-               ...</k>
-               <block-stack> ListItem(
-                    <block-control>...
-                         <env>... X |-> Base::SymBase ...</env>
-                         <types>... X |-> T::Type ...</types>
-                    ...</block-control>) 
-               ...</block-stack>
-          ...</thread>
-
      // if identifier X is global, declare an internal variable with X
      rule  <thread>...
                <k> OmpThreadPrivate(X:CId) => declareInternalVariable(X, type(Types[X]), initValue(X, type(Types[X]), Initializer(X := OmpGlobalVar(X))))
@@ -428,6 +417,65 @@ module C-STMT-LOOP
           <omp-single-block-history> SB:List </omp-single-block-history>
           requires inList(SB, L)
 
+
+     rule [execute-omp-task-if-single-thread]:
+          <thread> ...
+               <k>
+                    blockOmpTask(B:K, A:K, S:K) => extractToInitOmpThreadPrivate ~> B ~> S ~> A
+               ...</k>
+               <block-control>
+                    C::Bag
+               </block-control>
+          ...
+          </thread>
+          <omp-task-block-stack> .List => ListItem(<block-control> C </block-control>)
+               ...</omp-task-block-stack>
+          <omp-task-stack> .List => ListItem(blockOmpTask(B, A, S))
+               ...</omp-task-stack>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>   
+          requires TotalThreads ==Int 0
+
+     // copy the current block control into the block-stack
+     // and ignore
+     rule [execute-omp-task-if-multiple-thread]:
+          <thread>...
+               <k>
+                    blockOmpTask(B:K, A:K, S:K)  => .K
+               ...</k>
+               <block-control>
+                    C::Bag
+               </block-control>
+          ...
+          </thread>
+          <omp-task-block-stack> .List => ListItem(<block-control> C </block-control>)
+               ...</omp-task-block-stack>
+          <omp-task-stack> .List => ListItem(blockOmpTask(B, A, S))
+               ...</omp-task-stack>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          requires TotalThreads =/=Int 0
+
+
+     rule [handle-omp-taskwait-if-multiple-thread-empty-task-list]:
+          <thread> ...
+               <k>
+                    lineOmpTaskWait(C:K) => .K
+               ...</k>
+          ...
+          </thread>
+          <omp-task-stack> .List </omp-task-stack>
+          <omp-task-block-stack> .List </omp-task-block-stack>
+
+     rule [handle-omp-taskwait-if-multiple-thread-nonempty-task-list]:
+          <thread> ...
+               <k>
+                    lineOmpTaskWait(C:K) => extractToInitOmpThreadPrivate ~> B ~> S ~> A ~> lineOmpTaskWait(C)
+               ...</k>
+               <block-control> ThBC::Bag => TkBC </block-control>
+          ...
+          </thread>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          <omp-task-block-stack> ListItem(<block-control> TkBC::Bag</block-control>) => .List ...</omp-task-block-stack>
+          <omp-task-stack> ListItem(blockOmpTask(B:K, A:K, S:K)) => .List ...</omp-task-stack>
 
 
      syntax Bool ::= inList(List, KItem) [function]
