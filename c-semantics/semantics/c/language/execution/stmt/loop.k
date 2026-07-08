@@ -452,14 +452,14 @@ module C-STMT-LOOP
      syntax KItem ::= OmpTaskREnv(Map)
      syntax KItem ::= OmpTaskTypes(Map)
 
-     // pushBlockDueToTask ~> OmpTaskVarsToCopy(convertMapToList(Vars)) ~> pushTask ~> blockOmpTask(B, A, S) ~> popBlockDueToTask
+     // 
 
      // copy the current block control into the block-stack
      // and initiate copying env
      rule [start-to-store-omp-task-if-multiple-thread]:
           <thread>...
                <k>
-                    blockOmpTask(B:K, A:K, S:K)  => OmpTaskVarsToCopy(convertMapToList(Vars))
+                    blockOmpTask(B:K, A:K, S:K)  => pushBlockDueToTask ~> OmpTaskVarsToCopy(convertMapToList(Vars)) ~> pushTask ~> blockOmpTask(B, A, S) ~> popBlockDueToTask 
                ...</k>
                <block-control> BC::Bag <types> Vars:Map </types> </block-control>
           ...
@@ -509,7 +509,7 @@ module C-STMT-LOOP
                ...</k>
 
 
-/*     rule  <k> pushBlockDueToTask  => .K 
+     rule  <k> pushBlockDueToTask  => .K 
           ...</k>
           <block-control> 
                BC::Bag 
@@ -558,7 +558,7 @@ module C-STMT-LOOP
           <omp-current-threads> TotalThreads:Int</omp-current-threads>
           requires TotalThreads =/=Int 0
 
-*/
+
 
      syntax Bool ::= inList(List, KItem) [function]
 
