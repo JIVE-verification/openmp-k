@@ -35,8 +35,8 @@ module C-CONFIGURATION
      <omp-task-stack> .List </omp-task-stack>
      <omp-task-block-stack> .List </omp-task-block-stack>
 
-     <omp-task-temp-ids> .Map </omp-task-temp-ids>
-
+     <omp-threads-team> .List </omp-threads-team>
+     
      <for-thread-op> .K </for-thread-op>
      <compile-time-evaluation> true </compile-time-evaluation>
      

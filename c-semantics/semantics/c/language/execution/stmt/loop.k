@@ -251,6 +251,7 @@ module C-STMT-LOOP
                Status:Map => Status[Th <- threadRunning]
           </thread-status>
           <omp-current-threads> TotalThreads:Int</omp-current-threads>
+          <omp-threads-team> (.List => ListItem(0)) ... </omp-threads-team>
           requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
 
      rule [zero-threadomp-parallel-sections]:
@@ -328,6 +329,7 @@ module C-STMT-LOOP
                Status:Map => Status[Fresh <- threadRunning]
           </thread-status>
           <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          <omp-threads-team> (.List => ListItem(Fresh)) ... </omp-threads-team>
           (.Bag =>
           <thread>
           ...
@@ -438,9 +440,6 @@ module C-STMT-LOOP
                <block-control> BC::Bag</block-control>
           ...
           </thread>
-          <omp-task-stack> .List => ListItem(blockOmpTask(B, A, S))
-               ...</omp-task-stack>
-          <omp-task-block-stack> .List => ListItem(<block-control> BC </block-control>) ...</omp-task-block-stack>
           <omp-current-threads> TotalThreads:Int </omp-current-threads>   
           requires TotalThreads ==Int 0
 
@@ -464,8 +463,6 @@ module C-STMT-LOOP
                <block-control> BC::Bag <types> Vars:Map </types> </block-control>
           ...
           </thread>
-          <omp-task-stack> .List => ListItem(blockOmpTask(B, A, S)) ...</omp-task-stack>
-          <omp-task-block-stack> .List => ListItem(<block-control> BC <types> Vars </types> </block-control>) ...</omp-task-block-stack>
           <omp-current-threads> TotalThreads:Int </omp-current-threads>
           requires TotalThreads =/=Int 0     
 

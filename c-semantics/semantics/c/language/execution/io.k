@@ -65,6 +65,7 @@ module C-IO
      rule <k> checkWrite(loc(Base::SymBase, Offset::Int)) => .K ...</k>
           <thread-id> ThreadId::Int </thread-id>
           <parent-thread> ParentThread::Int</parent-thread>
+          <omp-threads-team> OmpTeam:List </omp-threads-team>          
           <mem>... Base |-> object(ObjT::EffectiveType, Len::Int, _) ...</mem>
           requires // Const.
                (notBool (Const() inQuals getQualsAtOffset(ObjT, Offset)))
@@ -73,7 +74,8 @@ module C-IO
                          orBool isAutoDuration(loc(Base, Offset))
                          orBool isompThreadDuration(loc(Base, Offset)))
                     andBool (ThreadId =/=K getThreadId(loc(Base, Offset)))
-                    andBool (ParentThread =/=K getThreadId(loc(Base, Offset))))
+                    andBool (ParentThread =/=K getThreadId(loc(Base, Offset)))
+                    andBool notBool isInOmpTeam(OmpTeam, ThreadId))
                // Libc fixed.
                andBool (notBool isLibcFixedDuration(Base))
           [structural]
@@ -92,9 +94,11 @@ module C-IO
           ...</k>
           <parent-thread> ParentThread::Int</parent-thread>
           <thread-id> ThreadId::Int </thread-id>
+          <omp-threads-team> OmpTeam:List </omp-threads-team>
           requires (isThreadDuration(Loc) orBool isAutoDuration(Loc) orBool isompThreadDuration(Loc))
                andBool (ThreadId =/=K getThreadId(Loc)) 
                andBool (ParentThread =/=K getThreadId(Loc))
+               andBool notBool isInOmpTeam(OmpTeam, ThreadId)
           [structural]
      rule (.K => UNDEF("EIO11",
                "Trying to modify an unmodifiable object returned by a library function."))
@@ -157,9 +161,11 @@ module C-IO
           <locs-written> Locs::Set </locs-written>
           <parent-thread> ParentThread::Int</parent-thread>
           <buffer> Mem::List </buffer>
+          <omp-threads-team> OmpTeam:List </omp-threads-team>
           requires notBool ((isThreadDuration(Loc) orBool isAutoDuration(Loc) orBool isompThreadDuration(Loc))
                andBool (ThreadId =/=K getThreadId(Loc))
-               andBool (ParentThread =/=K getThreadId(Loc)))
+               andBool (ParentThread =/=K getThreadId(Loc))
+               andBool notBool isInOmpTeam(OmpTeam, ThreadId))
           [structural]
           // not (isThreadDuration(Loc) OR isAutoDuration(Loc)) OR  not (ThreadId =/=K getThreadId(Loc)) 
           // (not isThreadDuration(Loc) and  not isAutoDuration(Loc)) OR (ThreadId ==K getThreadId(Loc))
@@ -173,9 +179,11 @@ module C-IO
           <locs-written> Locs::Set </locs-written>
           <parent-thread> ParentThread::Int</parent-thread>
           <buffer> Mem::List </buffer>
+          <omp-threads-team> OmpTeam:List </omp-threads-team>
           requires notBool ((isThreadDuration(Loc) orBool isAutoDuration(Loc) orBool isompThreadDuration(Loc))
                andBool (ThreadId =/=K getThreadId(Loc))
-               andBool (ParentThread =/=K getThreadId(Loc)))
+               andBool (ParentThread =/=K getThreadId(Loc))
+               andBool notBool isInOmpTeam(OmpTeam, ThreadId))
                andBool isNativeLoc(Loc)
 
      rule <k> (.K => IMPL("EIO6", "Attempting to access an object with thread or auto storage duration in a thread other than the one in which the object is associated."))
@@ -183,9 +191,11 @@ module C-IO
           ...</k>
           <thread-id> ThreadId::Int </thread-id>
           <parent-thread> ParentThread::Int</parent-thread>
+          <omp-threads-team> OmpTeam:List </omp-threads-team>
           requires (isThreadDuration(Loc) orBool isAutoDuration(Loc) orBool isompThreadDuration(Loc))
                andBool (ThreadId =/=K getThreadId(Loc))
                andBool (ParentThread =/=K getThreadId(Loc))
+               andBool notBool isInOmpTeam(OmpTeam, ThreadId)
           [structural]
 
      // (isThreadDuration(Loc) orBool isAutoDuration(Loc)) is always true,
@@ -451,5 +461,15 @@ module C-IO
           (.K => UNDEF("CEER1", "Trying to read through a null pointer.") ) ~>
           read(NullPointer, _)
           [structural]
+
+     syntax Bool ::= isInOmpTeam(List, Int) [function]
+     
+     rule isInOmpTeam(ListItem(V1:Int) LL:List, V2:Int) => true
+     requires V1 ==Int V2
+
+     rule isInOmpTeam(ListItem(V1:Int) LL:List, V2:Int) => isInOmpTeam(LL, V2)
+     requires V1 =/=Int V2
+
+     rule isInOmpTeam(.List, V2:Int) => false
 
 endmodule
