@@ -32,14 +32,14 @@ module C-CONFIGURATION
      <next-task-id> 1 </next-task-id>
 
      // to extra store the block-control cell
-     // <omp-block-stack> .List </omp-block-stack>
+     <omp-task-stack> .List </omp-task-stack>
+     <omp-task-block-stack> .List </omp-task-block-stack>
+
+     <omp-task-temp-ids> .Map </omp-task-temp-ids>
 
      <for-thread-op> .K </for-thread-op>
      <compile-time-evaluation> true </compile-time-evaluation>
      
-
-
-
      <thread-info color="yellow">
           <thread-status color="yellow"> .Map </thread-status>
           <mutexes color="yellow"> .Map </mutexes>
