@@ -1,0 +1,12 @@
+
+void main() {
+  int n = 5;
+  int x = 0;
+
+  #pragma omp parallel num_threads(10)
+  {
+    int x = 2;
+    print(x, " IN\n");
+   }
+    print(x, " OUT\n");
+}

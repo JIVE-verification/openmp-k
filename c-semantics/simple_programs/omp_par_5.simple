@@ -1,0 +1,13 @@
+
+int main() {
+  int n = 5;
+  int x = 4;
+
+  #pragma omp parallel private(x)
+  {
+    print(x, " IN\n");
+   }
+    print(x, " OUT\n");
+
+    return n;
+}

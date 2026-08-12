@@ -1,0 +1,66 @@
+/home/user/mounted/dist/k/bin/krun simple_programs/threads/threads_01.simple -d dist/k/tutorial/2_languages/1_simple/2_typed/2_dynamic/ --search-final
+  Result ==K <T>
+    <threads>
+      .ThreadCellBag
+    </threads>
+    <genv>
+      main |-> 0
+    </genv>
+    <store>
+      0 |-> lambda ( void , .Params , { ( int x , .Vals ; x = 5 ; ) spawn { x = 7 ; } ; print ( x , "\n" , .Vals ) ; } )
+      1 |-> 7
+    </store>
+    <busy>
+      .Set
+    </busy>
+    <terminated>
+      SetItem ( 0 )
+      SetItem ( 1 )
+    </terminated>
+    <input>
+      ListItem ( #buffer ( "\n" ) )
+      ListItem ( "off" )
+      ListItem ( #istream ( 0 ) )
+    </input>
+    <output>
+      ListItem ( #ostream ( 1 ) )
+      ListItem ( "off" )
+      ListItem ( #buffer ( "5\n" ) )
+    </output>
+    <nextLoc>
+      2
+    </nextLoc>
+  </T>
+#Or
+  Result ==K <T>
+    <threads>
+      .ThreadCellBag
+    </threads>
+    <genv>
+      main |-> 0
+    </genv>
+    <store>
+      0 |-> lambda ( void , .Params , { ( int x , .Vals ; x = 5 ; ) spawn { x = 7 ; } ; print ( x , "\n" , .Vals ) ; } )
+      1 |-> 7
+    </store>
+    <busy>
+      .Set
+    </busy>
+    <terminated>
+      SetItem ( 0 )
+      SetItem ( 1 )
+    </terminated>
+    <input>
+      ListItem ( #buffer ( "\n" ) )
+      ListItem ( "off" )
+      ListItem ( #istream ( 0 ) )
+    </input>
+    <output>
+      ListItem ( #ostream ( 1 ) )
+      ListItem ( "off" )
+      ListItem ( #buffer ( "7\n" ) )
+    </output>
+    <nextLoc>
+      2
+    </nextLoc>
+  </T>

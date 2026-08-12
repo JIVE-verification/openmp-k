@@ -1,0 +1,136 @@
+/home/user/mounted/dist/k/bin/krun simple_programs/omp_par.simple -d dist/k/tutorial/2_languages/1_simple/2_typed/2_dynamic/ --search
+  Result ==K <T>
+    <threads>
+      .ThreadCellBag
+    </threads>
+    <genv>
+      main |-> 0
+    </genv>
+    <store>
+      0 |-> lambda ( void , .Params , { ( int n , .Vals ; n = 5 ; ) ( int x , .Vals ; x = 0 ; ) #pragma omp parallel private { x = 2 ; print ( x , "IN\n" , .Vals ) ; } ; print ( x , "OUT\n" , .Vals ) ; } )
+      1 |-> 5
+      2 |-> 2
+    </store>
+    <busy>
+      .Set
+    </busy>
+    <terminated>
+      SetItem ( 0 )
+      SetItem ( 1 )
+    </terminated>
+    <input>
+      ListItem ( #buffer ( "\n" ) )
+      ListItem ( "off" )
+      ListItem ( #istream ( 0 ) )
+    </input>
+    <output>
+      ListItem ( #ostream ( 1 ) )
+      ListItem ( "off" )
+      ListItem ( #buffer ( "0OUT\n2IN\n" ) )
+    </output>
+    <nextLoc>
+      3
+    </nextLoc>
+  </T>
+#Or
+  Result ==K <T>
+    <threads>
+      .ThreadCellBag
+    </threads>
+    <genv>
+      main |-> 0
+    </genv>
+    <store>
+      0 |-> lambda ( void , .Params , { ( int n , .Vals ; n = 5 ; ) ( int x , .Vals ; x = 0 ; ) #pragma omp parallel private { x = 2 ; print ( x , "IN\n" , .Vals ) ; } ; print ( x , "OUT\n" , .Vals ) ; } )
+      1 |-> 5
+      2 |-> 2
+    </store>
+    <busy>
+      .Set
+    </busy>
+    <terminated>
+      SetItem ( 0 )
+      SetItem ( 1 )
+    </terminated>
+    <input>
+      ListItem ( #buffer ( "\n" ) )
+      ListItem ( "off" )
+      ListItem ( #istream ( 0 ) )
+    </input>
+    <output>
+      ListItem ( #ostream ( 1 ) )
+      ListItem ( "off" )
+      ListItem ( #buffer ( "2IN\n0OUT\n" ) )
+    </output>
+    <nextLoc>
+      3
+    </nextLoc>
+  </T>
+#Or
+  Result ==K <T>
+    <threads>
+      .ThreadCellBag
+    </threads>
+    <genv>
+      main |-> 0
+    </genv>
+    <store>
+      0 |-> lambda ( void , .Params , { ( int n , .Vals ; n = 5 ; ) ( int x , .Vals ; x = 0 ; ) #pragma omp parallel private { x = 2 ; print ( x , "IN\n" , .Vals ) ; } ; print ( x , "OUT\n" , .Vals ) ; } )
+      1 |-> 5
+      2 |-> 2
+    </store>
+    <busy>
+      .Set
+    </busy>
+    <terminated>
+      SetItem ( 0 )
+      SetItem ( 1 )
+    </terminated>
+    <input>
+      ListItem ( #buffer ( "\n" ) )
+      ListItem ( "off" )
+      ListItem ( #istream ( 0 ) )
+    </input>
+    <output>
+      ListItem ( #ostream ( 1 ) )
+      ListItem ( "off" )
+      ListItem ( #buffer ( "2IN\n2OUT\n" ) )
+    </output>
+    <nextLoc>
+      3
+    </nextLoc>
+  </T>
+#Or
+  Result ==K <T>
+    <threads>
+      .ThreadCellBag
+    </threads>
+    <genv>
+      main |-> 0
+    </genv>
+    <store>
+      0 |-> lambda ( void , .Params , { ( int n , .Vals ; n = 5 ; ) ( int x , .Vals ; x = 0 ; ) #pragma omp parallel private { x = 2 ; print ( x , "IN\n" , .Vals ) ; } ; print ( x , "OUT\n" , .Vals ) ; } )
+      1 |-> 5
+      2 |-> 2
+    </store>
+    <busy>
+      .Set
+    </busy>
+    <terminated>
+      SetItem ( 0 )
+      SetItem ( 1 )
+    </terminated>
+    <input>
+      ListItem ( #buffer ( "\n" ) )
+      ListItem ( "off" )
+      ListItem ( #istream ( 0 ) )
+    </input>
+    <output>
+      ListItem ( #ostream ( 1 ) )
+      ListItem ( "off" )
+      ListItem ( #buffer ( "2OUT\n2IN\n" ) )
+    </output>
+    <nextLoc>
+      3
+    </nextLoc>
+  </T>

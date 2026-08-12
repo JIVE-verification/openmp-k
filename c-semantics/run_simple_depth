@@ -1,0 +1,27 @@
+#!/bin/bash
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <filename> <depth>"
+    exit 1
+fi
+PROJECT_DIR="dist/k/tutorial/2_languages/1_simple/2_typed/2_dynamic/"
+
+input_file=$(basename "$1")
+output_file="${input_file%.simple}"
+execution_depth=$2
+destination_dir="experiments/$input_file"
+output_file_path="$destination_dir/$input_file"
+
+echo "INPUT: "$input_file 
+echo "OUTPUT :"$output_file
+echo "DEPTH :"$execution_depth
+
+echo "$destination_dir"
+if [ ! -d "$destination_dir" ]; then
+    echo "$destination_dir Creating.."
+	mkdir -p "$destination_dir"
+else
+	echo "$destination_dir exists"
+fi
+
+echo "/home/user/mounted/dist/k/bin/krun $1 -d $PROJECT_DIR --depth $2 > $output_file_path-$execution_depth.txt"
+/home/user/mounted/dist/k/bin/krun $1 -d $PROJECT_DIR --depth $2 > "$output_file_path-$execution_depth.txt"

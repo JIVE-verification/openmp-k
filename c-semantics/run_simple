@@ -1,0 +1,7 @@
+#!/bin/bash
+
+SIMPLE_K_FILE="simple-typed-dynamic.k"
+PROJECT_DIR="dist/k/tutorial/2_languages/1_simple/2_typed/2_dynamic/"
+
+echo "/home/user/mounted/dist/k/bin/krun $1 -d $PROJECT_DIR"
+/home/user/mounted/dist/k/bin/krun $1 -d $PROJECT_DIR 

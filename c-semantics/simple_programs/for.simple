@@ -1,0 +1,9 @@
+
+void main() {
+  int n = 5;
+  int x = 0;
+  for (int i=1; i<=n; ++i) {
+    x = x + i; 
+  }
+  print(x,"\n");
+}

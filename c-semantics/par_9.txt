@@ -1,0 +1,1 @@
+/home/user/mounted/dist/k/bin/krun simple_programs/omp_par_9.simple -d dist/k/tutorial/2_languages/1_simple/2_typed/2_dynamic/ --search

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+SIMPLE_K_FILE="simple-typed-dynamic.k"
+PROJECT_DIR="dist/k/tutorial/2_languages/1_simple/2_typed/2_dynamic/"
+
+echo "$SIMPLE_K_FILE"
+
+cp -f "$SIMPLE_K_FILE" "$PROJECT_DIR"
+
+if [ $? -eq 0 ]; then
+    echo ".k fileile copied successfully."
+else
+    echo ".k file failed to copy file."
+    exit 1
+fi
+
+TARGET_FILE="$PROJECT_DIR/$SIMPLE_K_FILE"
+make -C "$PROJECT_DIR" clean
+make -C "$PROJECT_DIR"
