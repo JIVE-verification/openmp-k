@@ -1,455 +1,57 @@
-/home/user/mounted/dist/k/bin/krun simple_programs/threads/threads_04.simple -d dist/k/tutorial/2_languages/1_simple/2_typed/2_dynamic/ --search
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 2 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "2 3 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 2 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "3 2 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 3 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "2 3 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 3 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "3 2 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 4 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "2 3 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 4 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "3 2 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 5 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "2 3 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 5 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "3 2 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 6 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "2 3 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 6 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "3 2 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 7 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "2 3 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 7 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "3 2 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
-#Or
-  Result ==K <T>
-    <threads>
-      .ThreadCellBag
-    </threads>
-    <genv>
-      main |-> 0
-    </genv>
-    <store>
-      0 |-> lambda ( void , .Params , { spawn { ( int x , .Vals ; x = 2 ; ) print ( x , " " , .Vals ) ; } ; spawn { ( int x , .Vals ; x = 3 ; ) print ( x , " " , .Vals ) ; } ; } )
-      1 |-> 2
-      2 |-> 3
-    </store>
-    <busy>
-      .Set
-    </busy>
-    <terminated>
-      SetItem ( 0 )
-      SetItem ( 1 )
-      SetItem ( 8 )
-    </terminated>
-    <input>
-      ListItem ( #buffer ( "\n" ) )
-      ListItem ( "off" )
-      ListItem ( #istream ( 0 ) )
-    </input>
-    <output>
-      ListItem ( #ostream ( 1 ) )
-      ListItem ( "off" )
-      ListItem ( #buffer ( "2 3 " ) )
-    </output>
-    <nextLoc>
-      3
-    </nextLoc>
-  </T>
+/home/user/mounted/dist/k/bin/krun simple_programs/omp_par_10.simple -d dist/k/tutorial/2_languages/1_simple/2_typed/2_dynamic/
+i=4 sum=4
+i=7 sum=7
+i=5 sum=9
+i=6 sum=15
+i=0 sum=0
+i=8 sum=15
+i=1 sum=1
+i=2 sum=3
+i=9 sum=24
+i=3 sum=6
+sum = 1
+<T>
+  <next-thread-id>
+    3
+  </next-thread-id>
+  <omp-default-threads>
+    2
+  </omp-default-threads>
+  <threads>
+    .ThreadCellBag
+  </threads>
+  <genv>
+    main |-> 0
+  </genv>
+  <store>
+    0 |-> lambda ( int , .Params , { ( int sum , .Vals ; sum = 1 ; ) #pragma omp parallel for private ( sum , .Vals )  .Clauses for ( ( int i , .Vals ; i = 0 ; ) i < 10 ; ++ i ) { sum = sum + i ; print ( "i=" , i , " sum=" , sum , "\n" , .Vals ) ; } print ( "sum = " , sum , "\n" , .Vals ) ; return sum ; } )
+    1 |-> 1
+    2 |-> 7
+    3 |-> 10
+    4 |-> 4
+    5 |-> 24
+    6 |-> 15
+    7 |-> 6
+  </store>
+  <busy>
+    .Set
+  </busy>
+  <terminated>
+    SetItem ( 0 )
+    SetItem ( 1 )
+    SetItem ( 2 )
+  </terminated>
+  <input>
+    ListItem ( #buffer ( "" ) )
+    ListItem ( "on" )
+    ListItem ( #istream ( 0 ) )
+  </input>
+  <output>
+    ListItem ( #ostream ( 1 ) )
+    ListItem ( "on" )
+    ListItem ( #buffer ( "" ) )
+  </output>
+  <nextLoc>
+    8
+  </nextLoc>
+</T>

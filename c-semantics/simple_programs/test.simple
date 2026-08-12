@@ -1,5 +1,5 @@
 void main(){
 
-    print("Test\n");
-    print();
+    int i = 1;  i=i+1;
+    print(i, " Test\n");
 }

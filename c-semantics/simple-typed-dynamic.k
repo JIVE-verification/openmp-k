@@ -34,8 +34,6 @@ constructs. */
 
   syntax Id ::= "main" [token]
 
-//  syntax Ids  ::= List{Id,","}
-
 //@ \subsection{Types}
 
   syntax Type ::= "void" | "int" | "bool" | "string"
@@ -106,6 +104,7 @@ constructs. */
                 | "while" "(" Exp ")" Block
                 | "for" "(" Stmts Exp ";" Exp ")" Block
                 | "#pragma" "omp" "parallel" Clauses Block
+                | "#pragma" "omp" "parallel" "for" Clauses "for" "(" Stmts Exp ";" Exp ")" Block
                 | "print" "(" Exps ")" ";"              [strict]
                 | "return" Exp ";"                      [strict]
                 | "return" ";"
@@ -117,9 +116,14 @@ constructs. */
                 | "rendezvous" Exp ";"                  [strict]
 
   syntax Clause ::= "num_threads" "(" Int ")" 
-                  | "private" "(" Id ")" 
+                  | "private" "(" Exps ")" 
+                  | "firstprivate" "("  Exps ")"
+                  | "reduction"  "(" "+:" Exps ")" 
 
   syntax Clauses ::= List{Clause, " "}
+
+//  syntax OmpIds  ::= List{Id , ","}
+
 
   syntax Stmts ::= Stmt
                  | Stmts Stmts                          [right]
@@ -174,7 +178,7 @@ function body encounters an explicit \texttt{return} statement. */
   // is implemented, the configuration syntax is not available yet
   // should simply work once KIL is removed completely
   // check other definitions for this hack as well
-
+  // @conf
   syntax ControlCell
   syntax ControlCellFragment
 
@@ -445,18 +449,35 @@ values, in which case our semantics below works fine: */
 
 //@ {Thread creation}
   // @omp
-   syntax Stmt ::= OmpParallel(Int, Stmt) | OmpParallelPrivate(Id, Stmt)
 
-   syntax Stmt ::= OmpParallelAll(Int, Stmt)
+//                 | "for" "(" Stmts Exp ";" Exp ")" Block
+//   rule for(Start Cond; Step) {S:Stmts} => {Start while(Cond){S Step;}}  [macro]
 
-//   rule #pragma omp parallel num_threads(N:Int) S => OmpParallel(N, S)
+  syntax Stmt ::= OmpParallel(Int, Stmt)
+  syntax Stmt ::= OmpParallelAll(Int, Stmts, Stmt)
+  // num_threads, clauses, Init, Condition, Post, Block
+  syntax Stmt ::= OmpParallelFor(Int, Stmts, Stmts, Stmt, Exp, Stmt)
+
+  rule #pragma omp parallel C:Clauses S:Block => OmpParallelAll(parseNumThreads(C), handleOmpClausesForBeforeOmp(C), S)
   
-//   rule <k> #pragma omp parallel S => OmpParallel(Fresh, S) ... </k>
-//        <omp-default-threads> Fresh:Int </omp-default-threads>
+  rule #pragma omp parallel for C:Clauses for(Start Cond; Step) S:Block => OmpParallelFor(parseNumThreads(C), handleOmpClausesForBeforeOmp(C), Start, Cond;, Step, S)
 
-//   rule <k> #pragma omp parallel private(X:Id) S => OmpParallelPrivate(X, S) ... </k>
+    /*************************
+     * Handling OMP Clauses - BEFORE
+     **************************/
+    syntax Stmts ::= handleOmpClausesForBeforeOmp(Clauses) [function]
+    rule handleOmpClausesForBeforeOmp(.Clauses) => {}
+    rule handleOmpClausesForBeforeOmp(private(Es:Exps) LL:Clauses) => handlePrivateClasueBefore(Es) handleOmpClausesForBeforeOmp(LL)
+    rule handleOmpClausesForBeforeOmp(num_threads(N:Int) LL:Clauses) => handleOmpClausesForBeforeOmp(LL)
 
-  rule #pragma omp parallel C:Clauses S:Block => OmpParallelAll(parseNumThreads(C), S)
+    /*****************************
+     * Helper Function - Before
+     *****************************/
+     syntax Stmts ::= handlePrivateClasueBefore(Exps) [function]
+     rule handlePrivateClasueBefore(.Exps) => {}
+     rule handlePrivateClasueBefore(Y:Id, LL:Id) =>  int Y; Y=0; handlePrivateClasueBefore(LL)
+      
+     rule handlePrivateClasueBefore(Y:Id, .Exps) =>  int Y; Y=0; handlePrivateClasueBefore(.Exps)
 
   syntax Int ::= parseNumThreads(Clauses) [function]
 
@@ -466,16 +487,18 @@ values, in which case our semantics below works fine: */
   rule parseNumThreads(C:Clause L:Clauses) => parseNumThreads(L)
     when notBool isNumThreads(C)
 
-  rule parseNumThreads(.Clauses) => 10
+  rule parseNumThreads(.Clauses) => 2
 
   syntax Bool ::= isNumThreads(Clause) [function]
   rule isNumThreads(num_threads(N:Int)) => true
   rule isNumThreads(_) => false [owise]
  
   syntax Int ::= getNumThreads(Clause) [function]
-  rule getNumThreads(num_threads(N:Int)) => N
+  rule getNumThreads(num_threads(N:Int)) => N -Int 1
+   when N >=Int 1
 
-
+  rule getNumThreads(num_threads(N:Int)) => N -Int 1
+   when N <=Int 0
 
    rule <thread>...
           <k> spawn S => !T:Int ...</k>
@@ -487,16 +510,6 @@ values, in which case our semantics below works fine: */
                 <id> !T </id>
               ...</thread>)
 
-    rule <thread>...
-          <k> OmpParallelPrivate(X:Id, S:Stmt) => .K  ...</k>
-          <env> Env </env>
-        ...</thread>
-        <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
-        (.Bag => <thread>...
-                <k> int X ; S </k>
-                <env> Env </env>
-               <id> Fresh </id>
-              ...</thread>)    
 
     rule <thread>...
           <k> OmpParallel(N:Int, S:Stmt) => OmpParallel(N -Int 1, S:Stmt)  ...</k>
@@ -511,6 +524,56 @@ values, in which case our semantics below works fine: */
         when N >Int 0 
 
     rule OmpParallel(0, S:Stmt) => S
+
+    rule <thread>...
+          <k> OmpParallelAll(N:Int, B:Stmts, S:Stmt) => OmpParallelAll(N -Int 1, B, S)  ...</k>
+          <env> Env </env>
+        ...</thread>
+        <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+        (.Bag => <thread>...
+                <k> B S </k>
+                <env> Env </env>
+               <id> Fresh </id>
+              ...</thread>)    
+        when N >Int 0 
+
+    rule OmpParallelAll(0, B:Stmts, S:Stmt) => B S
+
+
+    // for(Start Cond; Step) {S:Stmts} => {Start while(Cond){S Step;}}
+    //OmpParallelFor(Int, Stmts, Stmts, Stmt, Exp, Stmt)
+
+/*    rule <thread>...
+          <k> OmpParallelFor(N:Int, C:Stmts, Start:Stmts, Cond;:Stmt, Step:Exp, {S:Stmts}) => OmpParallelFor(N -Int 1, C, Start, Cond;, Step, {S})  ...</k>
+          <env> Env </env>
+        ...</thread>
+        <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+        (.Bag => <thread>...
+                <k> {Start C while(Cond){S Step;}} </k>
+                <env> Env </env>
+               <id> Fresh </id>
+              ...</thread>)    
+        when N >Int 0 
+
+    rule OmpParallelFor(0, C:Stmts, Start:Stmts, Cond;:Stmt, Step:Exp, {S:Stmts}) => {Start C while(Cond){S Step;}}
+*/
+// B ~> declareInternalVariable(X, T, initValue(X, T, Initializer(Y := ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(TotalThreads -Int Th, TT) ) ))) ) ~> For(compoundExp( L~> te((I < ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(TotalThreads -Int Th +Int 1, TT) ) )) != CM, TT)), Post, S) ~> A ~> joinChild
+// T:Type X:Id = E1;
+
+    rule <thread>...
+          <k> OmpParallelFor(N:Int, C:Stmts, T:Type X:Id = E1;, _:Id < E2;, Step:Exp, {S:Stmts}) => OmpParallelFor(N -Int 1, C, T X = E1;, X < E2;, Step, {S})  ...</k>
+          <env> Env </env>
+        ...</thread>
+        <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+        (.Bag => <thread>...
+                <k>  {T X = ( E2 % 3) + (E2 / 3) * (3 - N); C while(X <  ( E2 % 3) + (E2/ 3) * (3 - N + 1)){S Step;}}  </k>
+                <env> Env </env>
+               <id> Fresh </id>
+              ...</thread>)    
+        when N >Int 0 
+
+// B ~> declareInternalVariable(X, T, initValue(X, T, Initializer(Y := V ))) ~> For(compoundExp( L~> te((I < ( (N % tv(TotalThreads, TT)) + ( N / tv( TotalThreads, TT) )  ) ) != C, TT)), Post, S) ~> A ~> waitingForChild
+    rule OmpParallelFor(0, C:Stmts, Start:Stmts, X:Id < E2;, Step:Exp, {S:Stmts}) => {Start C while(X < (E2 % 3) + (E2 / 3)){S Step;}}
 
 
     syntax Exp ::= "threadID"
