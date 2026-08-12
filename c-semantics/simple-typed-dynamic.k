@@ -96,17 +96,16 @@ constructs. */
   syntax Block ::= "{" "}"
                 | "{" Stmts "}"
 
-//                 | "#pragma" "omp" "parallel" "for" "(" Stmts Exp ";" Exp ")" Block
+//          | "#pragma" "omp" "parallel" "for" "(" Stmts Exp ";" Exp ")" Block
 
-
+// @omp
   syntax Stmt ::= Decl | Block
                 | Exp ";"                               [strict]
                 | "if" "(" Exp ")" Block "else" Block   [avoid, strict(1)]
                 | "if" "(" Exp ")" Block
                 | "while" "(" Exp ")" Block
                 | "for" "(" Stmts Exp ";" Exp ")" Block
-                | "#pragma" "omp" "parallel"  Block
-                | "#pragma" "omp" "parallel" Clause Block
+                | "#pragma" "omp" "parallel" Clauses Block
                 | "print" "(" Exps ")" ";"              [strict]
                 | "return" Exp ";"                      [strict]
                 | "return" ";"
@@ -117,9 +116,10 @@ constructs. */
                 | "release" Exp ";"                     [strict]
                 | "rendezvous" Exp ";"                  [strict]
 
-  syntax Stmt ::= OmpParallel(Int, Stmt) | OmpParallelPrivate(Id, Stmt)
+  syntax Clause ::= "num_threads" "(" Int ")" 
+                  | "private" "(" Id ")" 
 
-  syntax Clause ::= "num_threads" "(" Int ")" | "private" "(" Id ")" | Clause Clause
+  syntax Clauses ::= List{Clause, " "}
 
   syntax Stmts ::= Stmt
                  | Stmts Stmts                          [right]
@@ -131,8 +131,6 @@ constructs. */
   rule for(Start Cond; Step) {} => {Start while(Cond){Step;}}           [macro]
   rule T:Type E1:Exp, E2:Exp, Es:Exps; => T E1; T E2, Es;               [macro]
   rule T:Type X:Id = E; => T X; X = E;                                  [macro]
-
-//  "#pragma" "omp" "parallel" "for" "(" Stmts Exp ";" Exp ")" Block
 
   syntax KItem ::= "jive"
 
@@ -446,13 +444,38 @@ values, in which case our semantics below works fine: */
 //@ \subsubsection{Threads}
 
 //@ {Thread creation}
+  // @omp
+   syntax Stmt ::= OmpParallel(Int, Stmt) | OmpParallelPrivate(Id, Stmt)
 
-   rule #pragma omp parallel num_threads(N:Int) S => OmpParallel(N, S)
+   syntax Stmt ::= OmpParallelAll(Int, Stmt)
+
+//   rule #pragma omp parallel num_threads(N:Int) S => OmpParallel(N, S)
   
-   rule <k> #pragma omp parallel S => OmpParallel(Fresh, S) ... </k>
-        <omp-default-threads> Fresh:Int </omp-default-threads>
+//   rule <k> #pragma omp parallel S => OmpParallel(Fresh, S) ... </k>
+//        <omp-default-threads> Fresh:Int </omp-default-threads>
 
-   rule <k> #pragma omp parallel private(X:Id) S => OmpParallelPrivate(X, S) ... </k>
+//   rule <k> #pragma omp parallel private(X:Id) S => OmpParallelPrivate(X, S) ... </k>
+
+  rule #pragma omp parallel C:Clauses S:Block => OmpParallelAll(parseNumThreads(C), S)
+
+  syntax Int ::= parseNumThreads(Clauses) [function]
+
+  rule parseNumThreads(C:Clause L:Clauses) => getNumThreads(C)
+    when isNumThreads(C)
+
+  rule parseNumThreads(C:Clause L:Clauses) => parseNumThreads(L)
+    when notBool isNumThreads(C)
+
+  rule parseNumThreads(.Clauses) => 10
+
+  syntax Bool ::= isNumThreads(Clause) [function]
+  rule isNumThreads(num_threads(N:Int)) => true
+  rule isNumThreads(_) => false [owise]
+ 
+  syntax Int ::= getNumThreads(Clause) [function]
+  rule getNumThreads(num_threads(N:Int)) => N
+
+
 
    rule <thread>...
           <k> spawn S => !T:Int ...</k>
@@ -487,7 +510,7 @@ values, in which case our semantics below works fine: */
               ...</thread>)    
         when N >Int 0 
 
-    rule OmpParallel(0, S:Stmt) => .K
+    rule OmpParallel(0, S:Stmt) => S
 
 
     syntax Exp ::= "threadID"

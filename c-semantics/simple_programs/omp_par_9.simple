@@ -3,10 +3,10 @@ void main() {
   int n = 5;
   int x = 0;
 
-  #pragma omp parallel
+  #pragma omp parallel num_threads(3) private(x)
   {
     x = 47;
-    print(x, " IN ", n, "\n");
+    print(" IN: ", x, "\n");
    }
-    print(x, " OUT ", n, "\n");
+    print(" OUT: ", x, "\n");
 }
