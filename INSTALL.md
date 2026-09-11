@@ -1,3 +1,36 @@
+## Sep 2026
+Checkpoint: https://github.com/kframework/c-semantics/tree/5d1ba7aa52728397f0748216900e273eda0a8391
+Java 1.8
+Ocaml 4.0.0
+GCC 4.9+
+K-v3.6
+
+If the docker is already in the system, ignore docker build. Otherwise build the docker that has gcc 4.9, jdk1.8, Ocaml 4.0 from the [docker](Dockerfile)
+```
+docker build --no-cache -t legacy-cjk3.6 .
+```
+To run the docker from the current directory
+```
+docker run -it --rm \
+    -v $(pwd -P):/workspace \
+    legacy-cjk3.6
+```
+Set the path of K3.6 as
+```
+export PATH="/workspace/k-distribution-3.6/k/bin:$PATH"
+```
+Then continue installing dependencies
+```
+apt-get install build-essential libxml-libxml-perl ocaml graphviz
+cpan -i Text::Diff DBI DBD::SQLite Getopt::Declare
+apt-get install -y libgraphviz-perl
+```
+Finally,
+```
+make
+```
+END @ Sep 2026
+
 ## Installation
 
 Please let us know if these instructions are insufficient or if you needed to

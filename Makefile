@@ -50,13 +50,11 @@ $(DIST_DIR): test-build $(DIST_DIR)/c11-nd-kompiled/c11-nd-kompiled/context.bin 
 
 test-build: fast
 	@echo "Testing kcc..."
-	echo '#include <stdio.h>\nint main(void) {printf("x"); return 42;}\n' | $(DIST_DIR)/kcc - -o $(DIST_DIR)/testProgram.compiled
-	$(DIST_DIR)/testProgram.compiled 2> /dev/null > $(DIST_DIR)/testProgram.out; test $$? -eq 42
-	grep x $(DIST_DIR)/testProgram.out > /dev/null
+	@perl $(SCRIPTS_DIR)/testInstall.pl $(DIST_DIR)/kcc $(DIST_DIR)/testProgram.c $(DIST_DIR)/testProgram.compiled
 	@echo "Done."
 	@echo "Cleaning up..."
-	@rm -f $(DIST_DIR)/testProgram.compiled
-	@rm -f $(DIST_DIR)/testProgram.out
+#	@rm -f $(DIST_DIR)/testProgram.compiled
+#	@rm -f $(DIST_DIR)/testProgram.c
 	@echo "Done."
 
 parser/cparser:
