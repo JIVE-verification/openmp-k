@@ -140,17 +140,11 @@ sub main {
      # should be empty.
 
 #     my $retval = execute('krun', getKRunCommand($programConfFile, $objFiles[0], $objFiles[1], $srcFiles[0], 1));
-     my $linkStdout = File::Temp->new( 
-          TEMPLATE => 'tmp-kcc-link-stdout-XXXX', 
-          SUFFIX => '.o', 
-          UNLINK => 0 );
-     #my $retval = execute('krun', getKRunCommand($oval, undef, undef, $inputFile, 0));     
-     # print("Line 277:", getKRunCommand($oval, undef, undef, $inputFile, 0));
-     my $cmd = "$KRUN " . join(" ", getKRunCommand($programConfFile, $objFiles[0], $objFiles[1], $srcFiles[0], 1)) . " > $linkStdout 2>&1";
+     my $cmd = "$KRUN " . join(" ", getKRunCommand($programConfFile, $objFiles[0], $objFiles[1], $srcFiles[0], 1));
      print $cmd . "\n" if ($args->{'-d'});
-     system($cmd);     
-#     exit 1;
-     
+     my $retval = system($cmd);     
+     print("krun return value <O means OK, !0 means Error> is $retval\n");
+
      open(FILE, $programConfFile) or die "Couldn't open file: $!\n";
      my $programConf = join("", <FILE>);
      close(FILE);
@@ -198,9 +192,10 @@ sub mergeObjs {
           push(@objFiles, $oval);
      }
      my $accum = tempFile();
+     print "objfiles: ". join(" ", @objFiles), "\n";
      my $objFile = shift @objFiles;
-     print join(" ", @objFiles), "\n";
      copy($objFile, $accum);
+     print("cp $objFile $accum\n");
      unshift(@objFiles, $accum);
 #     while (scalar @objFiles + scalar @pids > $numObj) {
      while (scalar @objFiles > $numObj) {
@@ -221,8 +216,8 @@ sub mergeObjs {
             #}
             #exec('krun', @cmd);
             print $cmd . "\n" if ($args->{'-d'});
-            system($cmd);
-
+            my $retval = system($cmd);
+            print("krun return value <O means OK, !0 means Error> is $retval\n");
             unshift(@objFiles, $obj1);
 #          }
 
@@ -287,19 +282,13 @@ sub extractStatic {
 }
 
 sub compile {
-     print("Compiling src file...\n");
      my ($oval, $inputFile) = (@_);
-     my $compileStdout = File::Temp->new( 
-          TEMPLATE => 'tmp-kcc-compile-stdout-XXXX', 
-          SUFFIX => '.o', 
-          UNLINK => 0 );
+     print("Compiling src file $inputFile...\n");
      #my $retval = execute('krun', getKRunCommand($oval, undef, undef, $inputFile, 0));     
-     # print("Line 277:", getKRunCommand($oval, undef, undef, $inputFile, 0));
-     my $cmd = "$KRUN " . join(" ", getKRunCommand($oval, undef, undef, $inputFile, 0)) . " > $compileStdout 2>&1";
-     # print("Line 279: $cmd\n");
+     my $cmd = "$KRUN " . join(" ", getKRunCommand($oval, undef, undef, $inputFile, 0));
      print $cmd . "\n" if ($args->{'-d'});
-     system($cmd);     
-#     exit 1;
+     my $retval = system($cmd);     
+     print("krun return value <O means OK, !0 means Error> is $retval\n");
 #     if ($retval) {
 #          error();
 #     }
