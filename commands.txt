@@ -1,0 +1,28 @@
+##compiling
+
+#preprocess
+gcc-4.9 -Wall -Wextra -Werror -Wmissing-prototypes -pedantic -x c -std=c11 -CC -nostdlib -nodefaultlibs -U '__GNUC__' -include '/workspace/dist/includes/kcc_settings.h' -I 'libc/src/' -E -iquote '.' -iquote 'libc/src' -I '/workspace/dist/includes' 'libc/src/ctype.c' -o 'tmp-kcc-XFadsQa'
+#parse
+/workspace/dist/cparser tmp-kcc-XFadsQa --trueName 'libc/src/ctype.c' | /workspace/dist/xml-to-k > tmp-kcc-kOVXZs5
+#command
+krun --output pretty --output-file tmp-kcc-r0Z4LWY -d /workspace/dist/c11-translation-kompiled -cOPTIONS="(SetItem(NOLINK) .Set)" -cOBJ1=".Bag" -cOBJ2=".Bag" --parser cat tmp-kcc-kOVXZs5
+
+#command with exit code 
+krun --output pretty --output-file tmp-kcc-r0Z4LWZ -d /workspace/dist/c11-translation-kompiled --exit-code "<result-value> _:Float </result-value>" -cOPTIONS="(SetItem(NOLINK) .Set)" -cOBJ1=".Bag" -cOBJ2=".Bag" --parser cat tmp-kcc-kOVXZs5
+
+
+ # translating standard libraries
+ gcc-4.9 -Wall -Wextra -Werror -Wmissing-prototypes -pedantic -x c -std=c11 -CC -nostdlib -nodefaultlibs -U __GNUC__ -include /workspace/dist/includes/kcc_settings.h -I libc/src/ -E -iquote . -iquote libc/src -I /workspace/dist/includes libc/src/ctype.c -o tmp-kcc-TcAuNFw
+
+ /workspace/dist/cparser tmp-kcc-TcAuNFw --trueName 'libc/src/ctype.c' | /workspace/dist/xml-to-k > tmp-kcc-lGonPBf
+
+ krun --output pretty --output-file tmp-kcc-P9BSK2i -d /workspace/dist/c11-translation-kompiled --exit-code "<result-value> _:Int </result-value>" -cOPTIONS="(SetItem(NOLINK) .Set)" -cOBJ1=".Bag" -cOBJ2=".Bag" --parser cat tmp-kcc-lGonPBf
+
+# translating a .c file
+cp /workspace/dist/lib/libc.so tmp-kcc-HukGZe0
+
+gcc-4.9 -Wall -Wextra -Werror -Wmissing-prototypes -pedantic -x c -std=c11 -CC -nostdlib -nodefaultlibs -U __GNUC__ -include /workspace/dist/includes/kcc_settings.h -E -iquote . -iquote dist -I /workspace/dist/includes dist/testProgram.c -o tmp-kcc-b4Ea6t6
+
+/workspace/dist/cparser tmp-kcc-b4Ea6t6 --trueName 'dist/testProgram.c' | /workspace/dist/xml-to-k > tmp-kcc-Ak9fbS_
+
+krun --output binary --output-file tmp-kcc-41uag8o -d /workspace/dist/c11-translation-kompiled --exit-code "<result-value> _:Int </result-value>" -cOPTIONS="(.Set)" -pOBJ1="kast --parser binary" -cOBJ1="tmp-kcc-HukGZe0" -cOBJ2=".Bag" --parser cat tmp-kcc-Ak9fbS_

@@ -117,9 +117,6 @@ sub main {
 
      if ($args->{'-shared'}) {
           classify(@{$args->{'<files>'}});
-          print "Line 120: All files -> ", join(" ", @{$args->{'<files>'}}), "\n";
-          print "Line 121: src files -> ", join(" ", @srcFiles), "\n";
-          print "Line 122: obj files -> ", join(" ", @objFiles), "\n";
           mergeObjs(1, 0);
           move($objFiles[0], $args->{'-o'} || 'a.out');
           return 0;
@@ -133,9 +130,6 @@ sub main {
 
      # Reduce our objFiles down to at most two.
      mergeObjs(2, 1);
-     print("Line 136: After merging\n");
-     print "Line 122: obj files -> ", join(" ", @objFiles), "\n";
-
      my $oval = $args->{'-o'} || 'a.out';
 
      my $programConfFile = tempFile(); 
@@ -150,11 +144,9 @@ sub main {
           TEMPLATE => 'tmp-kcc-link-stdout-XXXX', 
           SUFFIX => '.o', 
           UNLINK => 0 );
-     print("Line 153: \n");
      #my $retval = execute('krun', getKRunCommand($oval, undef, undef, $inputFile, 0));     
      # print("Line 277:", getKRunCommand($oval, undef, undef, $inputFile, 0));
      my $cmd = "$KRUN " . join(" ", getKRunCommand($programConfFile, $objFiles[0], $objFiles[1], $srcFiles[0], 1)) . " > $linkStdout 2>&1";
-     print("Line 157: $cmd\n");
      print $cmd . "\n" if ($args->{'-d'});
      system($cmd);     
 #     exit 1;
@@ -192,10 +184,8 @@ sub main {
 }
 
 sub mergeObjs {
-     print("Line 181: merging objects\n");
      my ($numObj, $numSrc) = (@_);
-     print("Line 183: numObj:$numObj, numSrc:$numSrc\n");
-     
+     print("Merging files...\n");
      my $mergeStdout = File::Temp->new( 
           TEMPLATE => 'tmp-kcc-merge-stdout-XXXX', 
           SUFFIX => '.o', 
@@ -203,28 +193,20 @@ sub mergeObjs {
      my @pids = ();
 
      while (scalar @srcFiles > $numSrc) {
-          print("Line 186\n");
           my $oval = tempFile();
           compile($oval, shift @srcFiles);
           push(@objFiles, $oval);
      }
-
-     print "Line 193: All files -> ", join(" ", @{$args->{'<files>'}}), "\n";
-     print "Line 194: src files -> ", join(" ", @srcFiles), "\n";
-     print "Line 198: obj files -> ", join(" ", @objFiles), "\n";
-     print "Line 199: Merging of Object Files\n";
      my $accum = tempFile();
      my $objFile = shift @objFiles;
      print join(" ", @objFiles), "\n";
      copy($objFile, $accum);
      unshift(@objFiles, $accum);
-     print "Line 205: obj files -> ", join(" ", @objFiles), "\n";
 #     while (scalar @objFiles + scalar @pids > $numObj) {
      while (scalar @objFiles > $numObj) {
-          print "Line 202: merging object files ->", join(" ", @objFiles), "\n";
           my $obj1 = shift @objFiles;
           my $obj2 = shift @objFiles;
-          print "Line 2025: obj1:$obj1, obj2:$obj2\n";
+          print("Merging $obj1 and $obj2\n");
 #          my $pid = fork();
 #          if (!defined $pid) {
 #            die "Error running process";
@@ -238,7 +220,6 @@ sub mergeObjs {
             #print("Line 214: krun '" . join("' '", @cmd) . "'\n");
             #}
             #exec('krun', @cmd);
-            print("Line 219 Inside PID: $cmd\n");
             print $cmd . "\n" if ($args->{'-d'});
             system($cmd);
 
@@ -306,17 +287,16 @@ sub extractStatic {
 }
 
 sub compile {
+     print("Compiling src file...\n");
      my ($oval, $inputFile) = (@_);
-     print("Line 270 output file: $oval, input src file: $inputFile\n");
      my $compileStdout = File::Temp->new( 
           TEMPLATE => 'tmp-kcc-compile-stdout-XXXX', 
           SUFFIX => '.o', 
           UNLINK => 0 );
-     print("Line 273: \n");
      #my $retval = execute('krun', getKRunCommand($oval, undef, undef, $inputFile, 0));     
      # print("Line 277:", getKRunCommand($oval, undef, undef, $inputFile, 0));
      my $cmd = "$KRUN " . join(" ", getKRunCommand($oval, undef, undef, $inputFile, 0)) . " > $compileStdout 2>&1";
-     print("Line 279: $cmd\n");
+     # print("Line 279: $cmd\n");
      print $cmd . "\n" if ($args->{'-d'});
      system($cmd);     
 #     exit 1;
@@ -327,7 +307,6 @@ sub compile {
 
 sub getKRunCommand {
      my ($output, $obj1, $obj2, $src, $link) = (@_);
-     print("Line 279: output:$output, obj1:$obj1, obj2:$obj2, src:$src, link:$link\n");
      my @krun_args = (
           '--output', 'binary', 
           '--output-file', $output,
@@ -357,10 +336,8 @@ sub getKRunCommand {
           push(@krun_args, '-cOBJ2=".Bag"');
      }
      if (defined $src) {
-          print("Line 318: src file >$src\n");
           my $kast = parse($src);
           push(@krun_args, '--parser', 'cat');
-          # push(@krun_args, '-d', $TRANS_DEF);
           push(@krun_args, $kast);
      } else {
           push(@krun_args, '-cPGM=.K');
@@ -370,7 +347,7 @@ sub getKRunCommand {
           push(@krun_args, '--native-libraries');
           push(@krun_args, "@stdlib");
      }
-     print join(" ", @krun_args), "\n";
+     print "krun ". join(" ", @krun_args), "\n";
      return @krun_args;
 }
 
@@ -418,6 +395,7 @@ sub parse {
      if ($args->{'-d'}) {
        print("$cmd\n");
      }
+     print("$cmd\n");
      system($cmd);
      if ($? >> 8) {
           error();
