@@ -24,6 +24,11 @@ module C-STMT-LOOP
      omitted $\textit{expression-2}$ is replaced by a nonzero constant.
      }*/
 
+     // @omp-start     
+     syntax Statement ::= "waitingForChild"
+     syntax Statement ::= "joinChild"
+     // @omp-end 
+
      rule ForClauseExpression(K:K) => Computation(K) [structural]
 
      //  fixme fishy interaction with continue i think
@@ -58,6 +63,123 @@ module C-STMT-LOOP
      execution of the loop body.
      }*/
 
+     rule [zero-thread-omp-parallel-for]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> OmpParallelFor(BlockNum:Int, Pre:K, Control:K, Post:K, S:K)
+               => For(BlockNum, Pre, Control, Post, S) ~> waitingForChild
+               ...</k>
+          ...</thread>
+          <omp-current-threads> CurrentThreads:Int</omp-current-threads>
+          when CurrentThreads ==Int 0
+
+
+     rule [other-thread-omp-parallel-for]:
+          <thread>
+          ...
+               <thread-id> Parent:Int </thread-id>
+               <thread-local> 
+                    C:Bag 
+                    <parent-thread> _ </parent-thread>
+                    <child-threads> ... .Set => SetItem(Fresh)</child-threads>
+               </thread-local>
+               <k> 
+                    OmpParallelFor(BlockNum:Int, Pre:K, Control:K, Post:K, S:K)
+                    => OmpParallelFor(BlockNum, Pre, Control, Post, S)
+               ...
+               </k>
+          ...
+          </thread>
+          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+          <omp-current-threads> CurrentThreads:Int => CurrentThreads -Int 1 </omp-current-threads>
+          (.Bag =>
+          <thread>
+          ...
+               <thread-id> Fresh:Int </thread-id>
+               <k>  
+                    For(BlockNum, Pre, Control, Post, S) ~> joinChild
+               </k>
+               <thread-local>
+                    C
+                    <parent-thread> Parent </parent-thread>
+                    <child-threads> .Set </child-threads>
+               </thread-local>
+          ...
+          </thread>)
+          requires CurrentThreads =/=Int 0
+          [large, ndthread]
+
+     rule [zero-thread-omp-parallel]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> OmpParallel(S:K)
+               => S ~> waitingForChild
+               ...</k>
+          ...</thread>
+          <omp-current-threads> CurrentThreads:Int</omp-current-threads>
+          when CurrentThreads ==Int 0
+
+
+     rule [other-thread-omp-parallel]:
+          <thread>
+          ...
+               <thread-id> Parent:Int </thread-id>
+               <thread-local> 
+                    C:Bag 
+                    <parent-thread> _ </parent-thread>
+                    <child-threads> ... .Set => SetItem(Fresh)</child-threads>
+               </thread-local>
+               <k> 
+                    OmpParallel(S:K)
+                    => OmpParallel(S)
+               ...
+               </k>
+          ...
+          </thread>
+          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+          <omp-current-threads> CurrentThreads:Int => CurrentThreads -Int 1 </omp-current-threads>
+          (.Bag =>
+          <thread>
+          ...
+               <thread-id> Fresh:Int </thread-id>
+               <k>  
+                    S ~> joinChild
+               </k>
+               <thread-local>
+                    C
+                    <parent-thread> Parent </parent-thread>
+                    <child-threads> .Set </child-threads>
+               </thread-local>
+          ...
+          </thread>)
+          requires CurrentThreads >Int 0
+          [large, ndthread]
+
+     rule [join-if-no-child]:
+          <thread> ...
+               <k>
+                    waitingForChild => .K 
+               ...</k>
+               <child-threads> .Set </child-threads>
+          ...
+          </thread>
+
+     rule [join-child-thread]:
+          ((<thread>...
+               <thread-id> ThId:Int </thread-id>
+               <k>
+                    joinChild
+               </k>
+               <child-threads> .Set </child-threads>
+               <parent-thread> P:Int </parent-thread>
+               ...</thread>) => .Bag)
+          <thread>
+          ...
+               <thread-id> P </thread-id>
+               <child-threads> ... SetItem(ThId) => .Set ...</child-threads>
+          ...
+          </thread>
+          
      rule [while-mark]:
           <k>
                While(B:K, S:K) ~> K:K

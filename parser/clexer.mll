@@ -37,7 +37,7 @@
  *)
 (* FrontC -- lexical analyzer
 **
-** 1.0	3.22.99	Hugues Cassé	First version.
+** 1.0	3.22.99	Hugues Cassï¿½	First version.
 ** 2.0  George Necula 12/12/00: Many extensions
 *)
 {
@@ -454,6 +454,9 @@ rule initial =
 |		octnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		intnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		"!quit!"		{EOF}
+|   "#pragma"   {OMPPRAGMA (currentLoc ())}
+|   "omp"       {OMP (currentLoc ())}
+|   "parallel"  {PARALLEL (currentLoc ())}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}

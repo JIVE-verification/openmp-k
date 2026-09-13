@@ -413,7 +413,7 @@ sub preprocess {
                    @main::cppDefines, @main::cppUndefines, @main::cppIncludeDirs,
                    @main::cppIncludes, '-E', '-iquote', '.', '-iquote', $directoryname,
                    '-I', "$myDirectory/includes", $inputFile, '-o', $output);
-
+     print("".join(" ", @ppArgs), "\n");
      my $retval = execute(@ppArgs);
      return $retval;
 }

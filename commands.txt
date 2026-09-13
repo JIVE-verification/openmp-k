@@ -26,3 +26,22 @@ gcc-4.9 -Wall -Wextra -Werror -Wmissing-prototypes -pedantic -x c -std=c11 -CC -
 /workspace/dist/cparser tmp-kcc-b4Ea6t6 --trueName 'dist/testProgram.c' | /workspace/dist/xml-to-k > tmp-kcc-Ak9fbS_
 
 krun --output binary --output-file tmp-kcc-41uag8o -d /workspace/dist/c11-translation-kompiled --exit-code "<result-value> _:Int </result-value>" -cOPTIONS="(.Set)" -pOBJ1="kast --parser binary" -cOBJ1="tmp-kcc-HukGZe0" -cOBJ2=".Bag" --parser cat tmp-kcc-Ak9fbS_
+
+
+Testing kcc...
+Running: dist/kcc -o dist/testProgram.compiled dist/testProgram.c ...
+Merging files...
+objfiles: /workspace/dist/lib/libc.so
+cp /workspace/dist/lib/libc.so tmp-kcc-yOeaMiz
+gcc-4.9 -Wall -Wextra -Werror -Wmissing-prototypes -pedantic -x c -std=c11 -CC -nostdlib -nodefaultlibs -U __GNUC__ -include /workspace/dist/includes/kcc_settings.h -E -iquote . -iquote dist -I /workspace/dist/includes dist/testProgram.c -o tmp-kcc-7FCEA67
+/workspace/dist/cparser tmp-kcc-7FCEA67 --trueName 'dist/testProgram.c' | /workspace/dist/xml-to-k > tmp-kcc-YWUArPX
+krun --output binary --output-file tmp-kcc-XjUFyT2 -d /workspace/dist/c11-translation-kompiled -cOPTIONS="(.Set)" -pOBJ1="kast --parser binary" -cOBJ1="tmp-kcc-yOeaMiz" -cOBJ2=".Bag" --parser cat tmp-kcc-YWUArPX
+krun return value <O means OK, !0 means Error> is 0
+gcc-4.9 -Wall -Wextra -Werror -Wmissing-prototypes -pedantic -x c -std=c11 -CC -nostdlib -nodefaultlibs -U __GNUC__ -include /workspace/dist/includes/kcc_settings.h -E -iquote . -iquote dist -I /workspace/dist/includes dist/testProgram.c -o tmp-kcc-fQeg1xe
+/workspace/dist/cparser tmp-kcc-fQeg1xe --trueName 'dist/testProgram.c' | /workspace/dist/xml-to-k > tmp-kcc-Lq16RnD
+krun --output pretty --output-file tmp-kcc-trans-rVK40CB.o -d /workspace/dist/c11-translation-kompiled --exit-code "<result-value> _:Int </result-value>" -cOPTIONS="(.Set)" -pOBJ1="kast --parser binary" -cOBJ1="tmp-kcc-yOeaMiz" -cOBJ2=".Bag" --parser cat tmp-kcc-Lq16RnD
+[Warning] Critical: Found 0 solutions to exit code pattern. Returning 112.
+krun return value <O means OK, !0 means Error> is 28672
+Return value is correct.
+Output is correct.
+Done.

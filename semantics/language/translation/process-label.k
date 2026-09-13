@@ -187,6 +187,81 @@ module C-PROCESS-LABEL
           )
           [structural]
 
+     // @omp     
+     rule [compute-label-omp-parallel-for]:
+          <goto-calc>
+               <computation> 
+                    (OmpParallelFor(ForNum:Int, Pre:K, Control:K, Post:K, S:K) => .K) 
+                    ~> K:K 
+               </computation>
+               <computation-tail> Tail:K </computation-tail>
+               B:Bag
+               <goto-nesting-depth> N:Int </goto-nesting-depth>
+               <goto-block-history>
+                    ListItem(Num:Int) OldBlockHistory:List
+               </goto-block-history>
+               <goto-loop-stack> OldLoopStack:List </goto-loop-stack>
+          </goto-calc>
+          (. =>
+               <goto-calc> 
+                    <computation> S </computation>
+                    <computation-tail>
+                         Computation(Post)
+                         ~> loopMarked
+                         ~> OmpParallelFor(ForNum, Pre, (
+                              #if Control =/=K emptyValue 
+                              #then Control
+                              #else tv(1, t(.Set, int)) 
+                              #fi), Post, S)
+                         ~> popLoop
+                         ~> K
+                         ~> Tail
+                    </computation-tail>
+                    B
+                    <goto-nesting-depth> N +Int 1 </goto-nesting-depth>
+                    <goto-block-history>
+                         ListItem(ForNum) 
+                         ListItem(Num) OldBlockHistory
+                    </goto-block-history>
+                    <goto-loop-stack>
+                         ListItem(kpair(Num, (K ~> Tail))) 
+                         OldLoopStack
+                    </goto-loop-stack>
+               </goto-calc>
+          )
+          [structural] 
+
+     // @omp
+     rule [compute-label-omp-parallel]:
+          <goto-calc>
+               <computation> 
+                    (OmpParallel(S:K) => .K) 
+                    ~> K:K 
+               </computation>
+               <computation-tail> Tail:K </computation-tail>
+               B:Bag
+               <goto-nesting-depth> N:Int </goto-nesting-depth>
+               <goto-block-history>
+                    ListItem(Num:Int) OldBlockHistory:List
+               </goto-block-history>
+          </goto-calc>
+          (. =>
+               <goto-calc> 
+                    <computation> S </computation>
+                    <computation-tail>
+                         Computation(.K)
+                         ~> K
+                         ~> Tail
+                    </computation-tail>
+                    B
+                    <goto-nesting-depth> N +Int 1 </goto-nesting-depth>
+                    <goto-block-history>
+                         ListItem(Num) OldBlockHistory
+                    </goto-block-history>
+               </goto-calc>
+          )
+          [structural]
+
      rule [compute-label-do-while]:
           <goto-calc>
                <computation> (DoWhile(E:K, S:K) => .K) ~> K:K </computation>

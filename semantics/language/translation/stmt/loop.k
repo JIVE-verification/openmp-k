@@ -16,6 +16,21 @@ module C-STMT-LOOP
           ~> popBlock
           [structural]
 
+     rule [omp-parallel-for]:
+          OmpParallelFor(BlockNum:Int, Pre:K, Control:K, Post:K, S:K)
+          => pushBlock 
+          ~> addToHistory(BlockNum)
+          ~> Pre
+          ~> Computation(Control)
+          ~> S ~> Computation(Post)
+          ~> popBlock
+          [structural] 
+
+     rule [omp-parallel]:
+          OmpParallel(S:K)
+          => S
+          [structural] 
+
      rule [while]:
           While(B:K, S:K)
           => Computation(B)

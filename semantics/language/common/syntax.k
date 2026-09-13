@@ -361,7 +361,8 @@ module C-SYNTAX
      syntax PureStatement ::= DoWhile(K, K)
      // id, ...
      syntax PureStatement ::= For(Int, K, K, K, K)
-
+     syntax PureStatement ::= OmpParallelFor(Int, K, K, K, K)
+     syntax PureStatement ::= OmpParallel(K)
      /*
      | BREAK of cabsloc
      | CONTINUE of cabsloc
