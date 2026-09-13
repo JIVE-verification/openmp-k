@@ -1,10 +1,5 @@
 #include <stdio.h>
-
-int main(void)
-{
-    printf("<<<dipokcd@iastate.edu>>>\n");
-    int i;
-    int sum = 2 * 15 / 6 + 2;
-    printf("Sum = %d\n", sum);
+int main(void) {    
+    printf("cs@iastate.edu\n"); 
     return 42;
 }

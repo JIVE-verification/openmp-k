@@ -133,7 +133,6 @@ sub main {
      my $oval = $args->{'-o'} || 'a.out';
 
      my $programConfFile = tempFile(); 
-
      # At this point, we have 0-1 source files and 0-2 object files left for
      # the final call(s) to kcc. Setting up the arguments is kinda difficult
      # because we need to use different parsers if one of the config vars
@@ -144,6 +143,17 @@ sub main {
      print $cmd . "\n" if ($args->{'-d'});
      my $retval = system($cmd);     
      print("krun return value <O means OK, !0 means Error> is $retval\n");
+
+
+     my $programConfFilePretty = File::Temp->new( 
+                TEMPLATE => 'tmp-kcc-trans-XXXXXXX', 
+                SUFFIX => '.o',
+                UNLINK => 0 );
+     my $cmdPretty = "$KRUN " . join(" ", getKRunCommandPretty($programConfFilePretty, $objFiles[0], $objFiles[1], $srcFiles[0], 1));
+     print $cmdPretty . "\n" if ($args->{'-d'});
+     my $retvalPretty  = system($cmdPretty);     
+     print("krun return value <O means OK, !0 means Error> is $retvalPretty\n");
+
 
      open(FILE, $programConfFile) or die "Couldn't open file: $!\n";
      my $programConf = join("", <FILE>);
@@ -180,10 +190,6 @@ sub main {
 sub mergeObjs {
      my ($numObj, $numSrc) = (@_);
      print("Merging files...\n");
-     my $mergeStdout = File::Temp->new( 
-          TEMPLATE => 'tmp-kcc-merge-stdout-XXXX', 
-          SUFFIX => '.o', 
-          UNLINK => 0 );
      my @pids = ();
 
      while (scalar @srcFiles > $numSrc) {
@@ -210,7 +216,7 @@ sub mergeObjs {
 #            print("Line 208:pid\n");
             
             #my @cmd = getKRunCommand($accum, $obj1, $obj2, undef, 0);
-            my $cmd = "$KRUN " . join(" ", getKRunCommand($accum, $obj1, $obj2, undef, 0)) . " > $mergeStdout 2>&1";
+            my $cmd = "$KRUN " . join(" ", getKRunCommand($accum, $obj1, $obj2, undef, 0));
             #if ($args->{'-d'}) {
             #print("Line 214: krun '" . join("' '", @cmd) . "'\n");
             #}
@@ -287,8 +293,19 @@ sub compile {
      #my $retval = execute('krun', getKRunCommand($oval, undef, undef, $inputFile, 0));     
      my $cmd = "$KRUN " . join(" ", getKRunCommand($oval, undef, undef, $inputFile, 0));
      print $cmd . "\n" if ($args->{'-d'});
-     my $retval = system($cmd);     
+     my $retval = system($cmd);  
      print("krun return value <O means OK, !0 means Error> is $retval\n");
+
+     my $localOvalPretty = File::Temp->new( 
+                TEMPLATE => 'tmp-kcc-compile-XXXXXXX', 
+                SUFFIX => '.o',
+                UNLINK => 0 );
+
+     my $cmdPretty = "$KRUN " . join(" ", getKRunCommandPretty($localOvalPretty, undef, undef, $inputFile, 0));
+     print $cmdPretty . "\n" if ($args->{'-d'});
+     my $retvalPretty = system($cmdPretty);  
+     print("krun pretty return value <O means OK, !0 means Error> is $retvalPretty\n");
+
 #     if ($retval) {
 #          error();
 #     }
@@ -300,10 +317,56 @@ sub getKRunCommand {
           '--output', 'binary', 
           '--output-file', $output,
           "-d $TRANS_DEF",
-#          '-w', 'none',
+          # '-w', 'none',
 #          '--pattern',
 #         '--exit-code',
-#          '<result-value> _:Int </result-value>'
+#          '"<result-value> _:Int </result-value>"'
+     );
+
+     if ($link) {
+          push(@krun_args, '-cOPTIONS="(.Set)"');
+     } else {
+          push(@krun_args, '-cOPTIONS="(SetItem(NOLINK) .Set)"');
+     }
+
+     if (defined $obj1) {
+          push(@krun_args, '-pOBJ1="kast --parser binary"');
+          push(@krun_args, "-cOBJ1=\"$obj1\"");
+     } else {
+          push(@krun_args, '-cOBJ1=".Bag"');
+     }
+     if (defined $obj2) {
+          push(@krun_args, '-pOBJ2="kast --parser binary"');
+          push(@krun_args, "-cOBJ2=\"$obj2\"");
+     } else {
+          push(@krun_args, '-cOBJ2=".Bag"');
+     }
+     if (defined $src) {
+          my $kast = parse($src);
+          push(@krun_args, '--parser', 'cat');
+          push(@krun_args, $kast);
+     } else {
+          push(@krun_args, '-cPGM=.K');
+     }
+
+     if ($args->{'-fnative-libc'} && scalar @stdlib) {
+          push(@krun_args, '--native-libraries');
+          push(@krun_args, "@stdlib");
+     }
+     print "krun ". join(" ", @krun_args), "\n";
+     return @krun_args;
+}
+
+sub getKRunCommandPretty {
+     my ($output, $obj1, $obj2, $src, $link) = (@_);
+     my @krun_args = (
+          '--output', 'pretty', 
+          '--output-file', $output,
+          "-d $TRANS_DEF",
+     #     '-w', 'none',
+#          '--pattern',
+         '--exit-code',
+          '"<result-value> _:Int </result-value>"'
      );
 
      if ($link) {
