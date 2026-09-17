@@ -149,6 +149,7 @@ sub main {
                 TEMPLATE => 'tmp-kcc-trans-XXXXXXX', 
                 SUFFIX => '.o',
                 UNLINK => 0 );
+     push(@tempFiles, $programConfFilePretty);
      my $cmdPretty = "$KRUN " . join(" ", getKRunCommandPretty($programConfFilePretty, $objFiles[0], $objFiles[1], $srcFiles[0], 1));
      print $cmdPretty . "\n" if ($args->{'-d'});
      my $retvalPretty  = system($cmdPretty);     
@@ -300,7 +301,7 @@ sub compile {
                 TEMPLATE => 'tmp-kcc-compile-XXXXXXX', 
                 SUFFIX => '.o',
                 UNLINK => 0 );
-
+     push(@tempFiles, $localOvalPretty);
      my $cmdPretty = "$KRUN " . join(" ", getKRunCommandPretty($localOvalPretty, undef, undef, $inputFile, 0));
      print $cmdPretty . "\n" if ($args->{'-d'});
      my $retvalPretty = system($cmdPretty);  

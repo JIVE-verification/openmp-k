@@ -628,7 +628,8 @@ and printStatement a =
 	| DOWHILE (exp, stat, loc) -> printStatementLoc (printDoWhile exp stat) loc
 	| FOR (fc1, exp2, exp3, stat, loc) -> printStatementLoc (printFor fc1 exp2 exp3 stat) loc
     | OMPPARALLELFOR (fc1, exp2, exp3, stat, loc)  -> printStatementLoc (printOmpParallelFor fc1 exp2 exp3 stat) loc
-    | OMPPARALLEL (stat, loc)  -> printStatementLoc (printOmpParallel stat) loc	| BREAK (loc) -> printStatementLoc (printBreak) loc
+    | OMPPARALLEL (stat, loc)  -> printStatementLoc (printOmpParallel stat) loc	
+	| BREAK (loc) -> printStatementLoc (printBreak) loc
 	| CONTINUE (loc) -> printStatementLoc (printContinue) loc
 	| RETURN (exp, loc) -> printStatementLoc (printReturn exp) loc
 	| SWITCH (exp, stat, loc) -> printStatementLoc (printSwitch exp stat) loc
