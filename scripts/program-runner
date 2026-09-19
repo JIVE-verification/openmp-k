@@ -8,6 +8,8 @@ use File::Copy;
 use MIME::Base64;
 use IO::Uncompress::Gunzip qw(gunzip $GunzipError) ;
 
+use Data::Dumper;
+
 setpgrp;
 
 # We trap control-c (and others) so we can clean up when that happens.
@@ -136,27 +138,83 @@ sub main {
       # Execute krun with the arguments in (flattened) %krun_args.
       my $cmd = "$KRUN " . (join ' ', (grep {$_} %krun_args));
       print $cmd . "\n" if defined $ENV{VERBOSE};
+      print $cmd . "\n";
       system($cmd);
 
       # Print errors and/or results and exit.
       if (defined $ENV{SEARCH} || defined $ENV{THREADSEARCH}) {
             my $graphOutputFile = "kcc-search-results.dot";
+            open(my $fh, '<', $fileOutput) or die "Cannot open $fileOutput: $!";
+            local $/;
+            my $content = <$fh>;
 
-            print "Generated $fileOutput\n" if defined $ENV{VERBOSE};
-            print "Examining the output...\n" if defined $ENV{VERBOSE};
-            my $graphOutput = graphSearch($graphOutputFile, $fileOutput);
-            print "$graphOutput\n";
-            print "Generated $graphOutputFile.\n";
+            my @solutions = $content =~ /(Solution \d+:.*?)(?=Solution \d+:|\z)/gs;
+            print(scalar(@solutions) . " solution(s) found\n");
+            my $count = 1;
+            for my $solution (@solutions) {
+                  print "=============================================================\n";
+                  print("Solution $count:\n");
+                  my %parsed;
+                  parseResultForSolutions(\%parsed, $solution);
+                  # print Dumper(\%parsed);
+                  if (defined $parsed{finalComp} || defined $parsed{finalCompType} 
+                  || defined $parsed{errorMsg} || !defined $parsed{exitCode}) {
+                        print "\n=============================================================\n";
+                        print "ERROR! KCC encountered an error while executing this program.\n";
 
-            if (defined $ENV{GRAPH}) {
-                  print "Generating graph...\n";
-                  system("dot -Tps2 $graphOutputFile > kcc-search-results.ps") == 0 
-                        or die "Running dot failed: $?\n";
-                  print "Generated kcc-search-results.ps.\n";
-                  system("ps2pdf kcc-search-results.ps kcc-search-results.pdf") == 0 
-                        or die "Running ps2pdf failed: $?\n";
-                  print "Generated kcc-search-results.pdf\n";
+                        if (defined $parsed{errorMsg}) {
+                              print "=============================================================\n";
+                              print "$parsed{errorMsg}\n";
+                        }
+
+                        print "=============================================================\n";
+                        print "File: $parsed{errorFile}\n" if defined $parsed{errorFile};
+                        print "Function: $parsed{errorFunc}\n" if defined $parsed{errorFunc};
+                        print "Line: $parsed{errorLine}\n" if defined $parsed{errorLine};
+
+                        if (defined $parsed{finalComp}) {
+                              print "=============================================================\n";
+                              print "Final Computation:\n";
+                              print unindent(substr($parsed{finalComp}, 0, 1000));
+                              print "\n";
+                        }
+
+                        if (defined $parsed{finalCompGoto}) {
+                              print "=============================================================\n";
+                              print "Final Goto Map Computation:\n";
+                              print unindent(substr($parsed{finalCompGoto}, 0, 1000));
+                              print "\n";
+                        }
+
+                        if (defined $parsed{finalCompType}) {
+                              print "=============================================================\n";
+                              print "Final Type Computation:\n";
+                              print unindent(substr($parsed{finalCompType}, 0, 1000));
+                              print "\n";
+                        }
+                  }
+                  if (defined $parsed{exitCode}){
+                        print("return value:". $parsed{exitCode}. "\n");
+                  }
+                  print "=============================================================\n";
             }
+            close($fh);
+
+            # print "Generated $fileOutput\n" if defined $ENV{VERBOSE};
+            # print "Examining the output...\n" if defined $ENV{VERBOSE};
+            # my $graphOutput = graphSearch($graphOutputFile, $fileOutput);
+            # print "$graphOutput\n";
+            # print "Generated $graphOutputFile.\n";
+
+            # if (defined $ENV{GRAPH}) {
+                  # print "Generating graph...\n";
+                  # system("dot -Tps2 $graphOutputFile > kcc-search-results.ps") == 0 
+                        # or die "Running dot failed: $?\n";
+                  # print "Generated kcc-search-results.ps.\n";
+                  # system("ps2pdf kcc-search-results.ps kcc-search-results.pdf") == 0 
+                        # or die "Running ps2pdf failed: $?\n";
+                  # print "Generated kcc-search-results.pdf\n";
+            # }
             return 0;
       } 
 
@@ -208,8 +266,60 @@ sub parseRawResultLine {
             $parsed->{output} = $1;
       };
 
-      /< result-value > 'tv\(# (-?\d+)\(\.KList\),,'t\(Set2KLabel \.Set\(\.KList\),,'int\(\.KList\)\)\) <\/ result-value >/ && do {
+      /<result-value> 'tv\(# (-?\d+)\(\.KList\),,'t\(Set2KLabel \.Set\(\.KList\),,'int\(\.KList\)\)\) <\/result-value>/ && do {
             $parsed->{exitCode} = $1;
+      };
+
+      #print("Line 216 ".$parsed."\n");
+}
+# same as parseResult, different is that this method parse result for each solution
+sub parseResultForSolutions {
+      my ($parsed, $solution) = (@_);
+
+      $solution =~ /<k>(.*?)<\/k>/s && do {
+            $parsed->{finalComp} = $1;
+      };
+
+      $solution =~ /<error-cell>\s*"(.*)"\s*<\/error-cell>/ && do {
+            $parsed->{haveError} = 1;
+            my $output = $1;
+            $output =~ s/\%/\%\%/g;
+            $output =~ s/`/\\`/g;
+            $output =~ s/\\\\/\\\\\\\\/g;
+            $parsed->{errorMsg} = substr(`printf "x$output"`, 1);
+      };
+
+      $solution =~ /<curr-function>\s*(Identifier \( "(.*?)" \)|(file-scope))\s*<\/curr-function>/ && do {
+            $parsed->{errorFunc} = $2;
+      };
+
+      $solution =~ /<curr-program-loc>\s*CabsLoc\s*\(\s*"(.*)"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)\s*<\/curr-program-loc>/ && do {
+            $parsed->{errorFile} = $1;
+            $parsed->{errorLine} = $2;
+      };
+
+      $solution =~ /<final-computation>(.*?)<\/final-computation>/s && do {
+            $parsed->{finalComp} = $1;
+      };
+
+      $solution =~ /<computation>(.*?)<\/computation>/s && do {
+            $parsed->{finalCompGoto} = $1;
+      };
+
+      $solution =~ /<type>(.*?)<\/type>/s && do {
+            $parsed->{finalCompType} = $1;
+      };
+
+      $solution =~ /<output>\s*#buffer\s*\(\s*"(.*)"\s*\)\s*<\/output>/ && do {
+            $parsed->{output} = $1;
+      };
+
+      $solution =~ /<result-value>\s*tv\s*\(\s*(-?\d+)\s*,\s*t\s*\(\s*\.Set\s*,\s*int\s*\)\s*\)\s*<\/result-value>/ && do {
+            $parsed->{exitCode} = $1;
+      };
+
+      $solution =~ /<result-value>\s*tv\s*\(\s*NullPointer\s*,\s*t\s*\(\s*\.Set\s*,\s*int\s*\)\s*\)\s*<\/result-value>/ && do {
+            $parsed->{exitCode} = 0;
       };
 }
 
@@ -280,12 +390,12 @@ sub unindent {
 sub processResult {
       my ($fileOutput, $verbose) = (@_);
       my %parsed;
-
       open(OUT, "<$fileOutput");
       local $/;
       local $_ = <OUT>;
       print if $verbose;
       parseResult(\%parsed);
+      # print Dumper(\%parsed);
 
       if (defined $parsed{finalComp} || defined $parsed{finalCompType} 
                   || defined $parsed{errorMsg} || !defined $parsed{exitCode}) {
@@ -355,30 +465,31 @@ sub graphSearch {
       my @solutions;
 
       open(IN, "<$inFilename");
+      
+      print("Inside Graph Search\n");
 
       for (<IN>) {
             chomp;
-
+            # print "$_ \n"; 
+      
             # handle start state
             if ($state eq "start") {
-                  /^Solution (\d+) / && do {
+                  /^Solution (\d+):/ && do {
                         $state = "solution";
                   };
-
                   /^No solution\./ && do {
                         $state = "state";
                   };
             }
 
             if ($state eq "solution") {
-                  /^Solution (\d+) / && do {
+                  /^Solution (\d+): / && do {
                         my $numSolutions = $1;
                         push(@solutions, {});
                         $solutions[-1]->{'num'} = $numSolutions;
                   };
 
-                  parseRawResultLine($solutions[-1]);
-
+                  parseRawResultLine($solutions[-1]);              
                   # keep reading (and throwing away) until we hit a state
                   /^state (\d+)/ && do {
                         $currentStateNumber = $1;
@@ -407,13 +518,13 @@ sub graphSearch {
                               $states{$currentStateNumber} = $currentOutput;
                         };
 
-                        /< output > #buffer\(# "(.*)"\(\.KList\)\) <\/ output >/ && do {
+                        /<output> #buffer\(# "(.*)"\(\.KList\)\) <\/output>/ && do {
                               my $currentOutput = $1;
                               $goodFinal{$currentStateNumber} = "";
                               $states{$currentStateNumber} = $currentOutput;
                         };
 
-                        /< error-cell > (.*) <\/ error-cell >/ && do {
+                        /<error-cell> (.*) <\/ error-cell >/ && do {
                               my $currentOutput = $1;
                               $errorStates{$currentStateNumber} = "";
                         };

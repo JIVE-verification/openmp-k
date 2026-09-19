@@ -1,0 +1,7 @@
+Searching reachable states... (with non-deterministic expression sequencing)
+krun -d /workspace/dist/c11-nd-kompiled --parser "kast --parser binary" tmp-kcc-in-8wIeNuttlx4.bin -cOPTIONS="(SetItem(NOIO) .Set)" -cARGC=1 --output pretty --search-final -cARGV="(ListItem(\"./a.out\") .List)" --output-file tmp-kcc-out-sSiCVK5Ke4Y.txt
+1 solution(s) found
+=============================================================
+Solution 1:
+return value:42
+=============================================================
