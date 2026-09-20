@@ -55,15 +55,8 @@ sub main {
       my $argc = $#ARGV + 2;
       my $argv = join('  ', map {qq|ListItem(\\"$_\\")|} ($0, @ARGV));
 
-      my %krun_args = (
-                  '--output' => 'pretty', 
-                  '--output-file' => $fileOutput, 
-                  '-d' => $EXEC_DEF,
-                  "-cARGC=$argc" => '',
-                  "-cARGV=\"($argv .List)\"" => '',
-                  '--parser "kast --parser binary"' => $fileInput
-                  );
-
+      my @krun_args = ('--output', 'pretty', '--output-file' , $fileOutput, "-cARGC=$argc" , '', "-cARGV=\"($argv .List)\"" , '', '--parser "kast --parser binary"', $fileInput);
+      my %krun_args_kompiled_dir = ('-d' => $EXEC_DEF);
       my @options = ();
 
       if (defined $ENV{HELP}) {
@@ -84,59 +77,60 @@ sub main {
       }
 
       if (defined $ENV{TRACE}) {
-            $krun_args{'--trace'} = '';
+            push @krun_args , '--trace', '';
       }
 
       if (defined $ENV{LOGIO}) {
-            $krun_args{'--log-io'} = 'on';
+            push @krun_args , '--log-io', 'on';
       }
 
       if (defined $ENV{DEBUG}) {
-            $krun_args{'--debug'} = '';
+            push @krun_args , '--debug', '';
       }
 
       if (defined $ENV{VERBOSE}) {
-            $krun_args{'--verbose'} = '';
+            push @krun_args, '--verbose',  '';
       }
 
       if (defined nativeLibraries()) {
-            $krun_args{'--native-libraries'} = '"' . nativeLibraries() . '"';
+            push @krun_args, '--native-libraries',  '"' . nativeLibraries() . '"';
       }
 
       if (defined $ENV{SEARCH}) {
-            $krun_args{'--output'} = 'pretty';
-            $krun_args{'--search-final'} = '';
+            # push @krun_args , '--output', 'pretty';
+            push @krun_args , '--search-final', '';
             push @options, 'NOIO';
-            $krun_args{'-d'} = $EXEC_ND_DEF;
+            $krun_args_kompiled_dir{'-d'}=$EXEC_ND_DEF;
             print 'Searching reachable states... ';
             print "(with non-deterministic expression sequencing)\n";
       }
 
       if (defined $ENV{THREADSEARCH}) {
-            $krun_args{'--output'} = 'pretty';
-            $krun_args{'--search-final'} = '';
+            # push @krun_args , '--output' , 'pretty';
+            push @krun_args , '--search-final', '';
             push @options, 'NOIO';
-            $krun_args{'-d'} = $EXEC_ND_THREAD_DEF;
+            $krun_args_kompiled_dir{'-d'}=$EXEC_ND_THREAD_DEF;
             print 'Searching reachable states... ';
             print "(with non-deterministic thread interleaving)\n";
       }
 
       if (defined $ENV{LTLMC}) {
-            $krun_args{'--ltlmc'} = $ENV{LTLMC};
-            $krun_args{'-d'} = $EXEC_ND_DEF;
-            $krun_args{'--output'} = 'pretty';
+            push @krun_args, '--ltlmc', $ENV{LTLMC};
+            $krun_args_kompiled_dir{'-d'}=$EXEC_ND_DEF;
+            # push @krun_args, '--output', 'pretty';
             push @options, 'NOIO';
-            delete $krun_args{'--output-file'};
+            # delete $krun_args{'--output-file'};
             print 'LTL model checking... ';
             print "(with non-deterministic expression sequencing)\n";
       }
 
       @options = map {"SetItem($_)"} @options;
       push @options, ".Set";
-      $krun_args{'-cOPTIONS="(' . (join ' ', @options) . ')"'} = '';
+      push @krun_args , '-cOPTIONS="(' . (join ' ', @options) . ')"' , '';
 
       # Execute krun with the arguments in (flattened) %krun_args.
-      my $cmd = "$KRUN " . (join ' ', (grep {$_} %krun_args));
+      # my $cmd = "$KRUN " . (join ' ', (grep {$_} %krun_args));
+      my $cmd = "$KRUN " . join(" ", @krun_args). (join ' ', (grep {$_} %krun_args_kompiled_dir));
       print $cmd . "\n" if defined $ENV{VERBOSE};
       print $cmd . "\n";
       system($cmd);
@@ -396,7 +390,7 @@ sub processResult {
       print if $verbose;
       parseResult(\%parsed);
       # print Dumper(\%parsed);
-
+      
       if (defined $parsed{finalComp} || defined $parsed{finalCompType} 
                   || defined $parsed{errorMsg} || !defined $parsed{exitCode}) {
             print "\n=============================================================\n";
@@ -4465,7 +4459,7 @@ cQB+ACwAAAALc3IAHG9yZy5rZnJhbWV3b3JrLm1wZnIuQmlnRmxvYXQOmAdm8vH/tAIAAUwAAm9w
 dAAhTG9yZy9rZnJhbWV3b3JrL21wZnIvbXBmciRtcGZyX3Q7eHEAfgAwc3IAJG9yZy5rZnJhbWV3
 b3JrLm1wZnIubXBmciRtcGZyX3RfZnVsbP/G7pDOcVJaAgAESgAJX21wZnJfZXhwSQAKX21wZnJf
 cHJlY0kACl9tcGZyX3NpZ25bAAdfbXBmcl9kcQB+AC94cIAAAAAAAAABAAAANQAAAAF1cQB+ADIA
-AAAI+AYAVEsVAABzcQB+ABpwcHBxAH4AHHNxAH4AHnBwcHEAfgAgc3EAfgAWAAAAAncEAAAAAnNx
+AAAIqAYA4L4UAABzcQB+ABpwcHBxAH4AHHNxAH4AHnBwcHEAfgAgc3EAfgAWAAAAAncEAAAAAnNx
 AH4AO3BwcHNxAH4AC3EAfgBDc3EAfgAWAAAAAHcEAAAAAHhxAH4AR3BzcQB+ABYAAAAAdwQAAAAA
 eHNxAH4AGnBwcHEAfgAccQB+ANVxAH4B3XhxAH4A2XhxAH4paXhzcQB+AJBwcHBxAH4ALHQABSdf
 Pj1fc3EAfgAacHBwcQB+ABxzcQB+AB5wcHBxAH4AIHNxAH4AFgAAAAF3BAAAAAFzcQB+ABpwcHBx

@@ -142,7 +142,7 @@ sub main {
      my $cmd = "$KRUN " . join(" ", getKRunCommand($programConfFile, $objFiles[0], $objFiles[1], $srcFiles[0], 1));
      print $cmd . "\n" if ($args->{'-d'});
      my $retval = system($cmd);     
-     print("krun return value <O means OK, !0 means Error> is $retval\n");
+     # print("krun return value <O means OK, !0 means Error> is $retval\n");
 
 
      my $programConfFilePretty = File::Temp->new( 
@@ -150,10 +150,10 @@ sub main {
                 SUFFIX => '.o',
                 UNLINK => 0 );
      push(@tempFiles, $programConfFilePretty);
-     my $cmdPretty = "$KRUN " . join(" ", getKRunCommandPretty($programConfFilePretty, $objFiles[0], $objFiles[1], $srcFiles[0], 1));
-     print $cmdPretty . "\n" if ($args->{'-d'});
-     my $retvalPretty  = system($cmdPretty);     
-     print("krun return value <O means OK, !0 means Error> is $retvalPretty\n");
+     # my $cmdPretty = "$KRUN " . join(" ", getKRunCommandPretty($programConfFilePretty, $objFiles[0], $objFiles[1], $srcFiles[0], 1));
+     # print $cmdPretty . "\n" if ($args->{'-d'});
+     # my $retvalPretty  = system($cmdPretty);     
+     # print("krun return value <O means OK, !0 means Error> is $retvalPretty\n");
 
 
      open(FILE, $programConfFile) or die "Couldn't open file: $!\n";
@@ -190,7 +190,7 @@ sub main {
 
 sub mergeObjs {
      my ($numObj, $numSrc) = (@_);
-     print("Merging files...\n");
+     # print("Merging files...\n");
      my @pids = ();
 
      while (scalar @srcFiles > $numSrc) {
@@ -199,16 +199,16 @@ sub mergeObjs {
           push(@objFiles, $oval);
      }
      my $accum = tempFile();
-     print "objfiles: ". join(" ", @objFiles), "\n";
+     # print "objfiles: ". join(" ", @objFiles), "\n";
      my $objFile = shift @objFiles;
      copy($objFile, $accum);
-     print("cp $objFile $accum\n");
+     # print("cp $objFile $accum\n");
      unshift(@objFiles, $accum);
 #     while (scalar @objFiles + scalar @pids > $numObj) {
      while (scalar @objFiles > $numObj) {
           my $obj1 = shift @objFiles;
           my $obj2 = shift @objFiles;
-          print("Merging $obj1 and $obj2\n");
+          # print("Merging $obj1 and $obj2\n");
 #          my $pid = fork();
 #          if (!defined $pid) {
 #            die "Error running process";
@@ -224,7 +224,7 @@ sub mergeObjs {
             #exec('krun', @cmd);
             print $cmd . "\n" if ($args->{'-d'});
             my $retval = system($cmd);
-            print("krun return value <O means OK, !0 means Error> is $retval\n");
+          #   print("krun return value <O means OK, !0 means Error> is $retval\n");
             unshift(@objFiles, $obj1);
 #          }
 
@@ -290,12 +290,12 @@ sub extractStatic {
 
 sub compile {
      my ($oval, $inputFile) = (@_);
-     print("Compiling src file $inputFile...\n");
+     # print("Compiling src file $inputFile...\n");
      #my $retval = execute('krun', getKRunCommand($oval, undef, undef, $inputFile, 0));     
      my $cmd = "$KRUN " . join(" ", getKRunCommand($oval, undef, undef, $inputFile, 0));
      print $cmd . "\n" if ($args->{'-d'});
      my $retval = system($cmd);  
-     print("krun return value <O means OK, !0 means Error> is $retval\n");
+     # print("krun return value <O means OK, !0 means Error> is $retval\n");
 
      my $localOvalPretty = File::Temp->new( 
                 TEMPLATE => 'tmp-kcc-compile-XXXXXXX', 
@@ -305,7 +305,7 @@ sub compile {
      my $cmdPretty = "$KRUN " . join(" ", getKRunCommandPretty($localOvalPretty, undef, undef, $inputFile, 0));
      print $cmdPretty . "\n" if ($args->{'-d'});
      my $retvalPretty = system($cmdPretty);  
-     print("krun pretty return value <O means OK, !0 means Error> is $retvalPretty\n");
+     # print("krun pretty return value <O means OK, !0 means Error> is $retvalPretty\n");
 
 #     if ($retval) {
 #          error();
@@ -354,7 +354,7 @@ sub getKRunCommand {
           push(@krun_args, '--native-libraries');
           push(@krun_args, "@stdlib");
      }
-     print "krun ". join(" ", @krun_args), "\n";
+     # print "krun ". join(" ", @krun_args), "\n";
      return @krun_args;
 }
 
@@ -400,7 +400,7 @@ sub getKRunCommandPretty {
           push(@krun_args, '--native-libraries');
           push(@krun_args, "@stdlib");
      }
-     print "krun ". join(" ", @krun_args), "\n";
+     # print "krun ". join(" ", @krun_args), "\n";
      return @krun_args;
 }
 
@@ -414,7 +414,7 @@ sub preprocess {
                    @main::cppDefines, @main::cppUndefines, @main::cppIncludeDirs,
                    @main::cppIncludes, '-E', '-iquote', '.', '-iquote', $directoryname,
                    '-I', "$myDirectory/includes", $inputFile, '-o', $output);
-     print("".join(" ", @ppArgs), "\n");
+     # print("".join(" ", @ppArgs), "\n");
      my $retval = execute(@ppArgs);
      return $retval;
 }
@@ -448,7 +448,7 @@ sub parse {
      if ($args->{'-d'}) {
        print("$cmd\n");
      }
-     print("$cmd\n");
+     # print("$cmd\n");
      system($cmd);
      if ($? >> 8) {
           error();
