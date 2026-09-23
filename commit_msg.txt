@@ -1,12 +1,26 @@
-`#pragma omp parallel` is working 
+thread interleave points added
 
-o semantics/language/execution/configuration.k: orientation of cells inside <thread-local> changed for better comprehension 
-o semantics/language/execution/stmt/loop.k: <next-loc> cell is also considered while creating thread
-+ test_omp2.2.c: gives ouput as follows
-                    ./a.out 
-                    R1:
-                    R2:1
-                    R2:2
-                    R2:3
-                    R3:
-+ det_diff: script file added for generating diff among files
+o semantics/Makefile: `--transition "thread-interleave"` of nd-thread-kompiled added  
+o semantics/language/execution/stmt/loop.k: `putInterleavePoints` function added to put `interleave` inside the statement, S of omp_parallel(S:K)
++ test_omp2.2.6.c: gives ouput as follows
+        root@c2bc8eb1b56b:/workspace# dist/kcc test_omp2.2.6.c 
+        ./a.out 
+        krun --output pretty --output-file tmp-kcc-out-Qi3J6EXw6w8.txt -cARGC=1  -cARGV="(ListItem(\"./a.out\") .List)"  --parser "kast --parser binary" tmp-kcc-in-BKgRIGyFBoq.bin -cOPTIONS="(.Set)" -d /workspace/dist/c11-kompiled
+        R1@OUT:0
+        R2@IN:1
+        R2@IN:2
+        R2@IN:3
+        R3@dipokcd@OUT:3
+        THREADSEARCH=1 ./a.out 
+        Searching reachable states... (with non-deterministic thread interleaving)
+        krun --output pretty --output-file tmp-kcc-out-vk7DGUhRbDR.txt -cARGC=1  -cARGV="(ListItem(\"./a.out\") .List)"  --parser "kast --parser binary" tmp-kcc-in-wKb41CzG_7y.bin --search-final  -cOPTIONS="(SetItem(NOIO) .Set)" -d /workspace/dist/c11-nd-thread-kompiled
+        1 solution(s) found
+        =============================================================
+        Solution 1:
+        return value:0
+        =============================================================
+
+        In output configuration, the stdout shows 
+        "R1@OUT:0\nR2@IN:3\nR2@IN:3\nR2@IN:3\nR3@dipokcd@OUT:3\n"  
+
+Conclusion: thread interleaving is working but giving us just one solution instead of many solutions

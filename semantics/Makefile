@@ -30,7 +30,9 @@ c11-nd-kompiled/c11-nd-kompiled/context.bin: $(C11_FILES)
 
 c11-nd-thread-kompiled/c11-nd-thread-kompiled/context.bin: $(C11_FILES)
 	@echo "Kompiling the dynamic C semantics with thread-interleaving non-determinism..."
-	$(KOMPILE) --backend java --smt none c11.k -d "c11-nd-thread-kompiled" --transition "observable ndtrans ndthread"
+	$(KOMPILE) --backend java --smt none c11.k -d "c11-nd-thread-kompiled" --transition "thread-interleave"
+
+# 	$(KOMPILE) --backend java --smt none c11.k -d "c11-nd-thread-kompiled" --transition "observable ndtrans ndthread"
 
 all: fast nd thread
 

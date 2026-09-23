@@ -27,6 +27,7 @@ module C-STMT-LOOP
      // @omp-start     
      syntax Statement ::= "waitingForChild"
      syntax Statement ::= "joinChild"
+     syntax Statement ::= "jive"
      // @omp-end 
 
      rule ForClauseExpression(K:K) => Computation(K) [structural]
@@ -109,11 +110,30 @@ module C-STMT-LOOP
           requires CurrentThreads =/=Int 0
           [large, ndthread]
 
+     // @omp thread interleaving
+     ///*
+     syntax Statement ::= "interleave"
+     rule interleave => .K [thread-interleave]
+
+     syntax List ::= putInterleavePoints(List, List)[function]
+
+     //rule putInterleavePoints(.List, .List) => .List
+     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc))) => putInterleavePoints(ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)) , .List)
+     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc)) L2:List) => putInterleavePoints(ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), L2)
+     rule putInterleavePoints(L1:List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc)) L2:List) => putInterleavePoints(L1 ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), L2)
+     rule putInterleavePoints(L1:List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc))) => putInterleavePoints(L1 ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), .List)
+     rule putInterleavePoints(L1:List, .List) => L1
+
+     syntax PureStatement ::= OmpParallel2(K)
+
+     rule <k> 
+               OmpParallel(BlockStatement(Block(B1:Int, L1:K, list(ListItem(CodeLoc(BlockStatement(Block(B2:Int, L2:K, list(TList:List))), Ln:CabsLoc)) LL1:List)))) => OmpParallel2(BlockStatement(Block(B1, L1, list(ListItem(CodeLoc(BlockStatement(Block(B2, L2, list(putInterleavePoints(.List , TList)))), Ln)) LL1:List))))
+          ...</k>
+
      rule [zero-thread-omp-parallel]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
-          <k> OmpParallel(S:K)
-               => S ~> waitingForChild
+          <k> OmpParallel2(S:K) => S ~> waitingForChild
                ...</k>
           ...</thread>
           <omp-current-threads> CurrentThreads:Int</omp-current-threads>
@@ -131,8 +151,7 @@ module C-STMT-LOOP
                     <child-threads> ... .Set => SetItem(Fresh)</child-threads>
                </thread-local>
                <k> 
-                    OmpParallel(S:K)
-                    => OmpParallel(S)
+                    OmpParallel2(S:K) => OmpParallel2(S)
                ...
                </k>
           ...
