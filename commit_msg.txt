@@ -1,0 +1,12 @@
+`#pragma omp parallel` is working 
+
+o semantics/language/execution/configuration.k: orientation of cells inside <thread-local> changed for better comprehension 
+o semantics/language/execution/stmt/loop.k: <next-loc> cell is also considered while creating thread
++ test_omp2.2.c: gives ouput as follows
+                    ./a.out 
+                    R1:
+                    R2:1
+                    R2:2
+                    R2:3
+                    R3:
++ det_diff: script file added for generating diff among files

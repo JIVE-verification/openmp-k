@@ -65,3 +65,6 @@ k-*
 *.parse
 *.gen
 *.log
+
+# output file
+a.out

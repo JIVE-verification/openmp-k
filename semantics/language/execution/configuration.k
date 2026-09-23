@@ -88,9 +88,6 @@ module C-CONFIGURATION
                     .K
                </final-computation>
                <thread-local>
-                    // stack of "control" cells
-                    <call-stack color="violet"> .List </call-stack>
-                    <locks> .List </locks>
                     // used for tracking the parent-child threads
                     <parent-thread> -1 </parent-thread>
                     <child-threads> .Set </child-threads>
@@ -108,10 +105,6 @@ module C-CONFIGURATION
                          </curr-program-loc>
 
                          <control-details> // TODO(chathhorn): dumb name
-                              // stack of "local" cells
-                              <block-stack color="violet">
-                                   .List
-                              </block-stack>
                               <local>
                                    // maps from CIds
                                    <env color="red"> .Map </env>
@@ -152,6 +145,10 @@ module C-CONFIGURATION
                                    </local-addresses>
 
                               </local>
+                              // stack of "local" cells
+                              <block-stack color="violet">
+                                   .List
+                              </block-stack>
                               // used to control initialization when gotoing
                               <should-init color="lightgray">
                                    true
@@ -184,6 +181,9 @@ module C-CONFIGURATION
                               </decl-type-holder>
                          </control-details>
                     </control>
+                    // stack of "control" cells
+                    <call-stack color="violet"> .List </call-stack>
+                    <locks> .List </locks>
                </thread-local>
           </thread>
      </threads>

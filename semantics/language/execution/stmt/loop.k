@@ -124,6 +124,7 @@ module C-STMT-LOOP
           <thread>
           ...
                <thread-id> Parent:Int </thread-id>
+               <next-loc> _ </next-loc>
                <thread-local> 
                     C:Bag 
                     <parent-thread> _ </parent-thread>
@@ -142,6 +143,7 @@ module C-STMT-LOOP
           <thread>
           ...
                <thread-id> Fresh:Int </thread-id>
+               <next-loc> 0 @ thread(Fresh:Int) </next-loc>
                <k>  
                     S ~> joinChild
                </k>
