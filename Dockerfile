@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # ============================================================
 # Debian Jessie is EOL.
-# Use the Debian archive repositories.
+# Use Debian archive repositories.
 # ============================================================
 
 RUN printf '%s\n' \
@@ -44,7 +44,8 @@ RUN apt-get install -y --allow-unauthenticated \
     m4 \
     build-essential \
     ca-certificates \
-    perl
+    perl \
+    perl-modules
 
 
 # ============================================================
@@ -57,6 +58,7 @@ RUN apt-get install -y --allow-unauthenticated \
 
 
 # Make GCC 4.9 the default compiler
+
 RUN update-alternatives \
     --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 100
 
@@ -67,8 +69,8 @@ RUN update-alternatives \
 # ============================================================
 # GraphViz
 #
-# graphviz      -> dot executable
-# libgraphviz-perl -> Perl GraphViz.pm module
+# graphviz          -> dot executable
+# libgraphviz-perl  -> Perl GraphViz.pm
 # ============================================================
 
 RUN apt-get install -y --allow-unauthenticated \
@@ -77,15 +79,43 @@ RUN apt-get install -y --allow-unauthenticated \
 
 
 # ============================================================
+# Perl DBI / SQLite
+#
+# libdbi-perl       -> DBI.pm
+# libdbd-sqlite3-perl -> DBD/SQLite.pm
+# sqlite3           -> sqlite3 executable
+# libsqlite3-dev    -> SQLite development headers
+# ============================================================
+
+RUN apt-get install -y --allow-unauthenticated \
+    libdbi-perl \
+    libdbd-sqlite3-perl \
+    sqlite3 \
+    libsqlite3-dev
+
+
+# ============================================================
+# Additional Perl build dependencies
+# ============================================================
+
+RUN apt-get install -y --allow-unauthenticated \
+    libssl-dev \
+    zlib1g-dev \
+    libxml2-dev \
+    libxml-libxml-perl
+
+
+# ============================================================
 # Java 8
 #
-# Java 8 is obtained from Jessie backports.
+# Java 8 comes from Jessie backports.
 # ============================================================
 
 RUN apt-get install -y \
     -t jessie-backports \
     --allow-unauthenticated \
     openjdk-8-jdk
+
 
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH=${JAVA_HOME}/bin:${PATH}
@@ -109,62 +139,119 @@ RUN make world
 
 RUN make install
 
+# ------------------------------------------------------------
+# Additional Perl modules
+# ------------------------------------------------------------
+RUN cpan -i Text::Diff Getopt::Declare
 
 # ============================================================
 # Verify GCC
 # ============================================================
 
-RUN echo "========================================"
-RUN echo "GCC version:"
-RUN gcc --version
+RUN echo "========================================" && \
+    echo "GCC version:" && \
+    gcc --version
 
-RUN echo "========================================"
-RUN echo "G++ version:"
-RUN g++ --version
+
+# ============================================================
+# Verify G++
+# ============================================================
+
+RUN echo "========================================" && \
+    echo "G++ version:" && \
+    g++ --version
 
 
 # ============================================================
 # Verify Java
 # ============================================================
 
-RUN echo "========================================"
-RUN echo "Java version:"
-RUN java -version
+RUN echo "========================================" && \
+    echo "Java version:" && \
+    java -version
 
-RUN echo "========================================"
-RUN echo "Javac version:"
-RUN javac -version
+
+RUN echo "========================================" && \
+    echo "Javac version:" && \
+    javac -version
 
 
 # ============================================================
 # Verify OCaml
 # ============================================================
 
-RUN echo "========================================"
-RUN echo "OCaml version:"
-RUN ocaml -version
+RUN echo "========================================" && \
+    echo "OCaml version:" && \
+    ocaml -version
 
 
 # ============================================================
 # Verify Perl
 # ============================================================
 
-RUN echo "========================================"
-RUN echo "Perl version:"
-RUN perl -v
+RUN echo "========================================" && \
+    echo "Perl version:" && \
+    perl -v
 
 
 # ============================================================
 # Verify GraphViz
 # ============================================================
 
-RUN echo "========================================"
-RUN echo "GraphViz version:"
-RUN dot -V
+RUN echo "========================================" && \
+    echo "GraphViz version:" && \
+    dot -V
 
-RUN echo "========================================"
-RUN echo "Perl GraphViz module:"
-RUN perl -MGraphViz -e 'print "GraphViz.pm OK\n"'
+
+RUN echo "========================================" && \
+    echo "Perl GraphViz module:" && \
+    perl -MGraphViz \
+         -e 'print "GraphViz.pm OK\n"'
+
+
+# ============================================================
+# Verify DBI
+# ============================================================
+
+RUN echo "========================================" && \
+    echo "DBI:" && \
+    perl -MDBI \
+         -e 'print "DBI version: $DBI::VERSION\n"'
+
+
+# ============================================================
+# Verify DBD::SQLite
+# ============================================================
+
+RUN echo "========================================" && \
+    echo "DBD::SQLite:" && \
+    perl -MDBD::SQLite \
+         -e 'print "DBD::SQLite version: $DBD::SQLite::VERSION\n"'
+
+
+# ------------------------------------------------------------
+# Verify Text::Diff
+# ------------------------------------------------------------
+RUN echo "========================================" && \
+    echo "Text::Diff:" && \
+    perl -MText::Diff \
+        -e 'print "Text::Diff OK\n"'
+
+# ------------------------------------------------------------
+# Verify Getopt::Declare
+# ------------------------------------------------------------
+RUN echo "========================================" && \
+    echo "Getopt::Declare:" && \
+    perl -MGetopt::Declare \
+        -e 'print "Getopt::Declare OK\n"'
+
+# ============================================================
+# Clean temporary OCaml source and APT cache
+# ============================================================
+
+RUN rm -rf /tmp/ocaml-4.00.0 \
+           /tmp/ocaml-4.00.0.tar.gz \
+           /var/lib/apt/lists/*
 
 
 # ============================================================

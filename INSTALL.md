@@ -7,23 +7,17 @@ K-v3.6
 
 If the docker is already in the system, ignore docker build. Otherwise build the docker that has gcc 4.9, jdk1.8, Ocaml 4.0 from the [docker](Dockerfile)
 ```
-docker build --no-cache -t legacy-cjk3.6 .
+docker build --no-cache -t legacy-k .
 ```
 To run the docker from the current directory
 ```
 docker run -it --rm \
     -v $(pwd -P):/workspace \
-    legacy-cjk3.6
+    legacy-k
 ```
 Set the path of K3.6 as
 ```
 export PATH="/workspace/k-distribution-3.6/k/bin:$PATH"
-```
-Then continue installing dependencies
-```
-apt-get install build-essential libxml-libxml-perl ocaml graphviz
-cpan -i Text::Diff DBI DBD::SQLite Getopt::Declare
-apt-get install -y libgraphviz-perl
 ```
 Finally,
 ```

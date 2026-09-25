@@ -1,36 +1,4 @@
-full thread-interleaving achieved
+Dockerfile changed
 
-o scripts/program-runner: parsing in the `--search-final` generated configuration file is changed to extract stdout
-o semantics/Makefile: removed other transitions except `--transition "threadleave"`
-o semantics/language/execution/stmt/loop.k: thread-interleave point before the first statement inside parallel region added to make sure full thread-interleaving
-+ test_omp2.2.6.1.c: gives ouput as follows
-        root@fe96926e1447:/workspace# dist/kcc test_omp2.2.6.1.c 
-        root@fe96926e1447:/workspace# THREADSEARCH=1 ./a.out
-        Searching reachable states... (with non-deterministic thread interleaving)
-        krun --output pretty --output-file tmp-kcc-out-6BFm60TT5vv.txt -cARGC=1  -cARGV="(ListItem(\"./a.out\") .List)"  --parser "kast --parser binary" tmp-kcc-in-ID5SdGzOuT_.bin --search-final  -cOPTIONS="(SetItem(NOIO) .Set)" -d /workspace/dist/c11-nd-thread-kompiled
-        5 solution(s) found
-        =============================================================
-        Solution 1:
-        return value:0
-        stdout:"R1:\nR2:IN#1\nR2:IN#1\nR2:IN#1\nR2:IN#2\nR2:IN#2\nR2:IN#2\nR3:\n"
-        =============================================================
-        =============================================================
-        Solution 2:
-        return value:0
-        stdout:"R1:\nR2:IN#1\nR2:IN#1\nR2:IN#2\nR2:IN#1\nR2:IN#2\nR2:IN#2\nR3:\n"
-        =============================================================
-        =============================================================
-        Solution 3:
-        return value:0
-        stdout:"R1:\nR2:IN#1\nR2:IN#1\nR2:IN#2\nR2:IN#2\nR2:IN#1\nR2:IN#2\nR3:\n"
-        =============================================================
-        =============================================================
-        Solution 4:
-        return value:0
-        stdout:"R1:\nR2:IN#1\nR2:IN#2\nR2:IN#1\nR2:IN#1\nR2:IN#2\nR2:IN#2\nR3:\n"
-        =============================================================
-        =============================================================
-        Solution 5:
-        return value:0
-        stdout:"R1:\nR2:IN#1\nR2:IN#2\nR2:IN#1\nR2:IN#2\nR2:IN#1\nR2:IN#2\nR3:\n"
-        =============================================================
+o Dockerfile: file changed to insert all the dependencies inside this Dockerfile
+o INSTALL.md: removing installation of additional dependencies
