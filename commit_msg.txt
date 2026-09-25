@@ -1,4 +1,3 @@
-Dockerfile changed
+Dockerfile fix continued
 
-o Dockerfile: file changed to insert all the dependencies inside this Dockerfile
-o INSTALL.md: removing installation of additional dependencies
+o Dockerfile: now full dependencies installed
