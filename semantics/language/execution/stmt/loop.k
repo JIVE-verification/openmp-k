@@ -113,13 +113,13 @@ module C-STMT-LOOP
      // @omp thread interleaving
      ///*
      syntax Statement ::= "interleave"
-     rule interleave => .K [thread-interleave]
+     rule interleave => .K [threadleave]
 
      syntax List ::= putInterleavePoints(List, List)[function]
 
      //rule putInterleavePoints(.List, .List) => .List
-     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc))) => putInterleavePoints(ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)) , .List)
-     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc)) L2:List) => putInterleavePoints(ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), L2)
+     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc))) => putInterleavePoints(ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)) , .List)
+     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc)) L2:List) => putInterleavePoints(ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), L2)
      rule putInterleavePoints(L1:List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc)) L2:List) => putInterleavePoints(L1 ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), L2)
      rule putInterleavePoints(L1:List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc))) => putInterleavePoints(L1 ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), .List)
      rule putInterleavePoints(L1:List, .List) => L1

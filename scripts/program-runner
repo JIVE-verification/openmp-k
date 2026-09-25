@@ -108,6 +108,7 @@ sub main {
       if (defined $ENV{THREADSEARCH}) {
             # push @krun_args , '--output' , 'pretty';
             push @krun_args , '--search-final', '';
+            # push @krun_args , '--pattern', '"<result-value> S:K </result-value>"';
             push @options, 'NOIO';
             $krun_args_kompiled_dir{'-d'}=$EXEC_ND_THREAD_DEF;
             print 'Searching reachable states... ';
@@ -126,6 +127,7 @@ sub main {
 
       @options = map {"SetItem($_)"} @options;
       push @options, ".Set";
+      # push @krun_args , '--pattern', '"<status> S:K </status"';
       push @krun_args , '-cOPTIONS="(' . (join ' ', @options) . ')"' , '';
 
       # Execute krun with the arguments in (flattened) %krun_args.
@@ -190,6 +192,10 @@ sub main {
                   if (defined $parsed{exitCode}){
                         print("return value:". $parsed{exitCode}. "\n");
                   }
+                  if (defined $parsed{testkey}){
+                        print("stdout:". $parsed{testkey}. "\n");
+                  }
+                  $count++;
                   print "=============================================================\n";
             }
             close($fh);
@@ -315,6 +321,19 @@ sub parseResultForSolutions {
       $solution =~ /<result-value>\s*tv\s*\(\s*NullPointer\s*,\s*t\s*\(\s*\.Set\s*,\s*int\s*\)\s*\)\s*<\/result-value>/ && do {
             $parsed->{exitCode} = 0;
       };
+
+      $solution =~ /<status>\s*(.*)\s*<\/status>/ && do {
+            $parsed->{status} = $1;
+      };
+
+      # while($solution =~ /<done>\s*(.*)\s*<\/done>/g) {
+            # $parsed->{testkey} .= $1 . "#";
+      # };
+      my @done = $solution =~ /<done>\s*(.*?)\s*<\/done>/g;
+      # $parsed->{testkey} = $done[1] if @done > 1;
+      if (@done > 1 && $done[1] =~ /\s*ListItem\s*\(\s*(.*)\s*\)\s*/) {
+            $parsed->{testkey} = $1;
+      }
 }
 
 # TODO(chathhorn): We have two functions here because of the newlines -- the

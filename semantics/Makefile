@@ -26,11 +26,13 @@ c11-kompiled/c11-kompiled/context.bin: $(C11_FILES)
 
 c11-nd-kompiled/c11-nd-kompiled/context.bin: $(C11_FILES)
 	@echo "Kompiling the dynamic C semantics with expression sequencing non-determinism..."
-	$(KOMPILE) --backend java --smt none c11.k -d "c11-nd-kompiled" --transition "observable ndtrans" --superheat "ndheat" --supercool "ndlocal"
+	$(KOMPILE) --backend java --smt none c11.k -d "c11-nd-kompiled" --transition "threadleave"
+
+# 	$(KOMPILE) --backend java --smt none c11.k -d "c11-nd-kompiled" --transition "observable ndtrans" --superheat "ndheat" --supercool "ndlocal"
 
 c11-nd-thread-kompiled/c11-nd-thread-kompiled/context.bin: $(C11_FILES)
 	@echo "Kompiling the dynamic C semantics with thread-interleaving non-determinism..."
-	$(KOMPILE) --backend java --smt none c11.k -d "c11-nd-thread-kompiled" --transition "thread-interleave"
+	$(KOMPILE) --backend java --smt none c11.k -d "c11-nd-thread-kompiled" --transition "threadleave"
 
 # 	$(KOMPILE) --backend java --smt none c11.k -d "c11-nd-thread-kompiled" --transition "observable ndtrans ndthread"
 
