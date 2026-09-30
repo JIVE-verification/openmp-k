@@ -1,3 +1,8 @@
-Dockerfile fix continued
+scripts related to depth-wise translation-semantics added
 
-o Dockerfile: now full dependencies installed
++ run_translation: a bash script to run `translate-program` from inside `dist` so that
+                    files related to `dist/kcc` can be accessed 
++ run_translation_depths: this file enables generate translation-semantics in different 
+                    depths in an interval 
++ translate-program: this program is same as `dist/kcc` but it is modified to generate 
+                    the configuration of translation-semantics in different depth

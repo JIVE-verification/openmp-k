@@ -1,0 +1,24 @@
+#!/bin/bash
+if [ "$#" -eq 0 ]; then
+    echo "Usage: $0 <filename> [depth]"
+    exit 1
+fi
+
+input_file=$1
+output_file="${input_file%.c}"
+depth=$2
+translator_script="translate-program"
+
+if [ ! -f "dist/$translator_script" ]; then
+    echo "copying $translator_script to dist"
+	cp "$translator_script" "dist"
+fi
+
+if [ -n "$2" ]; then
+	echo "perl dist/translate-program $input_file --depth $depth"
+	perl dist/translate-program $input_file --depth $depth
+else
+	echo "perl dist/translate-program $input_file"
+	perl dist/translate-program $input_file
+fi
+
