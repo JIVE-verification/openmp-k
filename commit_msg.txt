@@ -1,16 +1,25 @@
-sources copied from checkpoint https://github.com/kframework/c-semantics/tree/ef2c4835ce250fa331caae4d3f3a4159cef69a6c, and test.c and test_for.c are translated and executed in different lengths
-o Makefile: changed from the checkpoint on this part
-    test-build: fast
-	@echo "Testing kcc..."
-	@perl $(SCRIPTS_DIR)/testInstall.pl $(DIST_DIR)/kcc $(DIST_DIR)/testProgram.c $(DIST_DIR)/testProgram.compiled
-	@echo "Done."
-	@echo "Cleaning up..."
-#	@rm -f $(DIST_DIR)/testProgram.compiled
-#	@rm -f $(DIST_DIR)/testProgram.c
-	@echo "Done."
-o scripts/kcc: this file is from https://github.com/cd-dpk/openmp-k-java-backend/commit/5536f9edd4b27f8628591542b763b270f803efaf
-o scripts/program-runner: this file is from https://github.com/cd-dpk/openmp-k-java-backend/commit/5536f9edd4b27f8628591542b763b270f803efaf
-o semantics/language/translation/init.k: changed from the checkout to support two objects merging instead of four objects
-o semantics/language/translation/configuration.k: changed from the checkout to support two objects merging instead of four objects
+#pragma omp parallel private(i, j) num_threads(3) of test_omp_3.c program is parsed and translated  but stuck at
 
-NOTE: https://github.com/kframework/c-semantics/tree/af5e4f28562e65beed4e10531ccd07317f778282: Changes toward simplifying the execution semantics.
+<k>
+OmpParallel ( 2 , list ( 
+    ListItem ( OmpPrivateList ( list ( ListItem ( 
+      Identifier ( "i" ) ) ) ) )
+    ListItem ( OmpNumThreads ( 3 ) ) ) , BlockStatement 
+  ( Block ( 3 , list ( .List ) , list ( ListItem ( 
+  CodeLoc ( BlockStatement ( Block ( 4 , list ( .List ) 
+  , list ( ListItem ( CodeLoc ( Computation ( Call ( 
+  Identifier ( "printf" ) , list ( 
+    ListItem ( stringLiteral ( "R2: %d\n" ) )
+    ListItem ( Identifier ( "i" ) ) ) ) ) , CabsLoc ( 
+  "test_omp3.c" , 9 , 9 , 0 ) ) ) ) ) ) , CabsLoc ( 
+  "test_omp3.c" , 8 , 5 , 0 ) ) ) ) ) ) ) ~> CodeLoc ( 
+  Computation ( Call ( Identifier ( "printf" ) , list ( 
+    ListItem ( stringLiteral ( "R3: %d\n" ) )
+    ListItem ( Identifier ( "i" ) ) ) ) ) , CabsLoc ( 
+  "test_omp3.c" , 11 , 5 , 0 ) ) ~> CodeLoc ( Return ( 
+  tv ( 0 , t ( SetItem ( IntegerConstant ) , int ) ) ) ,
+   CabsLoc ( "test_omp3.c" , 12 , 5 , 0 ) ) ~> exitBlock
+   ( 1 ) ~> popBlock ~> Return ( tv ( 0 , t ( .Set , int
+   ) ) )
+</k>
+

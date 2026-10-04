@@ -303,6 +303,8 @@ let transformOffsetOf (speclist, dtype) member =
 %token<Cabs.cabsloc> BREAK CONTINUE GOTO RETURN
 %token<Cabs.cabsloc> SWITCH CASE DEFAULT
 %token<Cabs.cabsloc> WHILE DO FOR
+%token<Cabs.cabsloc> OMPPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS REDUCTION OMP_LAST_PRIVATE OMP_LAST_PRIVATE_CONDITIONAL THREADPRIVATE
+%token<Cabs.cabsloc> SECTIONS SECTION SINGLE TASK TASKWAIT BARRIER SHARED
 %token<Cabs.cabsloc> IF TRY EXCEPT FINALLY
 %token ELSE 
 
@@ -894,6 +896,8 @@ statement:
 |   FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
 	                         {FOR ($3, $4, $6, $8, (*handleLoc*) $1)}
+|   OMPPRAGMA OMP PARALLEL omp_clause statement
+	                         {OMPPARALLEL ($4, $5, (*handleLoc*) $3)}                           
 |   IDENT COLON attribute_nocv_list statement
 		                 {(* The only attribute that should appear here
                                      is "unused". For now, we drop this on the
@@ -939,6 +943,49 @@ for_clause:
     opt_expression SEMICOLON     { FC_EXP $1 }
 |   declaration                  { FC_DECL $1 }
 ;
+
+omp_sections:
+  /* empty */ {[]} 
+  | OMPPRAGMA OMP SECTION statement omp_sections { $4 :: $5}
+
+/*OPENMP*/
+omp_clause:
+     /* empty */ {[]}   
+  | PRIVATE LPAREN omp_clause_args RPAREN omp_clause { (OMP_PRIVATE $3) :: $5}
+  | FIRSTPRIVATE LPAREN omp_clause_args RPAREN omp_clause { (OMP_FIRST_PRIVATE $3) :: $5}  
+  | NUMTHREADS LPAREN omp_num_threads_clause RPAREN omp_clause { (OMP_NUM_THREADS $3) :: $5 }
+  | REDUCTION LPAREN omp_reduction_modifier omp_reduction_identiifer COLON omp_clause_args RPAREN omp_clause {(OMP_REDUCTION( $3, $4, $6)) :: $8}
+  | OMP_LAST_PRIVATE LPAREN omp_last_private_modifier omp_clause_args RPAREN omp_clause {OMP_LAST_PRIVATE($3, $4) :: $6};
+  | SHARED LPAREN omp_clause_args RPAREN omp_clause { (OMP_SHARED $3) :: $5}
+
+omp_clause_args:
+     /* empty */ {[]}
+  | IDENT                       { [fst $1 ]} /* private (i)*/
+  | IDENT COMMA omp_clause_args { let rest = $3 in (fst $1) :: rest} /* private (i, j)*/
+  ;
+
+omp_last_private_modifier:
+  /* empty */ {"omp_lastprivate_empty"}
+  | OMP_LAST_PRIVATE_CONDITIONAL COLON {"omp_lastprivate_conditional"}
+  ;
+
+omp_reduction_modifier:
+    /* empty */ {"omp_reduction_empty"}
+  | TASK COMMA {"omp_reduction_task"}
+  ;
+
+omp_reduction_identiifer:
+  PLUS { "+" }
+  | STAR {"*"}
+  | AND {"&"}
+  | PIPE {"|"}
+  | CIRC {"^"}
+  | AND_AND {"&&"}
+  | PIPE_PIPE {"||"}
+  ;
+
+omp_num_threads_clause:
+    CST_INT   {NT_INT (fst $1) }
 
 declaration:                                /* ISO 6.7.*/
     decl_spec_list init_declarator_list SEMICOLON

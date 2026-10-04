@@ -263,6 +263,11 @@ module C-ABSTRACT-SYNTAX
      */
      syntax Statement ::= For(BlockTag, K, K, K, K)
 
+     syntax Statement ::= OmpParallel(BlockTag, K, K)
+     syntax KItem ::= OmpPrivateList(K)
+     syntax KItem ::= OmpNumThreads(Int)
+
+
      // gcc extension
      syntax Statement ::= CaseRange(K, K, K)
 

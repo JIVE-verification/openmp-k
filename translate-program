@@ -326,7 +326,7 @@ sub getKRunCommandPretty {
      my ($output, $obj1, $obj2, $src, $link, $depth) = (@_);
      my @krun_args = ('--output', 'pretty',  '--output-file', $output, "-d $TRANS_DEF" );
 
-     if($depth){
+     if(defined $depth){
           push(@krun_args, '--depth', $depth);
      }
 

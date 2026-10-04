@@ -58,6 +58,7 @@ my %ignoreThese = (
 	'CompoundLiteralId' => 1,
 	'CaseId' => 1,
 	'ForId' => 1,
+	'OmpId' => 1,
 	'SourceCode' => 1,
 	'DeclarationType' => 1,
 	'Variable' => 1,
