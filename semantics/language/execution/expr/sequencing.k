@@ -1,10 +1,6 @@
 module C-EXPR-SEQUENCING
-     imports C-COMMON-EXPR-EVAL-SYNTAX
-
-     imports C-SYNTAX
-     imports C-DYNAMIC-SYNTAX
      imports C-SEQUENCE-POINT-SYNTAX
-     imports COMPAT-SYNTAX
+     imports C-SYNTAX
 
      /*@ \fromStandard{\source[n1570]{\para{6.5.17}{2}}}{
      The left operand of a comma operator is evaluated as a void expression;
@@ -13,15 +9,7 @@ module C-EXPR-SEQUENCING
      value.
      }*/
 
-     syntax KItem ::= commaEval(K) [strict]
-
-     rule commaEval(R:KResult) => rkludge(R)
+     rule _:RValue ~> comma => sequencePoint
           [structural]
 
-     rule Comma(list(ListItem(K:K) L:List))
-          => commaEval(K) ~> discard ~> sequencePoint ~> Comma(list(L))
-          requires L =/=MSet .List
-          [structural]
-     rule Comma(list(ListItem(K:K))) => commaEval(K)
-          [structural]
 endmodule

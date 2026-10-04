@@ -15,6 +15,7 @@ endmodule
 module C-IO-BUFFERED
      imports C-BITSIZE-SYNTAX
      imports C-BITS-SYNTAX
+     imports C-CHECK-LOC-SYNTAX
      imports C-DYNAMIC-SYNTAX
      imports C-ERROR-SYNTAX
      imports C-IO-BUFFERED-SYNTAX
@@ -50,38 +51,26 @@ module C-IO-BUFFERED
           requires I >Int 0
 
      syntax KItem ::= setModified(SymLoc, Type)
-     syntax KItem ::= setModified(SymLoc, Type, K, Set)
      rule <k> setModified(Loc:SymLoc, T:Type)
                => setModified(Loc, T, .K, keys(Modified))
           ...</k>
-          <modified> Modified:Map </modified>
+          <activeBlocks> Modified:Map </activeBlocks>
 
-     // TODO(chathhorn): java port.
-     //updateMap by an indicator 0/1 to decide which kind of update we should perform
-     syntax KItem ::= updateMapInKItem(K, SymLoc, Int, Int) [function]
-                    | #isInMap(K, SymLoc) [function]
-     rule updateMapInKItem(map(M:Map), Loc:SymLoc, I:Int, 0)
-          => map(M[Loc <- maxInt(lookup(M, Loc), I)])
-     rule updateMapInKItem(map(M:Map), Loc:SymLoc, I:Int, 1)
-          => map(M[Loc <- I])
-     rule #isInMap(map(M:Map), Loc:SymLoc) => true
+     syntax KItem ::= updateModified(K, SymLoc, Int) [function]
+     rule updateModified(activity(N:Int, M:Map), Loc:SymLoc, I:Int)
+          => activity(N, M[Loc <- maxInt(lookup(M, Loc), I)])
           requires Loc in keys(M)
-     rule #isInMap(_, _) => false [owise]
+     rule updateModified(activity(N:Int, M:Map), Loc:SymLoc, I:Int)
+          => activity(N, M (Loc |-> I))
+          requires notBool (Loc in keys(M))
 
+     syntax KItem ::= setModified(SymLoc, Type, K, Set)
      rule <k> setModified(Loc:SymLoc, T:Type,
-                (Tag:RestrictTag => .K), _)
+                (Tag:BlockTag => .K), _)
            ...</k>
-           <modified>...
-                Tag |-> (MK:K => updateMapInKItem(MK, Loc, byteSizeofType(T), 0))
-           ...</modified>
-          requires #isInMap(MK, Loc) ==K true
-     rule <k> setModified(Loc:SymLoc, T:Type,
-               (Tag:RestrictTag => .K), _)
-           ...</k>
-           <modified>...
-                Tag |-> (MK:K => updateMapInKItem(MK, Loc, byteSizeofType(T), 1))
-           ...</modified>
-          requires #isInMap(MK, Loc) =/=K true
+           <activeBlocks>...
+                Tag |-> (Offsets:K => updateModified(Offsets, Loc, byteSizeofType(T)))
+           ...</activeBlocks>
      rule setModified(Loc:SymLoc, T:Type, .K, SetItem(K:K) S:Set)
           => setModified(Loc, T, K, S)
      rule setModified(_, _, .K, .Set) => .K
@@ -96,8 +85,7 @@ module C-IO-BUFFERED
      syntax KItem ::= checkWrite(SymLoc, Type)
      rule <k> checkWrite(loc(Base:SymBase, Offset:Int), T:Type) => .K ...</k>
           <thread-id> ThreadId:Int </thread-id>
-          <parent-thread> ParentThread::Int</parent-thread>
-          <mem>... Base |-> object(ObjT:Type, Len:Int, _) ...</mem>
+          <mem>... Base |-> object(ObjT:Type, Len:Int, _, _) ...</mem>
           <locs-written>
                Locs:List (.List => ListItem(loc(Base, Offset)))
           </locs-written>
@@ -113,9 +101,13 @@ module C-IO-BUFFERED
                // Cross-thread writes.
                andBool notBool ((isThreadDuration(loc(Base, Offset))
                          orBool isAutoDuration(loc(Base, Offset)))
-                    andBool (ThreadId =/=K getThreadId(loc(Base, Offset)))
-                    andBool (ParentThread =/=K getThreadId(loc(Base, Offset)))                    )
+                    andBool (ThreadId =/=K getThreadId(loc(Base, Offset))))
           [structural]
+     rule <k> checkWrite(Loc:SymLoc, _) => .K ...</k>
+          <locs-written>
+               Locs:List (.List => ListItem(Loc))
+          </locs-written>
+          requires notBool Loc in Locs andBool isNativeLoc(Loc)
      rule <k> (.K => UNDEF("EIO1",
                "Unsequenced side effect on scalar object with side effect of same object.",
                "6.5") )
@@ -130,7 +122,7 @@ module C-IO-BUFFERED
                "6.5.6:8"))
                ~> checkWrite(loc(Base:SymBase, Offset:Int), _)
           ...</k>
-          <mem>... Base |-> object(_, Len:Int, _) ...</mem>
+          <mem>... Base |-> object(_, Len:Int, _, _) ...</mem>
           requires Offset >=Int Len orBool Offset <Int 0
           [structural]
      rule <k> (.K => UNDEF("EIO3",
@@ -138,7 +130,7 @@ module C-IO-BUFFERED
                "6.7.3"))
                ~> checkWrite(loc(Base:SymBase, Offset:Int), _)
           ...</k>
-          <mem>... Base |-> object(ObjT:Type, _, _) ...</mem>
+          <mem>... Base |-> object(ObjT:Type, _, _, _) ...</mem>
           requires (Const in getQualsAtOffset(ObjT, Offset))
           [structural]
      rule <k> (.K => UNDEF("EIO4",
@@ -146,7 +138,7 @@ module C-IO-BUFFERED
                "6.7.3"))
                ~> checkWrite(loc(Base:SymBase, Offset:Int), T:Type)
           ...</k>
-          <mem>... Base |-> object(ObjT:Type, _, _) ...</mem>
+          <mem>... Base |-> object(ObjT:Type, _, _, _) ...</mem>
           requires notBool isVolatileType(T)
                andBool (Volatile in getQualsAtOffset(ObjT, Offset))
           [structural]
@@ -156,10 +148,8 @@ module C-IO-BUFFERED
                ~> checkWrite(Loc:SymLoc, _)
           ...</k>
           <thread-id> ThreadId:Int </thread-id>
-          <parent-thread> ParentThread::Int</parent-thread>
           requires (isThreadDuration(Loc) orBool isAutoDuration(Loc))
                andBool (ThreadId =/=K getThreadId(Loc))
-               andBool (ParentThread =/=K getThreadId(Loc))
           [structural]
 
      rule <k> writeByte(loc(Base:SymBase, Offset:Int), V:CValue) => .K ...</k>
@@ -170,10 +160,28 @@ module C-IO-BUFFERED
                (ListItem(bwrite(loc(Base:SymBase, Offset:Int), V:K)) => .List)
           ...</buffer>
           <mem>...
-               Base |-> object(_, Len:Int, M:Map => M[Offset <- V])
+               Base |-> (K:KItem => updateObject(K, Offset, V))
           ...</mem>
-          requires Offset <Int Len
+          requires objectInBounds(K, Offset) 
           [structural]
+
+     // TODO(dwightguth): remove this ugliness
+     // this is here because the above rule used to use the PatternMatcher implementation for matching which is really slow.
+     // the below rules use NonACPatternMatcher which does not have this performance issue
+     syntax KItem ::= updateObject(K, Int, K) [function]
+     syntax Bool ::= objectInBounds(K, Int) [function]
+
+     rule updateObject(object(T:K, Len:Int, Bytes:Map, Types:Map), Offset:Int, V:K)
+          => object(T, Len, Bytes[Offset <- V], Types)
+
+     rule objectInBounds(object(_, Len:Int, _, _), Offset:Int)
+          => Offset <Int Len
+
+     syntax List ::= #writeNativeByte(SymLoc, K) [function, hook(C-SEMANTICS:writeNativeByte), impure]
+     rule <buffer>
+               ListItem(bwrite(Loc:SymLoc, V:K)) => #writeNativeByte(Loc, V)
+          ...</buffer>
+          requires isNativeLoc(Loc)
 
      syntax Set ::= locations(List) [function]
      rule locations(.List) => .Set
@@ -185,19 +193,15 @@ module C-IO-BUFFERED
                ~> readBytes-aux(Loc, Size, .List, T)
           ...</k>
           <thread-id> ThreadId:Int </thread-id>
-          <parent-thread> ParentThread::Int</parent-thread>
           requires notBool ((isThreadDuration(Loc) orBool isAutoDuration(Loc))
-                    andBool (ThreadId =/=K getThreadId(Loc))
-                    andBool (ParentThread =/=K getThreadId(Loc)))
+                    andBool (ThreadId =/=K getThreadId(Loc)))
           [structural]
      rule <k> (.K => UNSPEC("EIO6", "Attempting to access an object with thread or auto storage duration in a thread other than the one in which the object is associated.", "6.2.4:4-5"))
                ~> readBytes(Loc:SymLoc, _, _)
           ...</k>
           <thread-id> ThreadId:Int </thread-id>
-          <parent-thread> ParentThread::Int</parent-thread>
           requires (isThreadDuration(Loc) orBool isAutoDuration(Loc))
                andBool (ThreadId =/=K getThreadId(Loc))
-               andBool (ParentThread =/=K getThreadId(Loc))
           [structural]
 
      // loc, size in bytes, aux list
@@ -235,7 +239,7 @@ module C-IO-BUFFERED
                ~> tv(V, t(.Set, no-type))
           ...</k>
           <mem>...
-               Base |-> object(ObjT:Type, Len:Int, (_ Offset:Int |-> V:K))
+               Base |-> object(ObjT:Type, Len:Int, (_ Offset:Int |-> V:K), _)
           ...</mem>
           <locs-written> Locs:List </locs-written>
           <buffer> .List </buffer>
@@ -250,7 +254,7 @@ module C-IO-BUFFERED
                ~> tv(V, t(.Set, no-type))
           ...</k>
           <mem>...
-               Base |-> object(ObjT:Type, Len:Int, (_ Offset:Int |-> V:K))
+               Base |-> object(ObjT:Type, Len:Int, (_ Offset:Int |-> V:K), _)
           ...</mem>
           <locs-written> Locs:List </locs-written>
           <buffer> Mem:List </buffer>
@@ -265,8 +269,8 @@ module C-IO-BUFFERED
           ...</k>
           <mem>...
                Base |-> object(ObjT:Type, Len:Int,
-               M:Map => M[
-                     Offset <- piece(trap, cfg:bitsPerByte)])
+                    M:Map => M[Offset <- piece(trap, cfg:bitsPerByte)],
+                    _)
           ...</mem>
           <buffer> Mem:List </buffer>
           requires (notBool (loc(Base, Offset) in locations(Mem)))
@@ -282,7 +286,8 @@ module C-IO-BUFFERED
           ...</k>
           <mem>...
                Base |-> object(ObjT:Type, Len:Int,
-               M:Map => M[Offset <- piece(0, cfg:bitsPerByte)])
+                    M:Map => M[Offset <- piece(0, cfg:bitsPerByte)],
+                    _)
           ...</mem>
           <buffer> Mem:List </buffer>
           requires (notBool (loc(Base, Offset) in locations(Mem)))
@@ -291,9 +296,18 @@ module C-IO-BUFFERED
                     orBool isThreadDuration(loc(Base, Offset)))
           [structural]
 
-     // Resolve a linker address to a real "physical" address.
-     rule <k> readByte(loc((LinkBase:SymBase => Base), _), _) ...</k>
-          <linkings>... LinkBase |-> Base:SymBase ...</linkings>
+
+     syntax CValue ::= #readNativeByte(SymLoc, Int, Type) [function, hook(C-SEMANTICS:readNativeByte), impure]
+     rule <k> (readByte(Loc:SymLoc, T:Type)
+               => assert(notBool (Loc in Locs),
+                    errorUnseqEffects)
+               ~> tv(#readNativeByte(Loc, size(Aux), T), t(.Set, no-type)))
+               ~> readBytes-aux(_, _, Aux:List, _)
+          ...</k>
+          <locs-written> Locs:List </locs-written>
+          <buffer> Mem:List </buffer>
+          requires notBool (Loc in locations(Mem))
+               andBool isNativeLoc(Loc)
           [structural]
 
           // TODO(chathhorn): perf, elided
@@ -338,14 +352,16 @@ module C-IO-BUFFERED
      rule <k> copyBytes((N':Int => N' -Int 1), Old:SymBase, New:SymBase)
           ...</k>
           <mem>...
-               Old |-> object(_, _, M:Map)
-               New |-> object(_, _, _:Map (.Map => (N' -Int 1) |-> (M [ N' -Int 1])<:K))
+               Old |-> object(_, _, M:Map, _)
+               New |-> object(_, _,
+                    _:Map (.Map => (N' -Int 1) |-> (M [ N' -Int 1])<:K),
+                    _)
           ...</mem>
           requires ((N' -Int 1) in keys(M)) andBool (N' >Int 0)
           [structural]
      rule <k> copyBytes((N':Int => N' -Int 1), Old:SymBase, _)
           ...</k>
-          <mem>... Old |-> object(_, _, M:Map) ...</mem>
+          <mem>... Old |-> object(_, _, M:Map, _) ...</mem>
           requires (notBool ((N' -Int 1) in keys(M))) andBool (N' >Int 0)
           [structural]
      rule copyBytes(0, _, _) => .K
@@ -354,20 +370,20 @@ module C-IO-BUFFERED
      syntax KItem ::= copyObjectType(SymBase, SymBase)
      rule <k> copyObjectType(Old:SymBase, New:SymBase) => .K ...</k>
           <mem>...
-               Old |-> object(T:Type, _, _)
-               New |-> object((_ => T), _, _)
+               Old |-> object(T:Type, _, _, _)
+               New |-> object((_ => T), _, _, _)
           ...</mem>
 
      rule <k> deleteSizedObject(Base:SymBase, Len:Int) => .K
           ...</k>
-          <mem>... Base |-> object(_, Len, _) => .Map ...</mem>
+          <mem>... Base |-> object(_, Len, _, _) => .Map ...</mem>
           // fixme could make this more relaxed by checking of block is in
           // buffer, not just empty
           <buffer> .List </buffer>
           [structural]
 
      rule <k> deleteObject(Base:SymBase) => .K ...</k>
-          <mem>... Base |-> object(_, _, _) => .Map ...</mem>
+          <mem>... Base |-> object(_, _, _, _) => .Map ...</mem>
           <buffer> .List </buffer>
           [structural]
 
@@ -375,35 +391,44 @@ module C-IO-BUFFERED
      rule <k> getEffectiveType(loc(Base:SymBase, Offset:Int))
                => getTypeAtOffset(T, Offset)
           ...</k>
-          <mem>... Base |-> object(T:Type, _, _) ...</mem>
+          <mem>... Base |-> object(T:Type, _, _, _) ...</mem>
           requires notBool isNoType(T)
           [structural]
      rule <k> getEffectiveType(loc(Base:SymBase, Offset:Int)) => T' ...</k>
-          <mem>... Base |-> object(T:Type, _, _) ...</mem>
-          <effective-types>...
-               loc(Base, Offset) |-> T':Type
-          ...</effective-types>
-          requires isNoType(T)
+          <mem>...
+               Base |-> object(_:NoType, _, _, Offset |-> T':Type _)
+          ...</mem>
           [structural]
      rule <k> getEffectiveType(loc(Base:SymBase, Offset:Int)) => T ...</k>
-          <mem>... Base |-> object(T:Type, _, _) ...</mem>
-          <effective-types> EffTypes:Map </effective-types>
-          requires isNoType(T)
-               andBool notBool (loc(Base, Offset) in keys(EffTypes))
+          <mem>... Base |-> object(T:NoType, _, _, EffTypes:Map) ...</mem>
+          requires notBool (Offset in keys(EffTypes))
           [structural]
+     rule <k> getEffectiveType(Loc:SymLoc) => t(.Set, no-type) ...</k>
+          <effective-types> EffTypes:Map </effective-types>
+          requires isNativeLoc(Loc) andBool notBool (Loc in keys(EffTypes))
+     rule <k> getEffectiveType(Loc:SymLoc) => T ...</k>
+          <effective-types>... Loc |-> T:Type ...</effective-types>
+          requires isNativeLoc(Loc)
 
      syntax KItem ::= setEffectiveType(SymLoc, Type)
-     rule <k> setEffectiveType(loc(Base:SymBase, _), T':Type) => .K
+     rule <k> setEffectiveType(loc(Base:SymBase, _), _) => .K
           ...</k>
-          <mem>... Base |-> object(T:Type, _, _) ...</mem>
-          requires notBool isNoType(T) orBool hasCharType(T':Type)
+          <mem>... Base |-> object(T:Type, _, _, _) ...</mem>
+          requires notBool isNoType(T)
           [structural]
      rule <k> setEffectiveType(loc(Base:SymBase, Offset:Int), T':Type) => .K
           ...</k>
-          <mem>... Base |-> object(T:Type, _, _) ...</mem>
-          <effective-types> M:Map => M [ loc(Base, Offset) <- T' ] </effective-types>
-          requires isNoType(T) andBool notBool hasCharType(T':Type)
+          <mem>...
+               Base |-> object(_:NoType, _, _, M:Map => M [ Offset <- T' ])
+          ...</mem>
+          requires notBool isCharType(T':Type)
           [structural]
+     rule <k> setEffectiveType(Loc:SymLoc, T:Type) => .K ...</k>
+          <effective-types> M:Map => M [ Loc <- T ] </effective-types>
+          requires notBool isCharType(T:Type) andBool isNativeLoc(Loc)
+     rule <k> setEffectiveType(_, _:CharType) => .K ...</k>
+          [structural]
+
 
      syntax KItem ::= checkEffectiveType(Type, K) [strict(2)]
      rule checkEffectiveType(L:Type, Eff:Type) => .K
@@ -440,73 +465,37 @@ module C-IO-BUFFERED
      // - an aggregate or union type that includes one of the aforementioned
      // types among its members (including, recursively, a member of a
      // subaggregate or contained union), or
-     rule #effectivelyCompat(L:Type, Eff:Type)
+     rule #effectivelyCompat(L:Type, Eff:AggregateType)
           => #effectivelyCompat(L, effInnerType(Eff))
-          requires isAggregateType(Eff)
-               andBool notBool (areCompatible(stripQualifiers(L), stripQualifiers(Eff))
+          requires notBool (areCompatible(stripQualifiers(L), stripQualifiers(Eff))
                     andBool getQualifiers(Eff) <=Set getQualifiers(L))
-               andBool notBool hasCharType(L:Type)
+               andBool notBool isCharType(L:Type)
      // TODO(chathhorn): this is where things get sketchy. Very unclear
      // about the implications of strict aliasing w/r/t unions. As it is, we
      // let it pass if we're compatible with one of the union members of the
      // effective type.
      rule #effectivelyCompat(L:Type,
      // TODO(chathhorn): some obnoxious decomposing/recomposing going on here.
-               t(Mods:Set, unionType(X:CId, Sz:Int, fieldInfo(Decls:List, Types:Map, Offs:Map))))
-          => effectivelyCompatWithUnion(L, values(Types))
+               t(Mods:Set, unionType(X:StructId)))
+          => effectivelyCompatWithUnion(L, getFieldInfo(X))
           requires notBool (areCompatible(stripQualifiers(L),
-                         stripQualifiers(t(Mods, unionType(X, Sz, fieldInfo(Decls, Types, Offs)))))
+                         stripQualifiers(t(Mods, unionType(X))))
                     andBool intersectSet(Mods, typeQualifiers)
                          <=Set getQualifiers(L))
-               andBool notBool hasCharType(L:Type)
+               andBool notBool isCharType(L:Type)
      // - a character type.
-     rule #effectivelyCompat(L:Type, _) => true
-          requires hasCharType(L:Type)
+     rule #effectivelyCompat(_:CharType, _) => true
      rule #effectivelyCompat(_, _) => false [owise]
 
-     syntax Bool ::= effectivelyCompatWithUnion(Type, List) [function]
-     rule effectivelyCompatWithUnion(T:Type, ListItem(T':Type) L:List)
+     syntax Bool ::= effectivelyCompatWithUnion(Type, K) [function]
+     rule effectivelyCompatWithUnion(T:Type, fieldInfo(_, _, Types:Map, _))
+          => #effectivelyCompatWithUnion(T, values(Types))
+     syntax Bool ::= #effectivelyCompatWithUnion(Type, List) [function]
+     rule #effectivelyCompatWithUnion(T:Type, ListItem(T':Type) L:List)
           => #effectivelyCompat(T, T') ==K true
-               orElseBool effectivelyCompatWithUnion(T, L)
-     rule effectivelyCompatWithUnion(_, .List) => false
+               orElseBool #effectivelyCompatWithUnion(T, L)
+     rule #effectivelyCompatWithUnion(_, .List) => false
 
-     // Returns the "biggest" type at that offset -- i.e., for a struct, union,
-     // or array, it'll return the struct/union/array type and not the type of
-     // its first member. Returns no-type when nothing seems to be aligned at
-     // that offset.
-     syntax Type ::= getTypeAtOffset(Type, Int) [function]
-     rule getTypeAtOffset(T:Type, 0) => T
-     // Preserve the qualifiers.
-     rule getTypeAtOffset(T:Type, Offset:Int) => t(getModifiers(T), no-type)
-          requires (Offset =/=Int 0)
-               andBool notBool isAggregateType(T)
-     // Arrays.
-     rule getTypeAtOffset(t(Mods:Set, arrayType(T:Type, _)), Offset:Int)
-          => getTypeAtOffset(addQualifiers(Mods, T),
-               Offset %Int byteSizeofType(T))
-          requires Offset =/=Int 0 // We assume the offset must be in range.
-     // Structs.
-     rule getTypeAtOffset(t(Mods:Set, structType(SCId:CId, SI:Int, fieldInfo(
-               Fields:List (ListItem(typedDeclaration(_, FId:CId))),
-               Types:Map (FId |-> T:Type),
-               Offsets:Map (FId |-> FOffset:Int)
-          ))), Offset:Int)
-          => getTypeAtOffset(t(Mods, structType(SCId, SI, fieldInfo(
-               Fields,
-               Types (FId |-> T),
-               Offsets (FId |-> FOffset)
-          ))), Offset)
-          requires (Offset =/=Int 0)
-               andBool (FOffset >Int Offset)
-     rule getTypeAtOffset(t(Mods:Set, structType(_, _, fieldInfo(
-               _ ListItem(typedDeclaration(_, FId:CId)),
-               _ FId |-> T:Type,
-               _ FId |-> FOffset:Int
-          ))), Offset:Int)
-          => getTypeAtOffset(addQualifiers(Mods, T), Offset -Int FOffset)
-          requires (Offset =/=Int 0)
-               andBool (FOffset <=Int Offset)
-     //TODO(liyili2): why it is nessary here
      syntax Set ::= getQualsAtOffset(Type, Int) [function]
      rule getQualsAtOffset(T:Type, Offset:Int)
           => getQualsAtOffset(getTypeAtOffset(T, Offset))
@@ -514,16 +503,16 @@ module C-IO-BUFFERED
      syntax Set ::= getQualsAtOffset(Type) [function]
      rule getQualsAtOffset(T:Type) => getQualifiers(T)
           requires notBool isAggregateType(T)
-     rule getQualsAtOffset(T:Type)
+     rule getQualsAtOffset(T:AggregateType)
           => getQualifiers(T) getQualsAtOffset(effInnerType(T))
-          requires isAggregateType(T)
      // TODO(chathhorn): absolutely no idea what to do about qualifiers on
      // union members -- do we need to get the effective type of the object?
 
      syntax Type ::= effInnerType(K) [function]
-     rule effInnerType(T:Type) => innerType(T)
-          requires isArrayType(T)
-     rule effInnerType(t(_, structType(_, _, fieldInfo(
-               ListItem(typedDeclaration(T:Type, _)) _, _, _))))
+     rule effInnerType(T:ArrayType) => innerType(T)
+     rule effInnerType(t(_, structType(S:StructId)))
+          => effInnerType(getFieldInfo(S))
+     rule effInnerType(fieldInfo(ListItem(typedDeclaration(T:Type, _)) _, _, _, _))
           => T
+
 endmodule

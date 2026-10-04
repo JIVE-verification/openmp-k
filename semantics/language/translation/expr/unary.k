@@ -1,16 +1,13 @@
 module C-EXPR-UNARY
-     imports C-SYMBOLIC-VALUE-SYNTAX
-     imports C-SYNTAX
+     imports C-COMMON-PROMOTION-SYNTAX
      imports C-DYNAMIC-SYNTAX
-     imports C-PROMOTION-SYNTAX
+     imports C-SYNTAX
      imports C-TYPING-SYNTAX
 
-     rule + tv(symVal, T:Type) => tv(symVal, T)
-          requires isPromoted(T) orBool hasFloatType(T)
-          [structural]
+     rule + te(K:K, T:Type) => te( + K, T)
+          requires isPromoted(T) orBool isFloatType(T)
 
-     rule - tv(symVal, T:Type) => tv(symVal, T)
-          requires isPromoted(T) orBool hasFloatType(T)
-          [structural]
+     rule - te(K:K, T:Type) => te( - K, T)
+          requires isPromoted(T) orBool isFloatType(T)
 
 endmodule

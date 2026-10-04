@@ -1,8 +1,16 @@
-scripts related to depth-wise translation-semantics added
+sources copied from checkpoint https://github.com/kframework/c-semantics/tree/ef2c4835ce250fa331caae4d3f3a4159cef69a6c, and test.c and test_for.c are translated and executed in different lengths
+o Makefile: changed from the checkpoint on this part
+    test-build: fast
+	@echo "Testing kcc..."
+	@perl $(SCRIPTS_DIR)/testInstall.pl $(DIST_DIR)/kcc $(DIST_DIR)/testProgram.c $(DIST_DIR)/testProgram.compiled
+	@echo "Done."
+	@echo "Cleaning up..."
+#	@rm -f $(DIST_DIR)/testProgram.compiled
+#	@rm -f $(DIST_DIR)/testProgram.c
+	@echo "Done."
+o scripts/kcc: this file is from https://github.com/cd-dpk/openmp-k-java-backend/commit/5536f9edd4b27f8628591542b763b270f803efaf
+o scripts/program-runner: this file is from https://github.com/cd-dpk/openmp-k-java-backend/commit/5536f9edd4b27f8628591542b763b270f803efaf
+o semantics/language/translation/init.k: changed from the checkout to support two objects merging instead of four objects
+o semantics/language/translation/configuration.k: changed from the checkout to support two objects merging instead of four objects
 
-+ run_translation: a bash script to run `translate-program` from inside `dist` so that
-                    files related to `dist/kcc` can be accessed 
-+ run_translation_depths: this file enables generate translation-semantics in different 
-                    depths in an interval 
-+ translate-program: this program is same as `dist/kcc` but it is modified to generate 
-                    the configuration of translation-semantics in different depth
+NOTE: https://github.com/kframework/c-semantics/tree/af5e4f28562e65beed4e10531ccd07317f778282: Changes toward simplifying the execution semantics.

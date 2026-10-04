@@ -10,7 +10,6 @@ module C-LTLMC-SYNTAX
                         | #ptr(SymLoc, Type)
                         | #struct(List, FieldInfo)
                         | #union(List, FieldInfo)
-
      syntax CProp ::= ValueProp | CId
                     | "-" CProp
                     | "+" CProp
@@ -33,14 +32,14 @@ module C-LTLMC-SYNTAX
 endmodule
 
 module C-LTLMC
+     imports C-BITSIZE-SYNTAX
+     imports C-BITS-SYNTAX
+     imports C-DYNAMIC-SYNTAX
+     imports C-ENV-SYNTAX
      imports C-LTLMC-SYNTAX
      imports C-SYNTAX
-     imports C-DYNAMIC-SYNTAX
+     imports C-TYPING-COMPATIBILITY-SYNTAX
      imports C-TYPING-SYNTAX
-     imports C-BITS-SYNTAX
-     imports C-ENV-SYNTAX
-     imports C-BITSIZE-SYNTAX
-     imports C-DECL-INITIALIZER-SYNTAX
 
      imports C-MEMORY-ALLOC-SYNTAX
      imports C-MEMORY-READING-SYNTAX
@@ -92,17 +91,14 @@ module C-LTLMC
      rule ltlRVal(B:Bag, + P:CProp)
           => ltlRVal(B, P)
 
-     /*TODO(liyili2): cannot handle this, maybe this is not needed
      rule ltlRVal(B:Bag, L:CProp[R:CProp])
           => ltlRVal(B, * (L + R))
-     */
 
      // I don't really think & is necessary.
      // rule ltlRVal(B:Bag, & P:CProp)
      //      => ltlLVal(B, P)
 
      // "strictness"
-     /*TODO(liyili2): cannot handle this cases
      rule ltlRVal(B:Bag, L:KLabel(P:CProp))
           => ltlRVal(B, L(ltlRVal(B, P)))
           requires notBool (isValueProp(P:CProp) ==K true)
@@ -115,18 +111,15 @@ module C-LTLMC
                // Don't try resolving the field specifier.
                andBool (Lbl =/=KLabel '_._)
                andBool (Lbl =/=KLabel '_->_)
-     */
      rule ltlRVal(B:Bag, * #ptr(L:SymLoc, T:Type))
           => ltlRVal(B, dumbRead(B, L, T))
 
-     /*TODO(liyili2): cannot handle this
      rule ltlRVal(B:Bag, P:CProp -> X:CId)
           => ltlRVal(B, (* P) . X)
-     */
 
      rule ltlRVal(_,
           #struct(V:List,
-               fieldInfo(_, (_ X |-> T:Type), (_ X |-> Offset:Int))
+               fieldInfo(_, _, (_ X |-> T:Type), (_ X |-> Offset:Int))
           ) . X:CId)
           => joinBytes(T,
                fillToBytes-aux(
@@ -137,7 +130,7 @@ module C-LTLMC
                     .List))
      rule ltlRVal(_,
           #union(V:List,
-               fieldInfo(_, (_ X |-> T:Type), (_ X |-> Offset:Int))
+               fieldInfo(_, _, (_ X |-> T:Type), (_ X |-> Offset:Int))
           ) . X:CId)
           => joinBytes(T,
                fillToBytes-aux(
@@ -159,12 +152,12 @@ module C-LTLMC
      rule ltlRVal(_, L:Int == R:Int) => intify(L ==Int R)
      rule ltlRVal(_, L:Int != R:Int) => intify(L ==Int R)
 
+     rule ltlRVal(B:Bag, X:CId) => ltlRVal(B, * ltlLVal(B, X))
+
      syntax ValueProp ::= dumbRead(Bag, SymLoc, Type) [function]
      syntax ValueProp ::= "dumbRead'" "(" Map "," SymLoc "," Type "," Int "," List ")"
           [function]
-     /*TODO(liyili2): cannot handle this cases
-     rule ltlRVal(B:Bag, X:CId) => ltlRVal(B, * ltlLVal(B, X))
-     */
+
      rule dumbRead(
                <generatedTop>... <T>...
                     <mem> Mem:Map </mem>
@@ -173,13 +166,13 @@ module C-LTLMC
           => dumbRead'(Mem, stripProv(Loc), T, byteSizeofType(T), .List)
 
      rule dumbRead'(
-               (BaseMap:Map (Base |-> object(OT:Type, OI:Int, (OffMap:Map (Offset |-> V:K))))),
+               (BaseMap:Map (Base |-> object(OT:Type, OI:Int, (OffMap:Map (Offset |-> V:K)), TypeMap:Map))),
                loc(Base:SymBase, (Offset:Int)),
                TT:Type,
                (NBytes:Int),
                VL:List)
           => dumbRead'(
-               (BaseMap (Base |-> object(OT, OI, (OffMap (Offset |-> V))))),
+               (BaseMap (Base |-> object(OT, OI, (OffMap (Offset |-> V)), TypeMap))),
                loc(Base, (Offset +Int 1)),
                TT,
                (NBytes -Int 1),
@@ -202,13 +195,12 @@ module C-LTLMC
      rule joinBytes(t(_, pointerType(T:Type)),
                dataList(ListItem(piece(subObject(L:SymLoc, _, _), _)) _:List))
           => #ptr(L, T)
-     rule joinBytes(t(_, structType(_, _, Info:FieldInfo)), dataList(V:List))
-          => #struct(V, Info)
-     rule joinBytes(t(_, unionType(_, _, Info:FieldInfo)), dataList(V:List))
-          => #union(V, Info)
-     rule joinBytes(T:Type, dataList(V:List))
+     rule joinBytes(t(_, structType(S:StructId)), dataList(V:List))
+          => #struct(V, getFieldInfo(S))
+     rule joinBytes(t(_, unionType(S:StructId)), dataList(V:List))
+          => #union(V, getFieldInfo(S))
+     rule joinBytes(T:IntegerType, dataList(V:List))
           => joinBytes'(T, V, .List)
-          requires hasIntegerType(T:Type)
 
      rule joinBytes'(T:Type,
                L:List ListItem(piece(N:Int, Len:Int)),
@@ -233,5 +225,5 @@ module C-LTLMC
                ...</gtypes>
           ...</T> ...</generatedTop>,
           S:String)
-          => #ptr(lnew(Base), T)
+          => #ptr(lnew(Base, getAlignas(T)), T)
 endmodule

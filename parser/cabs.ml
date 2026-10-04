@@ -38,7 +38,7 @@
 (** This file was originally part of Hugues Casee's frontc 2.0, and has been 
  * extensively changed since. 
 **
-** 1.0	3.22.99	Hugues Cass�	First version.
+** 1.0	3.22.99	Hugues Cassé	First version.
 ** 2.0  George Necula 12/12/00: Many extensions
  **)
 
@@ -181,6 +181,8 @@ and definition =
  | ONLYTYPEDEF of specifier * cabsloc
  | GLOBASM of string * cabsloc
  | PRAGMA of expression * cabsloc
+ | PRAGMA_KCC_INV of string * cabsloc
+ | PRAGMA_KCC_RULE of string * cabsloc
  | LINKAGE of string * cabsloc * definition list (* extern "C" { ... } *)
  (* toplevel form transformer, from the first definition to the *)
  (* second group of definitions *)
@@ -225,8 +227,6 @@ and statement =
  | WHILE of expression * statement * cabsloc
  | DOWHILE of expression * statement * cabsloc
  | FOR of for_clause * expression * expression * statement * cabsloc
- | OMPPARALLELFOR of for_clause * expression * expression * statement * cabsloc
- | OMPPARALLEL of statement * cabsloc 
  | BREAK of cabsloc
  | CONTINUE of cabsloc
  | RETURN of expression * cabsloc
@@ -344,4 +344,3 @@ and initwhat =
                                         (* Each attribute has a name and some
                                          * optional arguments *)
 and attribute = spec_elem
-

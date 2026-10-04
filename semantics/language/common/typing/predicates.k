@@ -50,161 +50,96 @@ module C-TYPING-PREDICATES
           => #typesEq(T, T')
           requires sameQualifiers(Mods, Mods')
      rule #typesEq(
-               t(Mods:Set, structType(X:CId, _, _)),
-               t(Mods':Set, structType(X:CId, _, _)))
+               t(Mods:Set, structType(X:StructId)),
+               t(Mods':Set, structType(X':StructId)))
           => true
           requires sameQualifiers(Mods, Mods')
+          andBool getTag(X) ==K getTag(X')
      rule #typesEq(
-               t(Mods:Set, structType(X:CId, _, _)),
-               t(Mods':Set, incompleteStructType(X:CId)))
+               t(Mods:Set, unionType(X:StructId)),
+               t(Mods':Set, unionType(X':StructId)))
           => true
           requires sameQualifiers(Mods, Mods')
-     rule #typesEq(
-               t(Mods:Set, incompleteStructType(X:CId)),
-               t(Mods':Set, structType(X:CId, _, _)))
-          => true
-          requires sameQualifiers(Mods, Mods')
-     rule #typesEq(
-               t(Mods:Set, unionType(X:CId, _, _)),
-               t(Mods':Set, unionType(X:CId, _, _)))
-          => true
-          requires sameQualifiers(Mods, Mods')
-     rule #typesEq(
-               t(Mods:Set, unionType(X:CId, _, _)),
-               t(Mods':Set, incompleteUnionType(X:CId)))
-          => true
-          requires sameQualifiers(Mods, Mods')
-     rule #typesEq(
-               t(Mods:Set, incompleteUnionType(X:CId)),
-               t(Mods':Set, unionType(X:CId, _, _)))
-          => true
-          requires sameQualifiers(Mods, Mods')
+          andBool getTag(X) ==K getTag(X')
      rule #typesEq(_, _) => false [owise]
 
-     rule isBasicType(t(_, T:SimpleType)) => true
-          requires T in basicTypes
-     rule isBasicType(t(_, enumType(_))) => true
-     rule isBasicType(_) => false [owise]
-
-     syntax Set ::= "basicTypes" [function]
-     rule basicTypes =>
-          unsignedIntegerTypes
-          signedIntegerTypes
-          floatTypes
-          SetItem(void)
-          SetItem(no-type)
-
-     syntax Set ::= "floatTypes" [function]
-     rule floatTypes =>
-          SetItem(float)
-          SetItem(double)
-          SetItem(long-double)
-
-     syntax Set ::= "unsignedIntegerTypes" [function]
-     rule unsignedIntegerTypes =>
-          SetItem(bool)
-          SetItem(unsigned-char)
-          SetItem(unsigned-short-int)
-          SetItem(unsigned-int)
-          SetItem(unsigned-long-int)
-          SetItem(unsigned-long-long-int)
-
-     syntax Set ::= "signedIntegerTypes" [function]
-     rule signedIntegerTypes =>
-          SetItem(char)
-          SetItem(signed-char)
-          SetItem(short-int)
-          SetItem(int)
-          SetItem(long-int)
-          SetItem(long-long-int)
-
-     syntax Set ::= "charTypes" [function]
-     rule charTypes =>
-          SetItem(char)
-          SetItem(signed-char)
-          SetItem(unsigned-char)
-
      rule hasSameSignedness(T:Type, T':Type)
-          => (hasSignedIntegerType(T) andBool hasSignedIntegerType(T'))
+          => (isSignedIntegerType(T) andBool isSignedIntegerType(T'))
                orBool
-               (hasUnsignedIntegerType(T) andBool hasUnsignedIntegerType(T'))
+               (isUnsignedIntegerType(T) andBool isUnsignedIntegerType(T'))
 
-     rule hasIntegerType(T:Type)
-          => hasUnsignedIntegerType(T) orBool hasSignedIntegerType(T)
+     rule isUnsignedIntegerType(t(_, _:SimpleUnsignedType)) => true
+     rule isUnsignedIntegerType(typedDeclaration(_:UnsignedIntegerType, _)) => true
+     rule isUnsignedIntegerType(_) => false [owise]
 
-     rule hasUnsignedIntegerType(t(_, bitfieldType(T:Type, _)))
-          => hasUnsignedIntegerType(T)
-     rule hasUnsignedIntegerType(t(_, T:SimpleType)) => true
-          requires T in unsignedIntegerTypes
-     rule hasUnsignedIntegerType(typedDeclaration(T:Type, _))
-          => hasUnsignedIntegerType(T)
-     rule hasUnsignedIntegerType(_) => false [owise]
+     rule isSignedIntegerType(t(_, _:SimpleSignedType)) => true
+     rule isSignedIntegerType(t(_, enumType(_))) => true
+     rule isSignedIntegerType(typedDeclaration(_:SignedIntegerType, _)) => true
+     rule isSignedIntegerType(_) => false [owise]
 
-     rule hasSignedIntegerType(t(_, T:SimpleType)) => true
-          requires T in signedIntegerTypes
-     rule hasSignedIntegerType(t(_, enumType(_))) => true
-     rule hasSignedIntegerType(t(_, bitfieldType(T:Type, _)))
-          => hasSignedIntegerType(T)
-     rule hasSignedIntegerType(typedDeclaration(T:Type, _))
-          => hasSignedIntegerType(T)
-     rule hasSignedIntegerType(_) => false [owise]
+     rule isFloatType(t(_, _:SimpleFloatType)) => true
+     rule isFloatType(typedDeclaration(_:FloatType, _)) => true
+     rule isFloatType(_) => false [owise]
 
-     rule hasFloatType(t(_, T:SimpleType)) => true
-          requires T in floatTypes
-     rule hasFloatType(typedDeclaration(T:Type, _)) => hasFloatType(T)
-     rule hasFloatType(_) => false [owise]
-
-     rule hasCharType(t(_, T:SimpleType)) => true
-          requires T in charTypes
-     rule hasCharType(typedDeclaration(T:Type, _)) => hasCharType(T)
-     rule hasCharType(_) => false [owise]
+     rule isCharType(t(_, _:SimpleCharType)) => true
+     rule isCharType(typedDeclaration(_:CharType, _)) => true
+     rule isCharType(_) => false [owise]
 
      rule isUCharType(t(_, unsigned-char)) => true
-     rule isUCharType(typedDeclaration(T:Type, _)) => isUCharType(T)
+     rule isUCharType(typedDeclaration(_:UCharType, _)) => true
+     rule isUCharType(_) => false [owise]
 
+     rule isSCharType(t(_, signed-char)) => true
+     rule isSCharType(typedDeclaration(_:SCharType, _)) => true
+     rule isSCharType(_) => false [owise]
+ 
      rule isWCharType(t(_, T:SimpleType)) => true
-          requires T ==K simpleType(cfg:wcharut)
+          requires T ==K cfg:wcharut
      rule isWCharType(_) => false [owise]
 
      rule isPointerType(t(_, pointerType(_))) => true
-     rule isPointerType(typedDeclaration(T:Type, _)) => isPointerType(T)
+     rule isPointerType(typedDeclaration(_:PointerType, _)) => true
      rule isPointerType(_) => false [owise]
 
      rule isBoolType(t(_, bool)) => true
-     rule isBoolType(typedDeclaration(T:Type, _)) => isBoolType(T)
+     rule isBoolType(typedDeclaration(_:BoolType, _)) => true
      rule isBoolType(_) => false [owise]
 
-     rule isArrayType(t(_, arrayType(_, _))) => true
-     rule isArrayType(t(_, incompleteArrayType(_))) => true
-     rule isArrayType(t(_, flexibleArrayType(_))) => true
-     rule isArrayType(t(_, variableLengthArrayType(_, _))) => true
-     rule isArrayType(typedDeclaration(T:Type, _)) => isArrayType(T)
-     rule isArrayType(_) => false [owise]
+     rule isFixedLengthArrayType(t(_, arrayType(_, _))) => true
+     rule isFixedLengthArrayType(typedDeclaration(_:FixedLengthArrayType, _)) => true
+     rule isFixedLengthArrayType(_) => false [owise]
 
      rule isFlexibleArrayType(t(_, flexibleArrayType(_))) => true
      rule isFlexibleArrayType(typedDeclaration(T:Type, _))
           => isFlexibleArrayType(T)
      rule isFlexibleArrayType(_) => false [owise]
 
+     rule isVariableLengthArrayType(t(_, variableLengthArrayType(_, _))) => true
+     rule isVariableLengthArrayType(typedDeclaration(_:VariableLengthArrayType, _)) => true
+     rule isVariableLengthArrayType(_) => false [owise]
+
+     rule isVariablyModifiedType(t(_, arrayType(T:Type, _)))
+          => isVariablyModifiedType(T)
+     rule isVariablyModifiedType(t(_, pointerType(T:Type)))
+          => isVariablyModifiedType(T)
+     rule isVariablyModifiedType(typedDeclaration(T:Type, _))
+          => isVariablyModifiedType(T)
+     rule isVariablyModifiedType(_:VariableLengthArrayType) => true
+     rule isVariablyModifiedType(_) => false [owise]
+
      rule isVoidType(t(_, void)) => true
-     rule isVoidType(typedDeclaration(T:Type, _)) => isVoidType(T)
+     rule isVoidType(typedDeclaration(_:VoidType, _)) => true
      rule isVoidType(_) => false [owise]
 
      rule isNoType(t(_, no-type)) => true
-     rule isNoType(typedDeclaration(T:Type, _)) => isNoType(T)
-     rule isNoType(_) => false [owise]
+     rule isNoType(typedDeclaration(_:NoType, _)) => true
 
-     rule isAggregateType(T:Type)
-          => isArrayType(T) orBool isStructType(T)
-
-     rule isStructType(t(_, structType(_, _, _))) => true
-     rule isStructType(t(_, incompleteStructType(_))) => true
-     rule isStructType(typedDeclaration(T:Type, _)) => isStructType(T)
+     rule isStructType(t(_, structType(_))) => true
+     rule isStructType(typedDeclaration(_:StructType, _)) => true
      rule isStructType(_) => false [owise]
 
-     rule isUnionType(t(_, unionType(_, _, _))) => true
-     rule isUnionType(t(_, incompleteUnionType(_))) => true
-     rule isUnionType(typedDeclaration(T:Type, _)) => isUnionType(T)
+     rule isUnionType(t(_, unionType(_))) => true
+     rule isUnionType(typedDeclaration(_:UnionType, _)) => true
      rule isUnionType(_) => false [owise]
 
      rule isCompleteType(T:Type)
@@ -212,6 +147,8 @@ module C-TYPING-PREDICATES
                orBool isIncompleteStructType(T)
                orBool isIncompleteUnionType(T)
                orBool isVoidType(T))
+     rule isCompletePointerType(t(_, pointerType(T:Type))) => isCompleteType(T)
+     rule isCompletePointerType(_) => false [owise]
 
      rule isIncompleteArrayType(t(_, incompleteArrayType(_))) => true
      rule isIncompleteArrayType(t(_, flexibleArrayType(_))) => true
@@ -219,22 +156,26 @@ module C-TYPING-PREDICATES
           => isIncompleteArrayType(T)
      rule isIncompleteArrayType(_) => false [owise]
 
-     rule isIncompleteStructType(t(_, incompleteStructType(_))) => true
+     rule isIncompleteStructType(t(_, structType(S:StructId))) => getFieldInfo(S) ==K #incomplete
      rule isIncompleteStructType(typedDeclaration(T:Type, _))
           => isIncompleteStructType(T)
      rule isIncompleteStructType(_) => false [owise]
 
-     rule isIncompleteUnionType(t(_, incompleteUnionType(_))) => true
+     rule isIncompleteUnionType(t(_, unionType(S:StructId))) => getFieldInfo(S) ==K #incomplete
      rule isIncompleteUnionType(typedDeclaration(T:Type, _))
           => isIncompleteUnionType(T)
      rule isIncompleteUnionType(_) => false [owise]
 
-     rule isBitfieldType(t(_, bitfieldType(_, _))) => true
-     rule isBitfieldType(typedDeclaration(T:Type, _)) => isBitfieldType(T)
-     rule isBitfieldType(_) => false [owise]
+     rule isSignedBitfieldType(t(_, bitfieldType(_:SignedIntegerType, _))) => true
+     rule isSignedBitfieldType(typedDeclaration(_:SignedBitfieldType, _)) => true
+     rule isSignedBitfieldType(_) => false [owise]
+
+     rule isUnsignedBitfieldType(t(_, bitfieldType(_:UnsignedIntegerType, _))) => true
+     rule isUnsignedBitfieldType(typedDeclaration(_:UnsignedBitfieldType, _)) => true
+     rule isUnsignedBitfieldType(_) => false [owise]
 
      rule isFunctionType(t(_, functionType(_, _))) => true
-     rule isFunctionType(typedDeclaration(T:Type, _)) => isFunctionType(T)
+     rule isFunctionType(typedDeclaration(_:FunctionType, _)) => true
      rule isFunctionType(_) => false [owise]
 
      rule isOldStyleFunctionType(T:Type)
@@ -253,10 +194,7 @@ module C-TYPING-PREDICATES
      // Integer and floating types are collectively called arithmetic types.
      // Each arithmetic type belongs to one type domain: the real type domain
      // comprises the real types, the complex type domain comprises the complex
-     // types.
-     // */
-     rule hasArithmeticType(T:Type)
-          => hasIntegerType(T) orBool hasFloatType(T)
+     // types. */
 
      rule isExternType(T:Type) => (Extern in getStorageSpecifiers(T))
      rule isStaticType(T:Type) => (Static in getStorageSpecifiers(T))
@@ -268,18 +206,33 @@ module C-TYPING-PREDICATES
      rule isRestrictType(t(SetItem(Restrict) _, _)) => true
      rule isRestrictType(_) => false [owise]
 
-     rule isNullPointerConstant(tv(0, T:Type)) => true
-          requires hasIntegerType(T)
-               andBool fromConstantExpr(T)
-     rule isNullPointerConstant(tv(NullPointer, T:Type)) => true
-          requires isPointerType(T)
-               andBool (simpleType(innerType(T)) ==K void)
+     rule isNullPointerConstant(tv(0, T:IntegerType)) => true
+          requires fromConstantExpr(T)
+     rule isNullPointerConstant(tv(NullPointer, T:PointerType)) => true
+          requires (simpleType(innerType(T)) ==K void)
                andBool fromConstantExpr(T)
      rule isNullPointerConstant(_) => false [owise]
 
      // TODO(chathhorn): arithmetic and address constants
-     rule fromConstantExpr(T:Type) => true
-          requires (hasIntegerType(T) andBool IntegerConstant in getModifiers(T))
+     rule fromConstantExpr(T:IntegerType) => true
+          requires IntegerConstant in getModifiers(T)
      rule fromConstantExpr(_) => false [owise]
 
+     rule hasAlignas(t(Mods:Set, _)) => hasAlignasMod(Mods)
+
+     rule hasAlignasMod(Mods:Set) => some(Mods, 'isAlignas)
+
+     syntax Bool ::= isAlignas(Modifier) [function]
+     rule isAlignas(alignas(_)) => true
+     rule isAlignas(.K) => false
+     rule isAlignas(_) => false [owise]
+
+     rule hasReadFrom(t(Mods:Set, _)) => some(Mods, 'isReadFrom)
+
+     syntax Bool ::= isReadFrom(K) [function]
+     rule isReadFrom(readFrom(_, _)) => true
+     rule isReadFrom(_) => false [owise]
+
+     rule isTruthValue(tv(V:K, t(_, T:SimpleType)))
+          => T ==K int andBool (V ==K 0 orBool V ==K 1)
 endmodule

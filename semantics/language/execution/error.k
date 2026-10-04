@@ -7,7 +7,6 @@ module C-EXECUTION-ERROR
      imports C-SYMLOC-SYNTAX
      imports C-DYNAMIC-SYNTAX
      imports C-TYPING-SYNTAX
-     imports C-PROMOTION-SYNTAX
      imports C-BITS-SYNTAX
      imports C-BITSIZE-SYNTAX
 
@@ -25,28 +24,39 @@ module C-EXECUTION-ERROR
      imports DEBUG-SYNTAX
 
      rule (<k> EXIT(Msg:String) ~> K:K </k>
-          => <final-computation> K </final-computation>)
-          (.Bag => <error-cell> Msg </error-cell>)
+          => <final-computation> #write(2, Msg +String printStackTrace(L, Loc, Func) +String "\n") ~> K </final-computation>)
+          <call-stack> L:List </call-stack>
+          <curr-program-loc> Loc:K </curr-program-loc>
+          <curr-function> Func:K </curr-function>
+
+     syntax String ::= printStackTrace(List, K, K) [function]
+
+     rule printStackTrace(L:List, Loc:K, file-scope) => "\n  at <file-scope>(" +String printStackTrace(L, Loc, .K)
+     rule printStackTrace(L:List, Loc:K, Identifier(S:String)) => "\n  at " +String S +String "(" +String printStackTrace(L, Loc, .K)
+     rule printStackTrace(L:List, CabsLoc(File:String, Line:Int, _, _), .K) => File +String ":" +String Int2String(Line) +String ")" +String printStackTrace(L, .K, .K)
+     rule printStackTrace(L:List, UnknownCabsLoc, .K) => "<unknown>)" +String printStackTrace(L, .K, .K)
+     rule printStackTrace(ListItem(bag2K(<call-stack-frame>... <stack-curr-program-loc> Loc:K </stack-curr-program-loc> <stack-curr-function> Func:K </stack-curr-function> ...</call-stack-frame>)) L:List, .K, .K) => printStackTrace(L, Loc, Func)
+     rule printStackTrace(.List, .K, .K) => ""
 
      rule cast(t(N:Set, T:SimpleType), emptyValue)
           => castHold(t(N, T:SimpleType), emptyValue)
           requires T =/=K void
 
      rule [err00037]:
-          (.K => ERROR("00037", "Trying to read through a null pointer.") ) ~>
+          (.K => UNDEF("CEER1", "Trying to read through a null pointer.", "6.3.2.1:1") ) ~>
           read(NullPointer, _)
           [structural]
      rule [err00046]:
-          (.K => ERROR("00046", "Trying to reinterpret integer bytes as floating bytes.", 37) ) ~>
-          concretize(T:Type, dataList(ListItem(piece(N:Int, _)) _))
-          requires hasFloatType(T) andBool (N >Int 0)
+          (.K => ERROR("CEER2", "Trying to reinterpret integer bytes as floating bytes.", 37) ) ~>
+          concretize(_:FloatType, dataList(ListItem(piece(N:Int, _)) _))
+          requires (N >Int 0)
           [structural]
 
-     rule (.K => ERROR("00500",
+     rule (.K => UNDEF("CEER3",
                "printf: Format string expects type of size " +String
                Int2String(value(A)) +String ", but got an argument of size "
-               +String Int2String(value(B)) +String ".", 409) ) ~>
-          nextvarg-aux(_, _, A:TypedValue, B:TypedValue)
+               +String Int2String(value(B)) +String ".", "7.21.6.1:9") ) ~>
+          nextvarg-aux(_, _, A:RValue, B:RValue)
           requires value(A) =/=Int value(B)
           [structural]
 

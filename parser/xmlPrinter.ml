@@ -146,6 +146,10 @@ and printDef def =
 			printDefinitionLoc (wrap ((printRawString a) :: []) "GlobAsm") b
 		| PRAGMA (a, b) ->
 			printDefinitionLoc (wrap ((printExpression a) :: []) "Pragma") b
+		| PRAGMA_KCC_INV (a, b) ->
+			printDefinitionLoc (wrap ((printRawString a) :: []) "PragmaKccInv") b
+		| PRAGMA_KCC_RULE (a, b) ->
+			printDefinitionLoc (wrap ((printRawString a) :: []) "PragmaKccRule") b
 		| LINKAGE (a, b, c) ->
 			printDefinitionLoc (wrap ((printRawString a) :: (printDefs c) :: []) "Linkage") b
 		| TRANSFORMER (a, b, c) ->
@@ -575,13 +579,6 @@ and printForClause fc =
 	match fc with
 	| FC_EXP exp1 -> wrap ((printExpression exp1) :: []) "ForClauseExpression"
 	| FC_DECL dec1 -> wrap ((printDef dec1) :: []) "ForClauseDeclaration"
-and printOmpParallelForClause fc = 
-	match fc with
-	| FC_EXP exp1 -> wrap ((printExpression exp1) :: []) "ForClauseExpression"
-	| FC_DECL dec1 -> wrap ((printDef dec1) :: []) "ForClauseDeclaration"
-and printOmpParallelFor fc1 exp2 exp3 stat =
-	let newOmpForIdCell = printCell "ForId" [] (printRawInt ((counter := (!counter + 1)); !counter)) in
-	wrap (newOmpForIdCell :: (printOmpParallelForClause fc1) :: (printExpression exp2) :: (printExpression exp3) :: (newBlockStatement stat) :: []) "OmpParallelFor"
 and printBreak =
 	printCell "Break" [] ""
 and printContinue =
@@ -615,8 +612,6 @@ and printCompGoto exp =
 	wrap ((printExpression exp) :: []) "CompGoto"
 and printBlockStatement block =
 	wrap ((printBlock block) :: []) "BlockStatement"
-and printOmpParallel stat =
-	wrap ((newBlockStatement stat) :: []) "OmpParallel"
 and printStatement a =
 	match a with
 	| NOP (loc) -> printStatementLoc (printNop) loc
@@ -627,8 +622,6 @@ and printStatement a =
 	| WHILE (exp, stat, loc) -> printStatementLoc (printWhile exp stat) loc
 	| DOWHILE (exp, stat, loc) -> printStatementLoc (printDoWhile exp stat) loc
 	| FOR (fc1, exp2, exp3, stat, loc) -> printStatementLoc (printFor fc1 exp2 exp3 stat) loc
-    | OMPPARALLELFOR (fc1, exp2, exp3, stat, loc)  -> printStatementLoc (printOmpParallelFor fc1 exp2 exp3 stat) loc
-    | OMPPARALLEL (stat, loc)  -> printStatementLoc (printOmpParallel stat) loc	
 	| BREAK (loc) -> printStatementLoc (printBreak) loc
 	| CONTINUE (loc) -> printStatementLoc (printContinue) loc
 	| RETURN (exp, loc) -> printStatementLoc (printReturn exp) loc

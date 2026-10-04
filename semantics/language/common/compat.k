@@ -1,9 +1,10 @@
 module COMPAT-SYNTAX
      imports C-SYNTAX // Would like to get rid of this.
+     imports KCELLS
+     imports MAP
 
      //TODO(liyi): must not need the second one
      syntax KItem ::= l(KLabel) [avoid]
-     syntax KItem ::= klist(KList) [function]
 
      syntax String ::= firstChar(String) [function]
      syntax String ::= nthChar(String, Int) [function]
@@ -51,9 +52,13 @@ module COMPAT-SYNTAX
 
      syntax Set ::= filterSet(Set, KLabel) [function]
 
+     syntax Bool ::= some(Set, KLabel) [function]
+
      //TODO(liyi): might not need this later
      syntax KItem ::= "dotK"
                     | lookup(Map, K) [function]
+
+     syntax Bool ::= isKItem(K) [function]
 endmodule
 
 module COMPAT
@@ -189,13 +194,6 @@ module COMPAT
      rule times(N:Int, K:K) => ListItem(K) times(N -Int 1, K)
           requires N >Int 0
 
-     syntax List ::= klistToList(KList) [function]
-
-     rule klistToList((K:K,, L:KList)) => ListItem(K) klistToList(L)
-     rule klistToList(.KList) => .List
-
-     rule 'klist(L:KList) => 'list(klistToList(L))
-
      syntax Set ::= #filterSet(K, Set, KLabel) [function]
 
      rule #filterSet(K:K, .Set, Pred:KLabel)
@@ -216,6 +214,17 @@ module COMPAT
      rule filterSet(.Set, _)
           => .Set
 
+     rule some(S:Set, Lbl:KLabel) => some'(.K, S, Lbl)
+
+     syntax Bool ::= "some'" "(" K "," Set "," KLabel ")" [function]
+     rule some'(.K, SetItem(K:K) S:Set, Lbl:KLabel) => some'(K, S, Lbl)
+     rule some'(K:K, _, Lbl:KLabel) => true
+          requires Lbl(K) ==K true
+     rule some'(K:K, S:Set, Lbl:KLabel) => some'(.K, S, Lbl)
+          requires Lbl(K) =/=K true
+               andBool (K =/=K .K)
+     rule some'(.K, .Set, _) => false
+
      // TODO(liyi): might be able to remove later
      rule isAllKResultInHeatList(.HeatList) => true
      rule isAllKResultInHeatList(hItem(_) hs:: _) => false
@@ -226,4 +235,6 @@ module COMPAT
      rule dotK => .K [structural]
      rule lookup(Key |-> Val:K _:Map, Key:K) => Val
 
+     rule isKItem(_:KItem) => true
+     rule isKItem(_) => false [owise]
 endmodule

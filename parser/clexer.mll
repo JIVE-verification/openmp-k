@@ -37,7 +37,7 @@
  *)
 (* FrontC -- lexical analyzer
 **
-** 1.0	3.22.99	Hugues Cass�	First version.
+** 1.0	3.22.99	Hugues Cassé	First version.
 ** 2.0  George Necula 12/12/00: Many extensions
 *)
 {
@@ -163,6 +163,9 @@ let init_lexicon _ =
       ("__func__", fun loc -> FUNCTION__ loc); (* ISO 6.4.2.2 *)
 
       ("__kcc_offsetof", fun loc -> OFFSETOF loc);
+
+      (* GCC Extensions *)
+      ("__kcc_typeof", fun loc -> TYPEOF loc);
 
       (* Not in C11. *)
       ("__attribute__", fun loc -> ATTRIBUTE loc);
@@ -454,9 +457,6 @@ rule initial =
 |		octnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		intnum			{CST_INT (Lexing.lexeme lexbuf, currentLoc ())}
 |		"!quit!"		{EOF}
-|   "#pragma"   {OMPPRAGMA (currentLoc ())}
-|   "omp"       {OMP (currentLoc ())}
-|   "parallel"  {PARALLEL (currentLoc ())}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}
@@ -588,8 +588,10 @@ and hash = parse
                 { let here = currentLoc () in
                   PRAGMA_LINE (pragmaName ^ pragma lexbuf, here)
                 }
-| "pragma"      { pragmaLine := true; PRAGMA (currentLoc ()) }
-| _	        { addWhite lexbuf; endline lexbuf}
+| "pragma" blank "KCC" blank "inv"  { PRAGMA_KCC_INV (pragma lexbuf, currentLoc ()) }
+| "pragma" blank "KCC" blank "rule" { PRAGMA_KCC_RULE (pragma lexbuf, currentLoc ()) }
+| "pragma"                          { pragmaLine := true; PRAGMA (currentLoc ()) }
+| _                                 { addWhite lexbuf; endline lexbuf}
 
 and file =  parse 
         '\n'		        {addWhite lexbuf; E.newline (); initial lexbuf}

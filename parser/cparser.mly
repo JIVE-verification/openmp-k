@@ -36,7 +36,7 @@
  *
  **)
 (**
-** 1.0	3.22.99	Hugues Cass�	First version.
+** 1.0	3.22.99	Hugues Cassé	First version.
 ** 2.0  George Necula 12/12/00: Practically complete rewrite.
 *)
 */
@@ -303,7 +303,6 @@ let transformOffsetOf (speclist, dtype) member =
 %token<Cabs.cabsloc> BREAK CONTINUE GOTO RETURN
 %token<Cabs.cabsloc> SWITCH CASE DEFAULT
 %token<Cabs.cabsloc> WHILE DO FOR
-%token<Cabs.cabsloc> OMPPRAGMA OMP PARALLEL
 %token<Cabs.cabsloc> IF TRY EXCEPT FINALLY
 %token ELSE 
 
@@ -316,6 +315,7 @@ let transformOffsetOf (speclist, dtype) member =
 %token<Cabs.cabsloc> DECLSPEC
 %token<string * Cabs.cabsloc> MSASM MSATTR
 %token<string * Cabs.cabsloc> PRAGMA_LINE
+%token<string * Cabs.cabsloc> PRAGMA_KCC_INV PRAGMA_KCC_RULE
 %token<Cabs.cabsloc> PRAGMA
 %token PRAGMA_EOL
 
@@ -894,11 +894,6 @@ statement:
 |   FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
 	                         {FOR ($3, $4, $6, $8, (*handleLoc*) $1)}
-|   OMPPRAGMA OMP PARALLEL FOR FOR LPAREN for_clause opt_expression
-	        SEMICOLON opt_expression RPAREN statement
-	                         {OMPPARALLELFOR ($7, $8, $10, $12, (*handleLoc*) $5)}
-|   OMPPRAGMA OMP PARALLEL statement
-	                         {OMPPARALLEL ($4, (*handleLoc*) $3)} 
 |   IDENT COLON attribute_nocv_list statement
 		                 {(* The only attribute that should appear here
                                      is "unused". For now, we drop this on the
@@ -1312,8 +1307,8 @@ cvspec:
 
 /*** GCC attributes ***/
 attributes:
-    /* empty */				{ []}
-|   attribute attributes	        { fst $1 :: $2 }
+    /* empty */                       { []}
+|   attribute attributes              { fst $1 :: $2 }
 ;
 
 /* (* In some contexts we can have an inline assembly to specify the name to 
@@ -1322,8 +1317,7 @@ attributes_with_asm:
     /* empty */                         { [] }
 |   attribute attributes_with_asm       { fst $1 :: $2 }
 |   ASM LPAREN string_constant RPAREN attributes        
-                                        { SpecAttr("__asm__", 
-					   [CONSTANT(CONST_STRING (fst $3))]) :: $5 }
+                                        { SpecAttr("__asm__", [CONSTANT(CONST_STRING (fst $3))]) :: $5 }
 ;
 
 /* things like __attribute__, but no const/volatile */
@@ -1338,11 +1332,11 @@ attribute_nocv:
 |   MSATTR                              { (fst $1, []), snd $1 }
                                         /* ISO 6.7.3 */
 |   THREAD                              { ("__thread",[]), $1 }
-|   QUALIFIER                     {("__attribute__",[VARIABLE(fst $1)]),snd $1}
+|   QUALIFIER                           { ("__attribute__",[VARIABLE(fst $1)]),snd $1 }
 ;
 
 attribute_nocv_list:
-    /* empty */				{ []}
+    /* empty */                         { [] }
 |   attribute_nocv attribute_nocv_list  { fst $1 :: $2 }
 ;
 
@@ -1371,13 +1365,14 @@ just_attributes:
 ;
 
 /** (* PRAGMAS and ATTRIBUTES *) ***/
-pragma: 
-| PRAGMA attr PRAGMA_EOL		{ PRAGMA ($2, $1) }
-| PRAGMA attr SEMICOLON PRAGMA_EOL	{ PRAGMA ($2, $1) }
-| PRAGMA_LINE                           { PRAGMA (VARIABLE (fst $1), 
-                                                  snd $1) }
+pragma:
+| PRAGMA attr PRAGMA_EOL           { PRAGMA ($2, $1) }
+| PRAGMA attr SEMICOLON PRAGMA_EOL { PRAGMA ($2, $1) }
+| PRAGMA_LINE                      { PRAGMA (VARIABLE (fst $1), snd $1) }
 | PRAGMA LTL ltl_pragma PRAGMA_EOL { $3 }
-| PRAGMA PRAGMA_EOL { PRAGMA (VARIABLE "", $1) }
+| PRAGMA_KCC_INV                   { PRAGMA_KCC_INV ((fst $1), snd $1) }
+| PRAGMA_KCC_RULE                  { PRAGMA_KCC_RULE ((fst $1), snd $1) }
+| PRAGMA PRAGMA_EOL                { PRAGMA (VARIABLE "", $1) }
 ;
 
 ltl_pragma:
@@ -1638,6 +1633,3 @@ alignment_specifier:
 
 
 %%
-
-
-

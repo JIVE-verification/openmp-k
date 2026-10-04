@@ -1,6 +1,8 @@
 module C-TRANSLATION-INIT-SYNTAX
-     syntax KItem ::= load(Bag, Bag)
+     imports KCELLS
+//     syntax KItem ::= load(Bag, Bag, Bag, Bag)
      syntax KItem ::= "link" | "cleanup"
+     syntax KItem ::= load(Bag, Bag)
 
      syntax TransOpts ::= "DEBUG" | "NOLINK"
 endmodule
@@ -8,12 +10,15 @@ endmodule
 module C-TRANSLATION-INIT
      imports C-TRANSLATION-INIT-SYNTAX
 
+     imports C-ABSTRACT-SYNTAX
      imports C-BUILTIN-SYNTAX
+     imports C-COMMON-EXPR-REFERENCE-SYNTAX
      imports C-DECL-DEFINITION-SYNTAX
      imports C-DECL-GLOBAL-SYNTAX
      imports C-DECL-INITIALIZER-SYNTAX
      imports C-DECL-RESOLUTION-SYNTAX
      imports C-DYNAMIC-SYNTAX
+     imports C-ELABORATOR-SYNTAX
      imports C-ENV-SYNTAX
      imports C-ERROR-SYNTAX
      imports C-FUNCTION-DEF-SYNTAX
@@ -24,27 +29,46 @@ module C-TRANSLATION-INIT
 
      imports COMPAT-SYNTAX
 
+     rule ToIdentifier("___missing_field_name") => #NoName
+     rule ToIdentifier(S:String) => Identifier(S)
+          requires S =/=String "___missing_field_name"
+
      rule <k> link
                => TranslationUnit("builtin", list(.List),
                     list(ListItem(addBuiltins(builtins))))
                ~> resolveReferences
-               ~> printSuccess
+               ~> reportSuccess
           ...</k>
           <options> Opts:Set </options>
           requires notBool (NOLINK in Opts)
 
-     rule load(Obj1:Bag, Obj2:Bag)
-               => checkMerge(Obj1, Obj2)
-               ~> load'(mergeObj(Obj1, Obj2))
+//     rule load(Obj1:Bag, Obj2:Bag, Obj3:Bag, Obj4:Bag)
+//               => load(mergeObj(Obj1, Obj2), Obj3, Obj4)
+//               ~> checkMerge(Obj1, Obj2)
 
-     syntax KItem ::= "load'" "(" Bag ")"
-     rule <k> load'(Merged:Bag)
-               => checkMerge(Merged, <global> ThisObj </global>)
-               ~> loadObj(mergeObj(Merged, <global> ThisObj </global>))
+//     syntax KItem ::= load(Bag, Bag, Bag)
+//     syntax KItem ::= load(Bag, Bag)
+     syntax KItem ::= load(Bag)
+
+//     rule load(Merged:Bag, Obj3:Bag, Obj4:Bag)
+//               => load(mergeObj(Merged, Obj3), Obj4)
+//               ~> checkMerge(Merged, Obj3)
+
+//     rule load(Merged:Bag, Obj4:Bag)
+//               => load(mergeObj(Merged, Obj4))
+//               ~> checkMerge(Merged, Obj4)
+
+     rule load(Obj1:Bag, Obj2:Bag)
+               => load(mergeObj(Obj1, Obj2))
+               ~> checkMerge(Obj1, Obj2)
+
+     rule <k> load(Merged:Bag)
+               => loadObj(mergeObj(Merged, <global> ThisObj </global>))
+               ~> checkMerge(Merged, <global> ThisObj </global>)
           ...</k>
           <global> ThisObj:Bag </global>
 
-     rule <k> link => printSuccess ...</k>
+     rule <k> link => reportSuccess ...</k>
           <options> SetItem(NOLINK) ...</options>
 
      rule (<T>...
@@ -55,10 +79,10 @@ module C-TRANSLATION-INIT
           [structural]
 
      // TODO(chathhorn): prevent duplicate TUs or TU name clashes.
-     rule <k> (TranslationUnit(TU:String, list(Strings:List), list(Decls:List))
-               => (preDeclareStrings(Strings)
+     rule <k> TranslationUnit(TU:String, list(Strings:List), list(Decls:List))
+               => preDeclareStrings(Strings)
                ~> listToK(Decls)
-               ~> allocateIncompleteTentatives))
+               ~> allocateIncompleteTentatives
           ...</k>
           <curr-tu> _ => TU </curr-tu>
           <translation-units>...
@@ -73,7 +97,7 @@ module C-TRANSLATION-INIT
      syntax KItem ::= preDeclareStrings(List)
 
      rule preDeclareStrings(ListItem(K:K) L:List)
-          => allowInit(K ~> discard)
+          => runInit(K ~> discard)
           ~> preDeclareStrings(L)
           [structural]
      rule preDeclareStrings(.List) => .K
@@ -90,15 +114,15 @@ module C-TRANSLATION-INIT
 
      rule addBuiltins(.Map) => .K
 
-     rule <k> addBuiltin(B:CId, T:Type) => declare(
+     rule <k> addBuiltin(B:CId, T:FunctionType) => declare(
                typedDeclaration(T, B),
-               initializer(initFunction(
-                    &(B),
+               initializer(Computation(initFunction(
+                    &(B), B,
                     functionObject(B, .List, T, handleBuiltin)
-               ))) ...</k>
+               )))) ...</k>
           <external-types>... B |-> _ ...</external-types>
           <external-defs> Defs:Map </external-defs>
-          requires notBool (B in keys(Defs)) andBool isFunctionType(T)
+          requires notBool (B in keys(Defs))
 
      rule <k> addBuiltin(B:CId, _) => .K ...</k>
           <external-types> Types:Map </external-types>
@@ -108,90 +132,68 @@ module C-TRANSLATION-INIT
 
      rule <k> addBuiltin(B:CId, T:Type) => declare(
                typedDeclaration(T, B),
-               NoInit) ...</k>
+               initializer(handleBuiltinConstant(B, T))) ...</k>
           <external-types>... B |-> _ ...</external-types>
+          <external-uses>... SetItem(B) ...</external-uses>
           <external-defs> Defs:Map </external-defs>
-          requires notBool (B in keys(Defs)) andBool notBool isFunctionType(T)
-               
-     syntax Value ::= #nativeConstant(String) [function, hook(C-SEMANTICS:nativeConstant), impure]
-     rule handleBuiltinConstant(Identifier(S:String)) => #nativeConstant(S) when S in keys(nativeDefinedBuiltins)
+          requires notBool (B in keys(Defs))
+               andBool notBool isFunctionType(T)
+
+     rule <k> addBuiltin(B:CId, T:Type) => .K ...</k>
+          <external-types>... B |-> _ ...</external-types>
+          <external-uses> Uses:Set </external-uses>
+          <external-defs> Defs:Map </external-defs>
+          requires notBool (B in keys(Defs))
+               andBool notBool (B in Uses)
+               andBool notBool isFunctionType(T)
+
+     syntax K ::= #nativeConstant(String, Type) [function, hook(C-SEMANTICS:nativeConstant), impure]
+     rule handleBuiltinConstant(Identifier(S:String), T:Type)
+          => #nativeConstant(S, T)
+          when S in keys(nativeDefinedBuiltins)
 
      syntax KItem ::= checkMerge(Bag, Bag)
-     rule checkMerge(_, _) => .K
-     // TODO(chathhorn): need to rework in light of the silly limitations on
-     // matching keys.
-     // rule checkMerge(_, .Bag) => .
-     // rule checkMerge(.Bag, _) => .
-     // rule checkMerge(
-     //      (<global>...
-     //           <external-types> X:CId |-> _ => .Map ...</external-types>
-     //      ...</global>),
-     //      (<global>...
-     //           <external-types> Types':Map </external-types>
-     //      ...</global>))
-     //      requires notBool (X in keys(Types'))
-     // rule checkMerge(
-     //      (<global>...
-     //           <external-defs> X:CId |-> _ => .Map ...</external-defs>
-     //      ...</global>),
-     //      (<global>...
-     //           <external-defs> Defs':Map </external-defs>
-     //      ...</global>))
-     //      requires notBool (X in keys(Defs'))
-     // rule checkMerge(
-     //      (<global>...
-     //           <external-types> Types:Map </external-types>
-     //      ...</global>),
-     //      (<global>...
-     //           <external-types> X:CId |-> _ => .Map ...</external-types>
-     //      ...</global>))
-     //      requires notBool (X in keys(Types))
-     // rule checkMerge(
-     //      (<global>...
-     //           <external-defs> Defs:Map </external-defs>
-     //      ...</global>),
-     //      (<global>...
-     //           <external-defs> X:CId |-> _ => .Map ...</external-defs>
-     //      ...</global>))
-     //      requires notBool (X in keys(Defs))
-     // rule checkMerge(
-     //      (<global>...
-     //           <external-types> X:CId |-> T:Type => .Map ...</external-types>
-     //      ...</global>),
-     //      (<global>...
-     //           <external-types> X |-> T':Type => .Map ...</external-types>
-     //      ...</global>))
-     //      requires areCompatible(T, T')
-     // rule checkMerge(
-     //      (<global>...
-     //           <external-types> .Map </external-types>
-     //           <external-defs> .Map </external-defs>
-     //      ...</global>),
-     //      (<global>...
-     //           <external-types> .Map </external-types>
-     //           <external-defs> .Map </external-defs>
-     //      ...</global>)) => .
-     // rule (.K => UNDEF("TIN1",
-     //           "Identifier " +String idToString(X) +String " declared with incompatble types in different translation units.",
-     //           "6.2.7:2"))
-     //      ~> checkMerge(
-     //      (<global>...
-     //           <external-types>... X:CId |-> T:Type ...</external-types>
-     //      ...</global>),
-     //      (<global>...
-     //           <external-types>... X |-> T':Type ...</external-types>
-     //      ...</global>))
-     //      requires notBool areCompatible(T, T')
-     // rule (.K => UNDEF("TIN2",
-     //           "Multiple external definitions for " +String idToString(X) +String ".",
-     //           "6.9"))
-     //      ~> checkMerge(
-     //      (<global>...
-     //           <external-defs>... X:CId |-> _ ...</external-defs>
-     //      ...</global>),
-     //      (<global>...
-     //           <external-defs>... X |-> _  ...</external-defs>
-     //      ...</global>))
+                    | checkExtTypes(K, Set, Map, Set, Map)
+                    | checkExtDefs(K, Set, Set)
+
+     rule checkMerge(_, .Bag) => .K
+     rule checkMerge(.Bag, _) => .K
+     rule checkMerge(
+          (<global>...
+               <external-types> Types:Map </external-types>
+               <external-defs> Defs:Map </external-defs>
+          ...</global>),
+          (<global>...
+               <external-types> Types':Map </external-types>
+               <external-defs> Defs':Map </external-defs>
+          ...</global>))
+          => checkExtTypes(.K, keys(Types), Types, keys(Types'), Types')
+          ~> checkExtDefs(.K, keys(Defs), keys(Defs'))
+
+     rule checkExtTypes((.K => X:CId), (SetItem(X:CId) => .Set) _, _, _, _)
+     rule checkExtTypes((X:CId => .K), _, _, Ids':Set, _)
+          requires notBool (X in Ids')
+     rule checkExtTypes((X:CId => .K),
+               _, (X |-> T:Type) _,
+               _, (X |-> T':Type) _)
+          requires areCompatible(T, T')
+     rule checkExtTypes(.K, .Set, _, _, _) => .K
+     rule (.K => UNDEF("TIN1",
+               "Identifier " +String idToString(X) +String " declared with incompatible types in different translation units.",
+               "6.2.7:2"))
+          ~> checkExtTypes(X:CId,
+               _, X:CId |-> T:Type _,
+               _, X |-> T':Type _)
+          requires notBool areCompatible(T, T')
+
+     rule checkExtDefs((.K => X:CId), (SetItem(X:CId) => .Set) _, _)
+     rule checkExtDefs((X:CId => .K), _, Defs':Set)
+          requires notBool (X in Defs')
+     rule checkExtDefs(.K, .Set, _) => .K
+     rule (.K => UNDEF("TIN2",
+               "Multiple external definitions for " +String idToString(X) +String ".",
+               "6.9"))
+          ~> checkExtDefs(X:CId, _, SetItem(X) _)
 
      syntax Bag ::= mergeObj(Bag, Bag) [function]
      syntax Map ::= mergeDecls(Map, Map) [function]
@@ -223,6 +225,8 @@ module C-TRANSLATION-INIT
                     <external-uses> ExtUses1:Set </external-uses>
                </linking-state>
 
+               <structs> Structs1:Map </structs>
+
                <linkings> Links1:Map </linkings>
 
                <main-tu> Main1:Set </main-tu>
@@ -240,6 +244,8 @@ module C-TRANSLATION-INIT
                     <external-decls> ExtDecls2:Map </external-decls>
                     <external-uses> ExtUses2:Set </external-uses>
                </linking-state>
+
+               <structs> Structs2:Map </structs>
 
                <linkings> Links2:Map </linkings>
 
@@ -260,6 +266,8 @@ module C-TRANSLATION-INIT
                     <external-uses> ExtUses1 ExtUses2 </external-uses>
                </linking-state>
 
+               <structs> updateMap(Structs1, Structs2) </structs>
+
                <linkings> updateMap(Links1, Links2) </linkings>
 
                <main-tu> Main1 Main2 </main-tu>
@@ -267,10 +275,73 @@ module C-TRANSLATION-INIT
                <translation-units> TUs1 TUs2 </translation-units>
           </global>
 
-     syntax KItem ::= "printSuccess"
-
-     // This message tells kcc the translation phase succeeded.
-     rule <k> printSuccess => . ...</k>
+     syntax KItem ::= "reportSuccess"
+     rule <k> reportSuccess => .K ...</k>
           <result-value> _ => 0 </result-value>
+          <generated-annotations> .List </generated-annotations>
+     rule <k> reportSuccess => writeSpecModule(#open(S +String ".spec.k")) ...</k>
+          <generated-annotations> L:List </generated-annotations>
+          <curr-program-loc> CabsLoc(S:String, _, _, _) </curr-program-loc>
+          requires size(L) >Int 0
+
+     syntax KItem ::= writeSpecModule(Int)
+     rule <k> writeSpecModule(Fd:Int) => #write(Fd, 
+                  "module " +String replaceAll(S, ".", "-") +String "-SPEC" +String "\n"
+          +String "  imports C-VERIFIER\n\n") ~> writeSpecs(Fd) ...</k>
+          <curr-program-loc> CabsLoc(S:String, _, _, _) </curr-program-loc>
+
+     syntax KItem ::= writeSpecs(Int)
+     rule <k> (.K => #write(Fd, S +String "\n")) ~> writeSpecs(Fd:Int) ...</k>
+          <generated-annotations> ListItem(S:String) => .List ...</generated-annotations>
+     rule <k> writeSpecs(Fd:Int) => #write(Fd, "\nendmodule") ~> writeEndModule(Fd) ...</k>
+          <generated-annotations> .List </generated-annotations>
+
+     syntax KItem ::= writeEndModule(Int)
+     rule <k> writeEndModule(Fd:Int) => #close(Fd) ...</k>
+          <result-value> _ => 0 </result-value>
+
+     rule CodeLoc(K:K, L:CabsLoc) => filterCabsLoc(L) ~> K
+     rule DefinitionLocRange(K:K, L1:CabsLoc, L2:CabsLoc)
+          => filterCabsLoc(L1) ~> K ~> filterCabsLoc(L2)
+
+     rule <k> L:CabsLoc => .K ...</k>
+          <elab>... .K => L </elab>
+          <curr-program-loc> _ => L </curr-program-loc>
+
+     syntax CabsLoc ::= filterCabsLoc(CabsLoc) [function]
+     rule filterCabsLoc(CabsLoc("cabs loc unknown", -10, -10, 0))
+          => UnknownCabsLoc
+     rule filterCabsLoc(L:CabsLoc) => L [owise]
+
+     rule ExpressionLoc(K:K, _) => K
+
+     /*@ \fromStandard{\source[n1570]{\para{6.10.6}{1}}}{
+     A preprocessing directive of the form
+     \cdisplay{# pragma pp-tokensoptnew-line}
+     \broken{where the preprocessing token \cinline{STDC} does not immediately
+     follow pragma in the directive (prior to any macro replacement)} causes the
+     implementation to behave in an implementation-defined manner. The behavior
+     might cause translation to fail or cause the translator or the resulting
+     program to behave in a non-conforming manner. Any such pragma that is not
+     recognized by the implementation is ignored.
+     }*/
+     rule Pragma(_) => .K
+          [structural]
+     rule PragmaKccInv(_) => .K
+          [structural]
+
+     rule AttributeWrapper(K:K, _) => K
+
+     rule NothingExpression => emptyValue:>Expression
+
+     rule Computation(.K) => .K
+     rule <k> Computation(V:RValue) => .K ...</k>
+          <elab>... .K => Computation(V) </elab>
+          requires isHold(V)
+     // Totally elide pure expressions from the translated program.
+     rule Computation(V:RValue) => .K
+          requires notBool isHold(V)
+
+     rule checkRestrict(_) => .K
 
 endmodule

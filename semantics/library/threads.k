@@ -22,7 +22,7 @@ module LIBC-THREADS
 
      syntax KItem ::= "threadRunning"
 
-     syntax KItem ::= "spawn-aux" "(" Int "," Value "," Value ")"
+     syntax KItem ::= "spawn-aux" "(" Int "," RValue "," RValue ")"
      rule [thrd-create-start]:
           <k> prepareBuiltin(Identifier("thrd_create"),
                     hrItem(ThIdPointer:KResult) hs::
@@ -44,7 +44,7 @@ module LIBC-THREADS
                          ThId:Int, ThFuncPointer:KResult, ThArg:KResult)
                     => thrd-success
                ...</k>
-               <curr-tu> Tu:K </curr-tu>
+               <curr-tu> Tu:String </curr-tu>
                <buffer> .List </buffer>
           ...</thread>
           <genv> Env:Map </genv>
@@ -54,12 +54,12 @@ module LIBC-THREADS
           <br/>
           (.Bag =>
           <thread>...
-               <next-loc> 0 @ thread(ThId:Int) </next-loc>
+               <duration> thread(ThId:Int) </duration>
                <thread-id> ThId:Int </thread-id>
                <k> Call(ThFuncPointer:KResult, list(ListItem(ThArg:KResult)))
                </k>
                <env> Env:Map </env>
-               <curr-tu> Tu:K </curr-tu>
+               <curr-tu> Tu:String </curr-tu>
           ...</thread>)
           [large, ndthread]
 
@@ -70,7 +70,7 @@ module LIBC-THREADS
           <thread-id> ThId:Int </thread-id>
           [structural]
 
-     syntax KItem ::= "join-aux" "(" Int "," Value ")"
+     syntax KItem ::= "join-aux" "(" Int "," RValue ")"
 
      rule [thrd-join-start]:
           prepareBuiltin(Identifier("thrd_join"),

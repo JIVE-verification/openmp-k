@@ -23,6 +23,8 @@ module C-CONFIGURATION
           <external-uses> SetItem(Identifier("main")) </external-uses>
      </linking-state>
 
+     <structs color="lightgray"> .Map </structs>
+
      // dummy link base |-> real base
      <linkings> .Map </linkings>
 
@@ -31,14 +33,11 @@ module C-CONFIGURATION
                <tu-id> "" </tu-id>
                <genv color="lightgray"> .Map </genv>
                <gtypes color="lightgray"> .Map </gtypes>
-               <gstructs color="lightgray"> .Map </gstructs>
 
                // kpair(CId, BlockNum) |-> SymBase
                <local-statics> .Map </local-statics>
                // kpair(CId, BlockNum) |-> Type
                <local-types> .Map </local-types>
-               // kpair(CId, BlockNum) |-> FieldInfo
-               <local-structs> .Map </local-structs>
 
                <tu-linking-state>
                     <externals> .Map </externals>
@@ -56,18 +55,11 @@ module C-CONFIGURATION
           </tu>
      </translation-units>
 </global>
-<result-value color="red"> .K </result-value>
+<result-value color="red"> 1 </result-value>
 <T multiplicity="?">
 <exec>
      // SymLoc |-> Type
      <effective-types> .Map </effective-types>
-
-     <k color="green" multiplicity="?">
-          $PGM:K
-          ~> load(unwrapObj($OBJ1:Bag), unwrapObj($OBJ2:Bag))
-          ~> link
-          ~> cleanup
-     </k>
 
      <final-computation multiplicity="?" color="lightgray">
           .K
@@ -75,6 +67,7 @@ module C-CONFIGURATION
 
      <goto-map-calc color="cyan">
           <goto-calc multiplicity="*" color="cyan">
+               <saved-env> .Map </saved-env>
                <computation color="cyan"> .K </computation>
                <computation-tail color="cyan">
                     .K
@@ -93,26 +86,31 @@ module C-CONFIGURATION
                </goto-loop-stack>
           </goto-calc>
      </goto-map-calc>
-     <control>
-          <curr-tu color="lightgray"> "" </curr-tu>
-          <curr-function color="lightgray">
-               file-scope
-          </curr-function>
-          <curr-program-loc color="black">
-               UnknownCabsLoc
-          </curr-program-loc>
+     <elab-calc>
+          <elaborator>
+               <k color="green">
+                    $PGM:K
+                    ~> load(unwrapObj($OBJ1:Bag), unwrapObj($OBJ2:Bag))
+                    ~> link
+                    ~> cleanup
+               </k>
 
-          // Toggle to allow writes and other special treatment for
-          // initializers.
-          <initializing> 0 </initializing>
+               <elab> .K </elab>
 
-          <control-details> // TODO(chathhorn): dumb name
+               <elabStack> .List </elabStack>
+
                <local>
                     // maps from CIds
                     <env color="red"> .Map </env>
                     <types color="lightgray"> .Map </types>
-                    <structs color="lightgray"> .Map </structs>
                     <block-history> .List </block-history>
+                    <curr-program-loc color="black">
+                         UnknownCabsLoc
+                    </curr-program-loc>
+
+                    // Toggle to allow writes and other special treatment
+                    // for initializers.
+                    <initializing> 0 </initializing>
                </local>
                <block-stack color="violet"> .List </block-stack>
 
@@ -130,19 +128,26 @@ module C-CONFIGURATION
                     .K
                </saved-init>
 
-               // Used for typing expressions.
-               <type multiplicity="?" color="cyan"> .K </type>
                // Holds the innermost type while we unroll the
                // type around it.
                <decl-type-holder color="cyan">
                     .K
                </decl-type-holder>
-          </control-details>
-     </control>
 
+          </elaborator>
+     </elab-calc>
+
+     <curr-tu color="lightgray"> "" </curr-tu>
+     <curr-function color="lightgray">
+          file-scope
+     </curr-function>
 </exec>
 
 <error-cell multiplicity="?" color="black"> .K </error-cell>
+
+<annotation> "" </annotation>
+
+<generated-annotations> .List </generated-annotations>
 
 <status> initializing </status>
 

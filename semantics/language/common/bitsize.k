@@ -8,8 +8,7 @@ module C-BITSIZE-SYNTAX
      syntax Int ::= bitSizeofStruct(FieldInfo) [function]
      syntax Int ::= bitSizeofUnion(FieldInfo) [function]
 
-     // generates a tv(size, cfg:sizeut)
-     syntax KItem ::= sizeofType(K) [strict]
+     syntax KItem ::= sizeof(K) [strict]
 
      syntax Int ::= maxByteSizeofList(List) [function]
 endmodule
@@ -20,8 +19,6 @@ module C-BITSIZE
      imports C-BITS-SYNTAX
      imports C-ENV-SYNTAX
      imports C-CONVERSION-SYNTAX
-     imports C-DECL-INITIALIZER-SYNTAX
-     imports C-DECL-DEFINITION-SYNTAX
 
      imports C-SYNTAX
      imports C-ERROR-SYNTAX
@@ -29,12 +26,17 @@ module C-BITSIZE
 
      imports COMPAT-SYNTAX
 
-     rule sizeofType(T:Type)
-          => cast(cfg:sizeut, tv(byteSizeofType(elideDeclParams(T)), cfg:largestUnsigned))
-          requires isCompleteType(T) andBool notBool isFunctionType(T)
+     rule sizeof(V:KResult => type(V))
+          requires notBool isType(V)
           [structural]
-     rule (. => CV("CBS1", "Trying to compute sizeof of a type that is incomplete or a function type.", "6.5.3.4:1")) ~> sizeofType(T:Type)
-          requires notBool isCompleteType(T) orBool isFunctionType(T)
+     rule sizeof(T:Type => stabilizeVLA(T))
+          requires isVariablyModifiedType(T)
+          [structural]
+     rule sizeof(T:Type)
+          => Cast(t(SetItem(IntegerConstant), cfg:sizeut),
+               tv(byteSizeofType(T), t(SetItem(IntegerConstant), cfg:largestUnsigned)))
+          requires notBool isVariablyModifiedType(T)
+          [structural]
 
      rule byteSizeofType(T:Type)
           => bitsToBytes(bitSizeofType(T))
@@ -58,6 +60,7 @@ module C-BITSIZE
      rule numBytes(t(_, unsigned-long-long-int))
           => numBytes(t(.Set, long-long-int))
      rule numBytes(t(_, enumType(_))) => cfg:sizeofEnum
+     rule numBytes(_) => 0 [owise]
 
      syntax Int ::= byteSizeofList(List) [function]
      syntax Int ::= "byteSizeofList'" "(" Int "," List ")" [function]
@@ -85,28 +88,22 @@ module C-BITSIZE
           => cfg:ptrsize *Int cfg:bitsPerByte
      rule bitSizeofType(t(_, bitfieldType(_, N:Int)))
           => N
-     rule bitSizeofType(T:Type) => numBytes(T) *Int cfg:bitsPerByte
-          requires isBasicType(T)
+     rule bitSizeofType(T:BasicType) => numBytes(T) *Int cfg:bitsPerByte
+          requires notBool isTypedDeclaration(T)
      rule bitSizeofType(typedDeclaration(T:Type, _))
           => bitSizeofType(T)
 
-     rule bitSizeofType(t(_, structType(_, NBits:Int, _)))
+     rule bitSizeofType(t(_, structType(S:StructId)))
+          => bitSizeofStruct(getFieldInfo(S))
+     rule bitSizeofType(t(_, unionType(S:StructId)))
+          => bitSizeofUnion(getFieldInfo(S))
+
+     rule bitSizeofStruct(fieldInfo(_, NBits:Int, _, _))
           => NBits
-     rule bitSizeofType(t(_, unionType(_, NBits:Int, _)))
+     rule bitSizeofUnion(fieldInfo(_, NBits:Int, _, _))
           => NBits
 
-     rule bitSizeofStruct(fieldInfo(Decls:List, _, _))
-          => byteSizeofList(Decls) *Int cfg:bitsPerByte
-     rule bitSizeofUnion(fieldInfo(Decls:List, _, _))
-          => maxByteSizeofList(Decls) *Int cfg:bitsPerByte
-
-     //- derived
-     syntax Int ::= bitsToBytes(CSize) [function]
-     rule bitsToBytes(N:Int) => absInt(N /Int cfg:bitsPerByte)
-          requires cfg:bitsPerByte dividesInt N
-     rule bitsToBytes(N:Int) => absInt((N /Int cfg:bitsPerByte) +Int 1)
-          requires notBool cfg:bitsPerByte dividesInt N
-     rule bitsToBytes(N:CSize) => N // Pass through sym values.
-          requires isInt(N:CSize) =/=K true
+     syntax Int ::= bitsToBytes(Int) [function]
+     rule bitsToBytes(N:Int) => (absInt(N) +Int cfg:bitsPerByte -Int 1) /Int cfg:bitsPerByte
 
 endmodule

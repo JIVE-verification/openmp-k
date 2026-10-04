@@ -1,13 +1,14 @@
 module C-COMMON-EXPR-REFERENCE-SYNTAX
      imports C-SYMLOC-SYNTAX
 
-     syntax KItem ::= checkRestrict(SymLoc, Type)
+     syntax KItem ::= checkRestrict(SymLoc)
 endmodule
 
 module C-COMMON-EXPR-REFERENCE
      imports C-COMMON-EXPR-REFERENCE-SYNTAX
 
      imports C-BITSIZE-SYNTAX
+     imports C-COMMON-EXPR-EVAL-SYNTAX
      imports C-DYNAMIC-SYNTAX
      imports C-ERROR-SYNTAX
      imports C-MEMORY-ALLOC-SYNTAX
@@ -30,17 +31,16 @@ module C-COMMON-EXPR-REFERENCE
      its operand.
      }
      */
-     rule &(lval(Loc:SymLoc, T:Type))
-          => tv(addProv(align(getAlignas(T)),
-               addProv(fromArray(0, byteSizeofType(T)), Loc)),
-               t(.Set, pointerType(T)))
+     rule &(nclv(Loc:SymLoc, T:Type))
+          => checkUse(tv(addProv(fromArray(0, byteSizeofType(T)), Loc),
+               t(.Set, pointerType(T))))
           requires notBool isRegisterLoc(Loc)
           [structural]
      rule (.K => CV("CER1", "Unary '&' operator applied to non-lvalue.", "6.5.3.2:1"))
-          ~> &(tv(_, _))
+          ~> &(_:RValue)
           [structural]
      rule (.K => CV("CER2", "Unary '&' operator applied to a value with register storage class.", "6.5.3.2:1"))
-          ~> &(lval(Loc:SymLoc, _))
+          ~> &(nclv(Loc:SymLoc, _))
           requires isRegisterLoc(Loc)
           [structural]
 
@@ -52,11 +52,10 @@ module C-COMMON-EXPR-REFERENCE
      value has been assigned to the pointer, the behavior of the unary
      \cinline{*} operator is undefined.
      }*/
-     rule *(tv(Loc:SymLoc, T:Type))
-          => checkRestrict(Loc, T)
-          ~> lv(stripAllButFromUnion(Loc), innerType(T))
-          requires isPointerType(T)
-               andBool notBool isVoidType(innerType(T))
+     rule *(tv(Loc:SymLoc, T:PointerType))
+          => checkRestrict(Loc)
+          ~> lv(stripBases(stripFromArray(Loc)), innerType(T))
+          requires notBool isVoidType(innerType(T))
                andBool Loc =/=K NullPointer
                andBool ifFromArrayInBounds(Loc,
                     t(.Set, pointerType(t(.Set, char))), 1) ==K true

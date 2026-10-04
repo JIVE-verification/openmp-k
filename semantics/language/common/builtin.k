@@ -1,17 +1,17 @@
 module C-BUILTIN-SYNTAX
      imports C-SYNTAX
+     imports C-DYNAMIC-SYNTAX
 
      syntax Map ::= "builtins" [function]
                   | "semanticsDefinedBuiltins" [function]
                   | "nativeDefinedBuiltins"[function]
      syntax KItem ::= "handleBuiltin"
-                    | handleBuiltinConstant(CId)
+                    | handleBuiltinConstant(CId, Type)
 endmodule
 
 module C-BUILTIN
      imports C-BITS-SYNTAX
      imports C-BUILTIN-SYNTAX
-     imports C-DYNAMIC-SYNTAX
      imports C-SYMLOC-SYNTAX
      imports C-SETTINGS-SYNTAX
      imports C-TYPING-SYNTAX
@@ -33,7 +33,7 @@ module C-BUILTIN
           "__fslCloseFile" |-> fun(int, int)
           "__fslFGetC" |-> fun(int, int, unsigned-long-long-int)
           "__fslOpenFile" |-> fun(int, ptr(const(char)), ptr(const(char)))
-          "__fslPutc" |-> fun(int, char, int)
+          "__fslPutc" |-> fun(int, unsigned-char, int)
           "__va_copy" |-> fun(void, ptr(ptr(void)), ptr(void))
           "__va_end" |-> fun(void, ptr(ptr(void)))
           "__va_inc" |-> fun(ptr(void), ptr(ptr(void)), cfg:sizeut)
@@ -69,38 +69,11 @@ module C-BUILTIN
           "thrd_create" |-> fun(int, ptr(int), ptr(fun(int, ptr(void))), ptr(void))
           "thrd_current" |-> fun(int)
           "thrd_join" |-> fun(int, int, ptr(int))
-          "time" |-> fun(long-long-int, ptr(long-long-int))
 
      syntax Type ::= "mtx_t" [function]
-     rule mtx_t => struct("mtx_t_",
-          field(int, "id")
-          field(int, "type")
-          field(int, "owner")
-          field(int, "owned")
-          field(int, "flag")
-          field(int, "alive"))
+     rule mtx_t => struct("mtx_t_")
 
      syntax Type ::= "jmp_buf" [function]
-     rule jmp_buf => arr(struct("jmp_buf_", field(unsigned-char, "used")), 1)
-
-     // Used by stddef.h.
-     rule OffsetOf(T:KResult, K:K, Mem:K) => offsetOf(DeclType(T, K), Mem)
-          [structural]
-
-     syntax KItem ::= offsetOf(K, K) [strict(1)]
-     syntax SymBase ::= "accum"
-     rule offsetOf(T:Type, Mem:K)
-          => toOffset(& ( offsetOf'(lval(loc(accum, 0), T), Mem) ))
-          [structural]
-
-     // Rejigger the AST.
-     // TODO(chathhorn): array indexing?
-     syntax KItem ::= "offsetOf'" "(" K "," K ")" [function]
-     rule offsetOf'(K:K, K':K . F:CId) => offsetOf'(K, K') . F
-     rule offsetOf'(K:K, F:CId) => K . F
-
-     syntax KItem ::= toOffset(K) [strict]
-     rule toOffset(tv(Loc:SymLoc, _)) => tv(offset(Loc), cfg:sizeut)
-          [structural]
+     rule jmp_buf => arr(struct("__jmp_buf_tag"), 1)
 
 endmodule

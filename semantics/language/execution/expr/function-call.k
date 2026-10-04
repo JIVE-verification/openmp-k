@@ -1,8 +1,7 @@
 module C-EXPR-FUNCTION-CALL
      imports C-BINDING-SYNTAX
-     imports C-BUILTIN-SYNTAX
      imports C-CHECK-LOC-SYNTAX
-     imports C-DECL-INITIALIZER-SYNTAX
+     imports C-CONVERSION-SYNTAX
      imports C-DYNAMIC-SYNTAX
      imports C-ENV-SYNTAX
      imports C-ERROR-SYNTAX
@@ -48,29 +47,30 @@ module C-EXPR-FUNCTION-CALL
      \end{itemize}
      }}*/
 
-     context Call((HOLE => reval(HOLE)), _) [ndheat]
      context Call(_, (HOLE => revalParams(HOLE))) [ndheat]
 
      // Strip prov.
-     rule Call(tv((loc(Base:SymBase, Offset:Int, _) => loc(Base, Offset)), _), _)
+     rule Call(tv((loc(Base:SymBase, Offset:Int, _) => loc(Base, Offset)), _),
+               _:KResult)
           [structural]
      // Resolve a linker loc to a real loc.
      rule <k> Call(tv(loc((Base:SymBase => Base'), _), _), _) ...</k>
           <linkings>... Base |-> Base':SymBase ...</linkings>
+          [structural]
 
      rule <k> Call(
-               tv(loc(Base:SymBase, 0), t(_, pointerType(T:Type))),
+               tv(loc(Base:SymBase, 0), t(_, pointerType(T:FunctionType))),
                rvlist(L:List))
                => sequencePoint ~> application(getTU(loc(Base, 0)), Fun, T, L)
           ...</k>
           <functions>... Base |-> Fun:KResult ...</functions>
-          requires isFunctionType(T)
           [structural]
 
      syntax KItem ::= revalParams(K)
                     | #revalParams(HeatList) [strict]
      //TODO(liyili2): context revalParams(list(_ ListItem((HOLE => reval(HOLE))) _)) [ndheat]
      rule revalParams(list(L:List)) => #revalParams(toHeatList(L))
+          [structural]
 
      rule #revalParams(HL:HeatList) => revalParams(rvlist(hListToList(HL)))
           requires isAllKResultInHeatList(HL)
@@ -80,7 +80,7 @@ module C-EXPR-FUNCTION-CALL
 
      /*TODO(liyili2): might need this later
      rule revalParams(list(L:List)) => revalParams(rvlist(L))
-          when all(L, isKResult)
+          requires all(L, isKResult)
           [structural]
      */
 
@@ -96,8 +96,8 @@ module C-EXPR-FUNCTION-CALL
           ...</k>
           requires areCompatible(CallT, DefT)
           [structural]
-     rule (.K => ERROR("FC1", "attempt to call the function " +String
-               idToString(X) +String " through a pointer with incompatible type."))
+     rule (.K => UNDEF("FC1", "attempt to call the function " +String
+               idToString(X) +String " through a pointer with incompatible type.", "6.5.2.2:9"))
           ~> application(_, functionObject(X:CId, _, DefT:Type, _), CallT:Type, _)
           requires notBool areCompatible(CallT, DefT)
           [structural]
@@ -116,7 +116,7 @@ module C-EXPR-FUNCTION-CALL
           <call-stack> .List => ListItem(
                bag2K(<call-stack-frame>...
                     <stack-control>
-                         <curr-tu> OldTu:K </curr-tu>
+                         <curr-tu> OldTu:String </curr-tu>
                          C:Bag
                     </stack-control>
                     <continuation> K:K </continuation>
@@ -126,7 +126,7 @@ module C-EXPR-FUNCTION-CALL
                ...</call-stack-frame>)
           ) ...</call-stack>
           <control>
-               <curr-tu> OldTu:K => Tu </curr-tu>
+               <curr-tu> OldTu:String => Tu </curr-tu>
                <curr-function> CurrFun:K => X </curr-function>
                <curr-function-params> CurrFunParams:List => .List </curr-function-params>
                <curr-program-loc> CurrLoc:K </curr-program-loc>
@@ -134,7 +134,13 @@ module C-EXPR-FUNCTION-CALL
           </control>
           [structural]
 
-     rule <k> bindParam(X:CId, T:Type, V:TypedValue)
+     rule <k> bindParam(X:CId, T:Type, V:RValue)
+               => bindParamHelper(X, T, V, !I:Int @ D)
+          ...</k>
+          <duration> D:Duration </duration>
+          [structural]
+     syntax KItem ::= bindParamHelper(CId, Type, RValue, SymBase)
+     rule <k> bindParamHelper(X:CId, T:Type, V:RValue, Base:SymBase)
                => allocObject(Base, T)
                ~> addToEnv(X, Base)
                ~> giveType(X, T)
@@ -143,10 +149,14 @@ module C-EXPR-FUNCTION-CALL
           <curr-function-params>...
                (.List => ListItem(X))
           </curr-function-params>
-          <next-loc> Base:SymBase => linc(Base) </next-loc>
           <local-addresses>... .Set => SetItem(Base) ...</local-addresses>
           [structural]
-     rule <k> bindParam(X:CId)
+
+     rule <k> bindParam(X:CId) => bindParamHelper(X, !I:Int @ D) ...</k>
+          <duration> D:Duration </duration>
+          [structural]
+     syntax KItem ::= bindParamHelper(CId, SymBase)
+     rule <k> bindParamHelper(X:CId, Base:SymBase)
                => allocObject(Base, t(.Set, no-type))
                ~> addToEnv(X, Base)
                ~> giveType(X, t(.Set, no-type))
@@ -154,8 +164,79 @@ module C-EXPR-FUNCTION-CALL
           <curr-function-params>...
                (.List => ListItem(X))
           </curr-function-params>
-          <next-loc> Base:SymBase => linc(Base) </next-loc>
           <local-addresses>... .Set => SetItem(Base) ...</local-addresses>
           [structural]
 
+     // TODO(chathhorn): copied from translation -- we only need this in the
+     // case of parameter binding.
+     rule L:KResult := (R:RValue => cast(type(L), R))
+          requires (isArithmeticType(type(L)) andBool isArithmeticType(type(R)))
+               andBool (getQualifiers(type(R)) ==K .Set)
+               andBool (type(L) =/=Type type(R))
+
+     rule L:KResult := (R:RValue => cast(type(L), R))
+          requires isStructOrUnionType(type(L))
+               andBool areCompatible(stripQualifiers(type(L)), type(R))
+               andBool (type(L) =/=Type type(R))
+
+     rule L:KResult := (R:RValue => cast(type(L), R))
+          requires isPointerType(type(L)) andBool isPointerType(type(R))
+               andBool areCompatible(
+                    stripQualifiers(stripAlignas(innerType(type(L)))),
+                    stripQualifiers(stripAlignas(innerType(type(R)))))
+               andBool getQualifiers(innerType(type(R)))
+                    <=Set getQualifiers(innerType(type(L)))
+               andBool getAlignas(innerType(type(L)))
+                    <=Int getAlignas(innerType(type(R)))
+               andBool (type(L) =/=Type type(R))
+
+     rule L:KResult := (R:RValue => cast(type(L), R))
+          requires isPointerType(type(L)) andBool isPointerType(type(R))
+               andBool (isVoidType(innerType(type(L)))
+                    orBool isVoidType(innerType(type(R))))
+               andBool (getQualifiers(innerType(type(R)))
+                    <=Set getQualifiers(innerType(type(L))))
+               andBool (type(L) =/=Type type(R))
+
+     rule L:KResult := (R:RValue => cast(type(L), R))
+          requires isPointerType(type(L))
+               andBool isNullPointerConstant(R)
+               andBool (type(L) =/=Type type(R))
+
+     rule L:KResult := (R:RValue => cast(type(L), R))
+          requires isBoolType(type(L)) andBool isPointerType(type(R))
+
+     rule nclv(_, T:Type => stripConstants(T)) := _:RValue
+          requires fromConstantExpr(T)
+     rule _:KResult := tv(_:CValue, T:Type => stripConstants(T))
+          requires fromConstantExpr(T)
+
+     rule (.K => CV("EFC1", "incompatible types in function call arguments.", "6.5.16.1:1"))
+          ~> L:KResult := R:RValue
+          requires (isPointerType(type(L)) andBool notBool isPointerType(type(R))
+                    andBool notBool isNullPointerConstant(R))
+               orBool isArithmeticType(type(L))
+                    andBool notBool isArithmeticType(type(R))
+               orBool isStructOrUnionType(type(L))
+                    andBool notBool areCompatible(stripQualifiers(type(L)), type(R))
+               orBool isBoolType(type(L)) andBool notBool isPointerType(type(R))
+               orBool notBool (isPointerType(type(L))
+                    orBool isArithmeticType(type(L))
+                    orBool isStructOrUnionType(type(L))
+                    orBool isBoolType(type(L)))
+
+     rule (.K => CV("EFC2", "incompatible pointer types in function call arguments.", "6.5.16.1:1"))
+          ~> L:KResult := R:RValue
+          requires (isPointerType(type(L)) andBool isPointerType(type(R)))
+               andBool notBool isVoidType(innerType(type(L)))
+               andBool notBool isVoidType(innerType(type(R)))
+               andBool (
+                    notBool areCompatible(
+                         stripQualifiers(stripAlignas(innerType(type(L)))),
+                         stripQualifiers(stripAlignas(innerType(type(R)))))
+                    orBool notBool (getQualifiers(innerType(type(R)))
+                         <=Set getQualifiers(innerType(type(L))))
+                    orBool getAlignas(innerType(type(L)))
+                         >Int getAlignas(innerType(type(R)))
+               )
 endmodule

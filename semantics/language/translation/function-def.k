@@ -1,32 +1,35 @@
 module C-FUNCTION-DEF-SYNTAX
      imports C-DYNAMIC-SYNTAX
 
-     syntax KItem ::= initFunction(K, K) [strict]
+     syntax KItem ::= initFunction(K, CId, RValue) [strict(1)]
      syntax Bool ::= hasDupParams(Type) [function]
 endmodule
 
 module C-FUNCTION-DEF
      imports C-FUNCTION-DEF-SYNTAX
 
+     imports C-ABSTRACT-SYNTAX
+     imports C-ANNOTATION-SYNTAX
+     imports C-BINDING-SYNTAX
      imports C-DECL-DEFINITION-SYNTAX
      imports C-DECL-INITIALIZER-SYNTAX
+     imports C-ELABORATOR-SYNTAX
      imports C-ENV-SYNTAX
      imports C-ERROR-SYNTAX
      imports C-MEMORY-ALLOC-SYNTAX
      imports C-PROCESS-LABEL-SYNTAX
-     imports C-SYMBOLIC-VALUE-SYNTAX
      imports C-SYMLOC-SYNTAX
      imports C-SYNTAX
      imports C-TYPING-SYNTAX
-     imports C-BINDING-SYNTAX
 
      imports COMPAT-SYNTAX
 
-     rule FunctionDefinition(typedDeclaration(T:Type, X:CId), Blk:K)
+     rule FunctionDefinition(typedDeclaration(T:FunctionType, X:CId), Blk:K)
           => declare(
                typedDeclaration(toPrototype(T), X),
-               initializer(initFunction(
+               initializer(Computation(initFunction(
                     &(X),
+                    X,
                     functionObject(X,
                          // The sanitized declared parameters.
                          elideList(getParams(emptyToVoid(T))),
@@ -35,14 +38,13 @@ module C-FUNCTION-DEF
                          // .List if there isn't actually a prototype.
                          toPrototype(T),
                          Goto(funLabel(X)))
-               ))
+               )))
           )
-          ~> calculateGotoMap(X, Label(funLabel(X), safeBody(X, Blk)))
           ~> processFunDef(X, Blk)
-          requires isFunctionType(T) andBool notBool hasDupParams(T)
+          requires notBool hasDupParams(T)
           [structural]
-     rule (.K => ERROR("FD1", "duplicate parameters in "
-               +String "function definition."))
+     rule (.K => CV("FD1", "duplicate parameters in "
+               +String "function definition.", "6.7:3"))
           ~> FunctionDefinition(typedDeclaration(T:Type, _), _)
           requires hasDupParams(T)
 
@@ -58,10 +60,9 @@ module C-FUNCTION-DEF
           requires isOldStyleFunctionType(T)
 
      syntax Type ::= emptyToVoid(Type) [function]
-     rule emptyToVoid(T:Type)
+     rule emptyToVoid(T:FunctionType)
           => setParams(T, ListItem(typedDeclaration(t(.Set, void), #NoName)))
-          requires isFunctionType(T)
-               andBool (getParams(T) ==K .List)
+          requires (getParams(T) ==K .List)
      rule emptyToVoid(T:Type) => T
           requires notBool isFunctionType(T)
                orBool (getParams(T) =/=K .List)
@@ -78,26 +79,25 @@ module C-FUNCTION-DEF
           [structural]
 
      syntax KItem ::= checkFunDefType(CId, Type)
-     rule checkFunDefType(X:CId, T:Type) => .K
-          requires notBool isFunctionType(getReturn(T))
-               andBool notBool isArrayType(getReturn(T))
-               andBool areVoidOrComplete(getParams(T))
+     rule checkFunDefType(X:CId, t(_, functionType(R:Type, P:List))) => .K
+          requires notBool isArrayOrFunctionType(R)
+               andBool areVoidOrComplete(P)
                andBool (X =/=K Identifier("main"))
           [structural]
-     rule checkFunDefType(X:CId, T:Type) => checkMainDef(T)
-          requires isVoidOrComplete(getReturn(T))
-               andBool areVoidOrComplete(getParams(T))
+     rule checkFunDefType(X:CId, t(Mods:Set, functionType(R:Type, P:List))) 
+          => checkMainDef(t(Mods, functionType(R, P)))
+          requires isVoidOrComplete(R)
+               andBool areVoidOrComplete(P)
                andBool (X ==K Identifier("main"))
           [structural]
      rule (.K => UNDEF("FD2", "invalid return type in function definition.",
                "6.7.6.3:1"))
-          ~> checkFunDefType(_, T:Type)
-          requires isFunctionType(getReturn(T)) orBool isArrayType(getReturn(T))
+          ~> checkFunDefType(_, t(_, functionType(_:ArrayOrFunctionType, _)))
           [structural]
      rule (.K => UNDEF("FD3", "incomplete parameter type in "
                +String "function definition.", "6.7.6.3:4"))
-          ~> checkFunDefType(_, T:Type)
-          requires notBool areVoidOrComplete(getParams(T))
+          ~> checkFunDefType(_, t(_, functionType(_, P:List)))
+          requires notBool areVoidOrComplete(P)
           [structural]
 
      syntax Bool ::= isVoidOrComplete(Type) [function]
@@ -119,49 +119,51 @@ module C-FUNCTION-DEF
      rule checkMainDef(t(_, functionType(t(_, int),
                ListItem(t(_, int)) ListItem(T:Type))))
           => .K
-          requires #isArgvType(T) ==K true
+          requires isArgvType(T)
           [structural]
-     rule (.K => ERROR("FD4", "definition of main requires a prototype (5.1.2.2.1p1)."))
+     rule (.K => CV("FD4", "definition of main requires a prototype.", "5.1.2.2.1:1"))
           ~> checkMainDef(T:Type)
           requires isOldStyleFunctionType(T)
           [structural]
-     rule (.K => ERROR("FD5", "main must return an int.", 4) )
+     rule (.K => CV("FD5", "main must return an int.", "5.1.2.2.1:1") )
           ~> checkMainDef(t(_, functionType(t(_, T:SimpleType), _)))
           requires T =/=K int
           [structural]
-     rule (.K => ERROR("FD6", "if main has arguments, the type of the first argument must be equivalent to int.", 4) )
+     rule (.K => CV("FD6", "if main has arguments, the type of the first argument must be equivalent to int.", "5.1.2.2.1:1") )
           ~> checkMainDef(t(_, functionType(_, ListItem(t(_, T:SimpleType)) _)))
           requires T =/=K int andBool T =/=K void
           [structural]
-     rule (.K => ERROR("FD7", "if main has arguments, the type of the second argument must be equivalent to char**.") )
+     rule (.K => CV("FD7", "if main has arguments, the type of the second argument must be equivalent to char**.", "5.1.2.2.1:1") )
           ~> checkMainDef(t(_, functionType(_, ListItem(_:Type) ListItem(T:Type))))
-          requires #isArgvType(T) =/=K true
+          requires notBool isArgvType(T)
           [structural]
-     rule (.K => ERROR("FD8", "main must have zero or two parameters.") )
+     rule (.K => CV("FD8", "main must have zero or two parameters.", "5.1.2.2.1:1") )
           ~> checkMainDef(t(_, functionType(_, Params:List)))
           requires size(Params) >Int 2
           [structural]
-     rule (.K => ERROR("FD9", "main must have zero or two parameters.") )
+     rule (.K => CV("FD9", "main must have zero or two parameters.", "5.1.2.2.1:1") )
           ~> checkMainDef(t(_, functionType(_, ListItem(t(_, T:SimpleType)))))
           requires T =/=K void
           [structural]
 
-     syntax Bool ::= #isArgvType(Type) [function]
-     rule #isArgvType(t(_, incompleteArrayType(t(_, pointerType(t(_, T:SimpleType))))))
+     syntax Bool ::= isArgvType(Type) [function]
+     rule isArgvType(t(_, incompleteArrayType(t(_, pointerType(t(_, T:SimpleType))))))
           => true
           requires T ==K char // char is an alias.
-     rule #isArgvType(t(_, pointerType(t(_, pointerType(t(_, T:SimpleType))))))
+     rule isArgvType(t(_, pointerType(t(_, pointerType(t(_, T:SimpleType))))))
           => true
           requires T ==K char
-     rule #isArgvType(_) => false [owise]
+     rule isArgvType(_) => false [owise]
 
+     rule initFunction(tv(Loc:SymLoc, T:Type), X:CId, Fun:KResult)
+          => te(initFunction(&(X), X, Fun), T)
+          requires isLinkerLoc(Loc)
      rule <k> initFunction(
-               tv(Loc:SymLoc, t(_, pointerType(T:Type))), Fun:KResult)
-               => .K
+               tv(Loc:SymLoc, t(_, pointerType(_:FunctionType))), _, Fun:KResult)
+               => voidVal
           ...</k>
           <functions> M:Map => M[base(Loc) <- Fun] </functions>
-          requires isFunctionType(T) andBool (notBool (base(Loc) in keys(M)))
-          [structural]
+          requires notBool isLinkerLoc(Loc)
 
      syntax KItem ::= safeBody(CId, K) [function]
 
@@ -174,15 +176,19 @@ module C-FUNCTION-DEF
      syntax KItem ::= "returnToFileScope"
 
      syntax KItem ::= staticEval(CId, List, K)
+     syntax KItem ::= calculateGotoMap(CId)
+
      rule <k> staticEval(X:CId, Params:List, Blk:K)
-               => pushBlock
-               ~> dummyBind(Params)
-               ~> Blk
-               ~> popBlock
+               => generateRuleAnnotation(X)
+               ~> elaborate(dummyBind(Params) ~> Label(funLabel(X), safeBody(X, Blk)))
+               ~> calculateGotoMap(X)
                ~> returnToFileScope
           ...</k>
           <curr-function> _ => X </curr-function>
           [structural]
+
+     rule elaborateDone(K:K) ~> calculateGotoMap(X:CId)
+          => calculateGotoMap(X, K)
 
      rule <k> returnToFileScope => .K ...</k>
           <curr-function> _ => file-scope </curr-function>
@@ -230,11 +236,10 @@ module C-FUNCTION-DEF
           [structural]
      rule dummyBind(ListItem(variadic)) => .K
           [structural]
-     rule dummyBind(ListItem(typedDeclaration(T:Type, _))) => .K
-          requires isVoidType(T)
+     rule dummyBind(ListItem(typedDeclaration(_:VoidType, _))) => .K
           [structural]
      rule dummyBind(ListItem(typedDeclaration(T:Type, X:CId)) Params:List)
-          => addToEnv(X, symVal)
+          => addToEnv(X, nonStatic)
           ~> giveType(X, T)
           ~> dummyBind(Params)
           requires notBool isVoidType(T)

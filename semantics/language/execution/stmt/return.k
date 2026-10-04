@@ -1,9 +1,12 @@
 module C-STMT-RETURN
+     imports C-CHECK-LOC-SYNTAX
+     imports C-COMMON-EXPR-EVAL-SYNTAX
      imports C-CONVERSION-SYNTAX
      imports C-DYNAMIC-SYNTAX
      imports C-ERROR-SYNTAX
      imports C-IO-BUFFERED-SYNTAX
      imports C-SEQUENCE-POINT-SYNTAX
+     imports C-STMT-BLOCK-SYNTAX
      imports C-SYNTAX
      imports C-TYPING-SYNTAX
 
@@ -23,34 +26,67 @@ module C-STMT-RETURN
      assignment to an object having the return type of the function.
      }*/
 
-     rule <k> (.K => deleteObject(Base)) ~> Return(_:KResult) ...</k>
-          <local-addresses>... SetItem(Base:SymBase) => .Set ...</local-addresses>
-          [structural]
-
-     rule <k> Return(_:KResult) ...</k>
-          <local-addresses> .Set => Addresses </local-addresses>
-          <block-stack>
-               ListItem(bag2K(_ <local-addresses> Addresses:Set </local-addresses>))
-               => .List
-          ...</block-stack>
-          [structural]
-
-     //  this is used for returns with no return value as well, since we return
-     //  "emptyValue", which will hopefully be cast to void
-     rule <k> Return(V:KResult) ~> _
-               => sequencePoint
-               ~> cast(T, V)
-               ~> K
-          </k>
+     rule <k> Return(V:RValue) => Return'(cast(T, V)) ...</k>
+          <curr-function> F:CId </curr-function>
+          <curr-tu> TU:String </curr-tu>
           <tu-id> TU </tu-id>
           <gtypes>...
-               F:CId |-> t(Mods:Set, functionType(T:Type, _))
+               F |-> t(Mods:Set, functionType(T:Type, _))
           ...</gtypes>
+          requires notBool (Noreturn in Mods)
+          [structural]
+     rule <k> (.K => UNDEF("ESR1", "Return from a function declared _Noreturn.",
+                    "6.7.4"))
+               ~> Return(_)
+          ...</k>
+          <curr-function> F:CId </curr-function>
+          <curr-tu> TU:String </curr-tu>
+          <tu-id> TU </tu-id>
+          <gtypes>...
+               F:CId |-> t(Mods:Set, _)
+          ...</gtypes>
+          requires Noreturn in Mods
+          [structural]
+
+     syntax KItem ::= "Return'" "(" K ")"
+                    | "Return''" "(" K ")"
+     context Return'(HOLE => reval(HOLE)) [result(RValue)]
+
+     /* recursively exits each Block wrapped in BlockStatement */
+     rule <k> (.K => exitRestrictScope(BlockNum) ~> popBlock)
+               ~> Return'(_:RValue)
+          ...</k>
+          <block-history> ListItem(BlockNum:Int) ...</block-history>
+          <block-stack> ListItem(_) ...</block-stack>
+          [structural]
+     /* exit the topmost Block of the function (which is not wrapped in
+      * BlockStatement) */
+     rule <k> (.K => exitRestrictScope(BlockNum) ~> deleteLocals)
+               ~> (Return'(V:RValue) => Return''(V))
+          ...</k>
+          <block-history> ListItem(BlockNum:Int) ...</block-history>
+          <block-stack> .List </block-stack>
+          [structural]
+     /* delete the locals when the function body is not wrapped in Block */
+     rule <k> (.K => deleteLocals)
+               ~> (Return'(V:RValue) => Return''(V))
+          ...</k>
+          <block-history> .List </block-history>
+          <block-stack> .List </block-stack>
+          [structural]
+     //  this is used for returns with no return value as well, since we return
+     //  "emptyValue", which will hopefully be cast to void
+     rule <k> Return''(V:RValue) ~> _
+               => exitRestrictScope(F)
+               ~> sequencePoint
+               ~> checkUse(stripConstants(V))
+               ~> K
+          </k>
           <control>
-               <curr-tu> TU:String => OldTU </curr-tu>
-               <curr-function> F:CId => CurrFun </curr-function>
-               <curr-function-params> _ => CurrFunParams </curr-function-params>
-               <curr-program-loc> _ => CurrLoc </curr-program-loc>
+               <curr-tu> _ => OldTU </curr-tu>
+               <curr-function> F:CId => OldFun </curr-function>
+               <curr-function-params> _ => OldFunParams </curr-function-params>
+               <curr-program-loc> _ => OldLoc </curr-program-loc>
                (<control-details>...
                     <local>...
                          <local-addresses> .Set </local-addresses>
@@ -67,30 +103,17 @@ module C-STMT-RETURN
                               C:Bag
                          </stack-control>
                          <stack-curr-function>
-                              CurrFun:CId
+                              OldFun:CId
                          </stack-curr-function>
                          <stack-curr-function-params>
-                              CurrFunParams:List
+                              OldFunParams:List
                          </stack-curr-function-params>
                          <stack-curr-program-loc>
-                              CurrLoc:K
+                              OldLoc:K
                          </stack-curr-program-loc>
                     ...</call-stack-frame>
                )) => .List
           ...</call-stack>
-          requires notBool (Noreturn in Mods)
           [structural]
 
-     rule <k> (.K => UNDEF("ESR1", "Return from a function declared _Noreturn.",
-                    "6.7.4"))
-               ~> Return(_)
-          ...</k>
-          <curr-function> F:CId </curr-function>
-          <curr-tu> TU:String </curr-tu>
-          <tu-id> TU </tu-id>
-          <gtypes>...
-               F:CId |-> t(Mods:Set, _)
-          ...</gtypes>
-          requires Noreturn in Mods
-          [structural]
 endmodule

@@ -2,14 +2,16 @@ module LIBC-STDLIB
      imports LIBC-BOOTSTRAP-SYNTAX
      imports LIBC-IO-SYNTAX
 
-     imports C-SYNTAX
      imports C-DYNAMIC-SYNTAX
-     imports C-TYPING-SYNTAX
-     imports C-SYMLOC-SYNTAX
-     imports C-MEMORY-ALLOC-SYNTAX
+     imports C-ERROR-SYNTAX
      imports C-IO-BUFFERED-SYNTAX
-     imports C-SETTINGS-SYNTAX
+     imports C-MEMORY-ALLOC-SYNTAX
      imports COMPAT-SYNTAX
+     imports C-SETTINGS-SYNTAX
+     imports C-SETTINGS-SYNTAX
+     imports C-SYMLOC-SYNTAX
+     imports C-SYNTAX
+     imports C-TYPING-SYNTAX
 
      syntax KItem ::= printString(K)
 
@@ -49,7 +51,7 @@ module LIBC-STDLIB
      rule <k> prepareBuiltin(Identifier("malloc"),
                     hrItem(tv(Len:Int, _)))
                => alloc(Base, t(.Set, no-type), Len:Int)
-               ~> tv(loc(Base, 0, SetItem(fromArray(0, Len))),
+               ~> tv(addProv(fromArray(0, Len), lnew(Base, cfg:alignofMalloc)),
                     t(.Set, pointerType(t(.Set, void))))
           ...</k>
           <malloced>... .Map => Base |-> Len:Int ...</malloced>
@@ -92,6 +94,15 @@ module LIBC-STDLIB
           <next-malloced> NewBase:SymBase => linc(NewBase) </next-malloced>
           [structural]
 
+     rule <k> (.K => UNDEF("STDLIB1", "Called realloc on memory not allocated by malloc, or already freed.",
+                           "7.22.3.5:3"))
+              ~> prepareBuiltin(Identifier("realloc"),
+                    hrItem(tv(loc(Base:SymBase, 0), _)) hs::
+                    hrItem(tv(_, _)))
+          ...</k>
+          <malloced> Malloced:Map </malloced>
+          requires notBool Base in keys(Malloced)
+
      rule [realloc-null]:
           prepareBuiltin(Identifier("realloc"),
                hrItem(tv(NullPointer, _)) hs::
@@ -105,7 +116,7 @@ module LIBC-STDLIB
                hrItem(tv(N:Int, _)) hs::
                hrItem(tv(Size:Int, _)))
           => prepareBuiltin(Identifier("malloc"),
-               hrItem(tv(N:Int *Int Size:Int, cfg:sizeut)))
+               hrItem(tv(N:Int *Int Size:Int, t(.Set, cfg:sizeut))))
           ~> calloc-aux
           [structural]
      rule (.K => zeroObject(base(Loc)) )
@@ -126,13 +137,14 @@ module LIBC-STDLIB
 
      // Returns a pseudo-random integral number in the range 0 to RAND_MAX
      // fixme should use RAND_MAX
-     rule [rand]:
+     // TODO(dwightguth): fix this builtin
+/*     rule [rand]:
           <k> prepareBuiltin((Identifier("rand")), .HeatList)
                => tv(absInt(randomRandom(Seed:Int))
                     %Int max(t(.Set, int)), t(.Set, int))
           ...</k>
           <rand-nat> Seed:Int => Seed:Int +Int 1 </rand-nat>
-          [structural]
+          [structural]*/
 
      rule [srand]:
           <k> prepareBuiltin(Identifier("srand"),

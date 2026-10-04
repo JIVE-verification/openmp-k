@@ -1,52 +1,31 @@
 module C-COMMON-EXPR-EVAL-SYNTAX
      imports C-SYMLOC-SYNTAX
 
-     // TODO(chathhorn): hackish, rename at least
-     //TODO(liyili2): change it to function in order to solve anywhere problem
-     syntax KItem ::= rkludge(K) [function]
-     syntax KItem ::= pkludge(K) [function]
      syntax KItem ::= instantiate(SymLoc, Type)
-     syntax KItem ::= checkLoc(SymLoc)
+     syntax KItem ::= checkUse(K) [strict]
+     syntax Type ::= arrayToPtrType(Type) [function]
 endmodule
 
 module C-COMMON-EXPR-EVAL
      imports C-COMMON-EXPR-EVAL-SYNTAX
 
-     imports C-BITS-SYNTAX
      imports C-BITSIZE-SYNTAX
+     imports C-BITS-SYNTAX
      imports C-DYNAMIC-SYNTAX
      imports C-ERROR-SYNTAX
-     imports C-LITERAL-SYNTAX
      imports C-MEMORY-ALLOC-SYNTAX
+     imports C-SYMLOC-SYNTAX
      imports C-SYNTAX
      imports C-TYPING-SYNTAX
 
-     // chathhorn: to work around the new semantics for contexts.
-     rule reval(K:K) => checkUse(K) ~> reval(HOLE) [heat]
-     rule K:K ~> reval(HOLE) => reval(rkludge(K)) [cool, ndlocal]
-     rule rkludge(K:K) => K
-          requires isKResult(K:K) =/=K true
+     rule reval(K:K) => K ~> reval(HOLE) [heat]
+     rule K:K ~> reval(HOLE) => reval(K) [cool, ndlocal]
 
-     rule peval(K:K) => K ~> peval(HOLE) [heat]
-     rule K:K ~> peval(HOLE) => peval(pkludge(K)) [cool, ndlocal]
-     rule pkludge(K:K) => K
-          requires isKResult(K:K) =/=K true
-
-     rule lv(L:SymLoc, T:Type) => lval(L, T)
-          [structural]
-
-     // FIXME Whoah!  What about char types?  What is this about?
      // If the lvalue designates an object of automatic storage duration that
      // could have been declared with the register storage class (never had its
      // address taken), and that object is uninitialized (not declared with an
      // initializer and no assignment to it has been performed prior to use),
      // the behavior is undefined.
-
-     rule rkludge(voidVal) => voidVal
-     rule rkludge(emptyValue) => emptyValue
-     rule rkludge(tv(V:CValue, T:Type)) => tv(V, T)
-
-     rule pkludge(tv(V:CValue, T:Type)) => tv(V, T)
 
      /*@ \fromStandard{\source[n1570]{\para{6.3.2.1}{2}}}{
      Except when it is the operand of the \cinline{sizeof} operator, the
@@ -62,14 +41,19 @@ module C-COMMON-EXPR-EVAL
      }*/
 
      // Lvalue conversion.
-     rule rkludge(lval(Loc:SymLoc, T:Type))
-          => instantiate(Loc, T)
-          requires notBool isArrayType(T)
-               andBool notBool isFunctionType(T)
+     rule reval(nclv(Loc:SymLoc, T:Type)
+          => checkUse(unqualify(instantiate(Loc, T))))
+          requires notBool isArrayOrFunctionType(T)
+          [structural]
 
-     rule pkludge(lval(Loc:SymLoc, T:Type)) => lval(Loc, T)
-          requires notBool isArrayType(T)
-               andBool notBool isFunctionType(T)
+     rule lv(Loc:SymLoc, T:Type) => nclv(Loc, T)
+          [structural]
+
+     syntax KItem ::= unqualify(K) [strict]
+     rule unqualify(tv(V:CValue, T:Type)) => tv(V, stripQualifiers(T))
+     rule unqualify(te(V:K, T:Type))
+          => te(Cast(stripQualifiers(T), V), stripQualifiers(T))
+     rule unqualify(trap(T:Type)) => trap(stripQualifiers(T))
 
      /*@ \fromStandard{\source[n1570]{\para{6.3.2.1}{3}}}{
      Except when it is the operand of the \cinline{sizeof} operator, the
@@ -80,80 +64,113 @@ module C-COMMON-EXPR-EVAL
      an lvalue. If the array object has register storage class, the behavior is
      undefined.
      }*/
-     rule rkludge(lval(Loc:SymLoc, T:Type))
-          => checkRegister(Loc, tv(arrayToPtrLoc(Loc, T), arrayToPtrType(T)))
-          requires isArrayType(T)
-     rule pkludge(lval(Loc:SymLoc, T:Type))
-          => checkRegister(Loc, tv(arrayToPtrLoc(Loc, T), arrayToPtrType(T)))
-          requires isArrayType(T)
 
-     syntax Type ::= arrayToPtrType(Type) [function]
+     rule reval(nclv(Loc:SymLoc, T:ArrayType)
+          => checkRegister(Loc)
+          ~> checkUse(tv(arrayToPtrLoc(Loc, T), arrayToPtrType(T))))
+          [structural]
+
      rule arrayToPtrType(T:Type)
-          => stripQualifiers(
-               t(getModifiers(T), pointerType(innerType(T))))
+          => stripQualifiers(t(getModifiers(T), pointerType(innerType(T))))
 
      syntax SymLoc ::= arrayToPtrLoc(SymLoc, Type) [function]
      rule arrayToPtrLoc(Loc:SymLoc, T:Type)
           => addProv(basedOn(base(Loc), getRestrictBlock(T)),
-               addProv(fromArray(0,
-                    byteSizeofType(innerType(T)) *Int arrayLength(T)),
-               Loc))
+             addProv(fromArray(0, byteSizeofType(innerType(T)) *Int arrayLength(T)),
+             Loc))
           requires isRestrictType(T)
      rule arrayToPtrLoc(Loc:SymLoc, T:Type)
-          => addProv(fromArray(0,
-               byteSizeofType(innerType(T)) *Int arrayLength(T)),
-               Loc)
+          => addProv(fromArray(0, byteSizeofType(innerType(T)) *Int arrayLength(T)),
+             Loc)
           requires notBool isRestrictType(T)
 
      /*@ \fromStandard{\source[n1570]{\para{6.3.2.1}{4}}}{
-     A function designator is an expression that has function type.  Except
+     A function designator is an expression that has function type. Except
      when it is the operand of the \cinline{sizeof} operator, the
      \cinline{_Alignof} operator, or the unary \cinline{&} operator, a function
      designator with type ``function returning T'' is converted to an
      expression that has type ``pointer to a function returning T''.
      }*/
-     rule rkludge(lval(Loc:SymLoc, T:Type))
-          => tv(Loc, t(.Set, pointerType(T)))
-          requires isFunctionType(T)
-     rule pkludge(lval(Loc:SymLoc, T:Type))
-          => tv(Loc, t(.Set, pointerType(T)))
-          requires isFunctionType(T)
 
-     //Solve the checkRegister constructor block
-     //due to heat K Sequence originally.
-     syntax KItem ::= checkRegister(SymLoc, K)
-     rule <k> checkRegister(_, K:K) => K ...</k>
+     rule reval(nclv(Loc:SymLoc, T:FunctionType)
+               => checkUse(tv(Loc, t(.Set, pointerType(T)))))
+          [structural]
+
+     rule reval(trap(T:Type)
+               => UNDEF("CEE2", "Indeterminate value used in an expression.",
+                    "6.2.4, 6.7.9, 6.8")
+               ~> tv(trap, T))
+          [structural]
+
+     syntax KItem ::= checkRegister(SymLoc)
+     rule <k> checkRegister(_) => .K ...</k>
           <initializing> I:Int </initializing>
           requires I >Int 0
           [structural]
-     rule <k> checkRegister(Loc:SymLoc, K:K) => K ...</k>
+     rule <k> checkRegister(Loc:SymLoc) => .K ...</k>
           <initializing> 0 </initializing>
           requires notBool isRegisterLoc(Loc)
           [structural]
-     rule <k> checkRegister(Loc:SymLoc, K:K)
+     rule <k> checkRegister(Loc:SymLoc)
                => UNDEF("CEE1",
                     "Address of an array declared with register storage class used in an expression.",
                     "6.3.2.1")
-               ~> K
           ...</k>
           <initializing> 0 </initializing>
           requires isRegisterLoc(Loc)
-
-     syntax KItem ::= checkUse(K) [strict]
+          [structural]
 
      rule checkUse(V:KResult) => V
-          requires isTypedValue(V:KResult) =/=K true
+          requires getKLabel(V) =/=KLabel 'tv
           [structural]
      rule checkUse(tv(V:CValue, T:Type)) => tv(V, T)
-          requires (isSymLoc(V:CValue) =/=K true)
-               andBool (isTrap(V:CValue) =/=K true)
+          requires isSymLoc(V) =/=K true andBool isTrap(V) =/=K true
+          [structural]
+     rule checkUse(tv(trap, T:Type)) => trap(T)
           [structural]
      rule checkUse(tv(V:SymLoc, T:Type)) => checkLoc(V) ~> tv(V, T)
           [structural]
-     rule checkUse(tv(trap, T:Type))
-          => UNDEF("CEE2", "Indeterminate value used in an expression.",
-               "6.2.4, 6.7.9, 6.8")
-          ~> tv(trap, T)
+
+     syntax KItem ::= checkLoc(SymLoc)
+     rule checkLoc(Loc:SymLoc) => checkLoc'(stripProv(Loc))
+          [structural]
+
+     syntax KItem ::= "checkLoc'" "(" SymLoc ")"
+     rule checkLoc'(NullPointer) => .K
+          [structural]
+     rule <k> checkLoc'(Loc:SymLoc) => .K ...</k>
+          <mem> Mem:Map </mem>
+          requires (isStaticDuration(Loc) orBool isNativeLoc(Loc))
+               andBool notBool (base(Loc) in keys(Mem))
+          [structural]
+     rule <k> checkLoc'(loc(Base:SymBase, Offset:Int))
+               => checkOffsets(Offset, Len)
+          ...</k>
+          <mem>... Base |-> object(_, Len:Int, _, _) ...</mem>
+          [structural]
+     rule <k> checkLoc'(loc(Base:SymBase, Offset:Int)) => errorLocInvalid ...</k>
+          <mem> Mem:Map </mem>
+          requires notBool (Base in keys(Mem))
+               andBool notBool isStaticDuration(loc(Base, Offset))
+               andBool notBool isNativeLoc(loc(Base, Offset))
+          [structural]
+
+     syntax KItem ::= checkOffsets(Int, Int) [function]
+     rule checkOffsets(Offset:Int, Len:Int) => .K
+          requires (Offset <=Int Len) andBool (Offset >=Int 0)
+     rule checkOffsets(_, _) => errorLocBounds [owise]
+
+     syntax Error ::= "errorLocInvalid"
+                    | "errorLocBounds"
+     rule errorLocInvalid
+          => UNDEF("CEE2",
+               "Referring to an object outside of its lifetime.",
+               "6.2.4")
+          [structural]
+     rule errorLocBounds
+          => UNDEF("CEE3",
+               "Found pointer that refers outside the bounds of an object + 1.",
+               "6.2.4")
           [structural]
 
 endmodule

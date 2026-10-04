@@ -24,23 +24,11 @@ module C-STMT-LOOP
      omitted $\textit{expression-2}$ is replaced by a nonzero constant.
      }*/
 
-     // @omp-start     
-     syntax Statement ::= "waitingForChild"
-     syntax Statement ::= "joinChild"
-     syntax Statement ::= "jive"
-     // @omp-end 
-
-     rule ForClauseExpression(K:K) => Computation(K) [structural]
-
      //  fixme fishy interaction with continue i think
      rule [for-mark]:
-          <k> For(ForNum:Int, Pre:K, Control:K, Post:K, S:K) ~> K:K
-               => pushBlock
-               ~> addToHistory(ForNum)
-               ~> Pre
-               ~> loopMarked
-               ~> For(ForNum, Pre,
-                    (#if Control =/=K emptyValue
+          <k> For(Control:K, Post:K, S:K) ~> K:K
+               => loopMarked
+               ~> For((#if Control =/=K emptyValue
                     #then Control
                     #else tv(1, t(.Set, int)) #fi),
                     Post, S)
@@ -51,10 +39,10 @@ module C-STMT-LOOP
           [structural]
 
      rule [for]:
-          <k> loopMarked ~> For(ForNum:Int, Pre:K, Control:K, Post:K, S:K)
-               => IfThenElse(Control:K,
-                    (S:K ~> Computation(Post:K) ~> loopMarked
-                    ~> For(ForNum:Int, Pre:K, Control:K, Post:K, S:K)), Nop)
+          <k> loopMarked ~> For(Control:K, Post:K, S:K)
+               => IfThenElse(Control,
+                    (S ~> Computation(Post) ~> loopMarked
+                    ~> For(Control, Post, S)), Nop)
           ...</k>
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
@@ -64,143 +52,6 @@ module C-STMT-LOOP
      execution of the loop body.
      }*/
 
-     rule [zero-thread-omp-parallel-for]:
-          <thread>...
-          <thread-id> ThId:Int </thread-id>
-          <k> OmpParallelFor(BlockNum:Int, Pre:K, Control:K, Post:K, S:K)
-               => For(BlockNum, Pre, Control, Post, S) ~> waitingForChild
-               ...</k>
-          ...</thread>
-          <omp-current-threads> CurrentThreads:Int</omp-current-threads>
-          when CurrentThreads ==Int 0
-
-
-     rule [other-thread-omp-parallel-for]:
-          <thread>
-          ...
-               <thread-id> Parent:Int </thread-id>
-               <thread-local> 
-                    C:Bag 
-                    <parent-thread> _ </parent-thread>
-                    <child-threads> ... .Set => SetItem(Fresh)</child-threads>
-               </thread-local>
-               <k> 
-                    OmpParallelFor(BlockNum:Int, Pre:K, Control:K, Post:K, S:K)
-                    => OmpParallelFor(BlockNum, Pre, Control, Post, S)
-               ...
-               </k>
-          ...
-          </thread>
-          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
-          <omp-current-threads> CurrentThreads:Int => CurrentThreads -Int 1 </omp-current-threads>
-          (.Bag =>
-          <thread>
-          ...
-               <thread-id> Fresh:Int </thread-id>
-               <k>  
-                    For(BlockNum, Pre, Control, Post, S) ~> joinChild
-               </k>
-               <thread-local>
-                    C
-                    <parent-thread> Parent </parent-thread>
-                    <child-threads> .Set </child-threads>
-               </thread-local>
-          ...
-          </thread>)
-          requires CurrentThreads =/=Int 0
-          [large, ndthread]
-
-     // @omp thread interleaving
-     ///*
-     syntax Statement ::= "interleave"
-     rule interleave => .K [threadleave]
-
-     syntax List ::= putInterleavePoints(List, List)[function]
-
-     //rule putInterleavePoints(.List, .List) => .List
-     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc))) => putInterleavePoints(ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)) , .List)
-     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc)) L2:List) => putInterleavePoints(ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), L2)
-     rule putInterleavePoints(L1:List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc)) L2:List) => putInterleavePoints(L1 ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), L2)
-     rule putInterleavePoints(L1:List, ListItem(CodeLoc(Cm:PureStatement, Ln:CabsLoc))) => putInterleavePoints(L1 ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), .List)
-     rule putInterleavePoints(L1:List, .List) => L1
-
-     syntax PureStatement ::= OmpParallel2(K)
-
-     rule <k> 
-               OmpParallel(BlockStatement(Block(B1:Int, L1:K, list(ListItem(CodeLoc(BlockStatement(Block(B2:Int, L2:K, list(TList:List))), Ln:CabsLoc)) LL1:List)))) => OmpParallel2(BlockStatement(Block(B1, L1, list(ListItem(CodeLoc(BlockStatement(Block(B2, L2, list(putInterleavePoints(.List , TList)))), Ln)) LL1:List))))
-          ...</k>
-
-     rule [zero-thread-omp-parallel]:
-          <thread>...
-          <thread-id> ThId:Int </thread-id>
-          <k> OmpParallel2(S:K) => S ~> waitingForChild
-               ...</k>
-          ...</thread>
-          <omp-current-threads> CurrentThreads:Int</omp-current-threads>
-          when CurrentThreads ==Int 0
-
-
-     rule [other-thread-omp-parallel]:
-          <thread>
-          ...
-               <thread-id> Parent:Int </thread-id>
-               <next-loc> _ </next-loc>
-               <thread-local> 
-                    C:Bag 
-                    <parent-thread> _ </parent-thread>
-                    <child-threads> ... .Set => SetItem(Fresh)</child-threads>
-               </thread-local>
-               <k> 
-                    OmpParallel2(S:K) => OmpParallel2(S)
-               ...
-               </k>
-          ...
-          </thread>
-          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
-          <omp-current-threads> CurrentThreads:Int => CurrentThreads -Int 1 </omp-current-threads>
-          (.Bag =>
-          <thread>
-          ...
-               <thread-id> Fresh:Int </thread-id>
-               <next-loc> 0 @ thread(Fresh:Int) </next-loc>
-               <k>  
-                    S ~> joinChild
-               </k>
-               <thread-local>
-                    C
-                    <parent-thread> Parent </parent-thread>
-                    <child-threads> .Set </child-threads>
-               </thread-local>
-          ...
-          </thread>)
-          requires CurrentThreads >Int 0
-          [large, ndthread]
-
-     rule [join-if-no-child]:
-          <thread> ...
-               <k>
-                    waitingForChild => .K 
-               ...</k>
-               <child-threads> .Set </child-threads>
-          ...
-          </thread>
-
-     rule [join-child-thread]:
-          ((<thread>...
-               <thread-id> ThId:Int </thread-id>
-               <k>
-                    joinChild
-               </k>
-               <child-threads> .Set </child-threads>
-               <parent-thread> P:Int </parent-thread>
-               ...</thread>) => .Bag)
-          <thread>
-          ...
-               <thread-id> P </thread-id>
-               <child-threads> ... SetItem(ThId) => .Set ...</child-threads>
-          ...
-          </thread>
-          
      rule [while-mark]:
           <k>
                While(B:K, S:K) ~> K:K
@@ -288,7 +139,7 @@ module C-STMT-LOOP
      rule [continue-done-for]:
           (Continue => Computation(Post))
           ~> loopMarked
-          ~> For(_:Int, _, _, Post:K, _)
+          ~> For(_, Post:K, _)
           [structural]
      rule [continue-done]:
           (Continue => .K) ~> loopMarked ~> L:KLabel(_)

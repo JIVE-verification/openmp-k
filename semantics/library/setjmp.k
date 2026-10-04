@@ -93,7 +93,7 @@ module LIBC-SETJMP
      rule [setjmp]:
           <k> (prepareBuiltin(Identifier("setjmp"),
                hrItem(tv(Loc:SymLoc, t(_, pointerType(t(_,
-                    structType(Identifier("jmp_buf_"), _, _)))))))
+                    structType(global(Identifier("__jmp_buf_tag"), "builtin"))))))))
                => ignoreLocals
                     ~> writeByte(Loc, bag(
                          <thread-state>
@@ -109,7 +109,7 @@ module LIBC-SETJMP
           [structural]
 
      syntax KItem ::= "longjmp-aux" "(" K "," K ")" [strict(2)]
-     context longjmp-aux(HOLE => reval(HOLE), _)
+     context longjmp-aux(HOLE => reval(HOLE), _) [result(RValue)]
      rule [longjmp-prepare]:
           prepareBuiltin(Identifier("longjmp"),
                hrItem(V:KResult) hs::
@@ -126,7 +126,7 @@ module LIBC-SETJMP
                          <thread-continuation> K:K </thread-continuation>
                          <saved-thread-local>C:Bag</saved-thread-local>
                     </thread-state>
-               ))), t(_, structType(Identifier("jmp_buf_"), _, _))),
+               ))), t(_, structType(global(Identifier("__jmp_buf_tag"), "builtin")))),
                     tv(I:Int, t(_, int))) ~> _
                => ignoreLocals
                     ~> #if I:Int ==Int 0

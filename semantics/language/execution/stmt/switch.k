@@ -1,10 +1,10 @@
 module C-STMT-SWITCH
-     imports C-SYNTAX
-     imports C-DYNAMIC-SYNTAX
-     imports C-PROMOTION-SYNTAX
      imports C-CONVERSION-SYNTAX
-     imports C-TYPING-SYNTAX
+     imports C-DYNAMIC-SYNTAX
      imports C-SEQUENCE-POINT-SYNTAX
+     imports C-SYNTAX
+     imports C-TYPING-SYNTAX
+
      imports COMPAT-SYNTAX
 
      // switch num, promoted value of controlling exp, int value of exp
@@ -30,14 +30,14 @@ module C-STMT-SWITCH
      \cinline{default} label, no part of the switch body is executed.
      }*/
 
-     rule Switch(SN:Int, tv(V:K, T:Type), _)
+     // Promotions already handled.
+     rule Switch(SN:Int, tv(V:K, T:IntegerType), _)
           => sequencePoint
-               ~> handleSwitch(SN, cast(promote(T), tv(V, T)))
-          requires hasIntegerType(T)
+               ~> handleSwitch(SN, tv(V, T))
           [structural]
 
      rule <k> handleSwitch(SN:Int, V:KResult)
-               => #handleSwitch-aux(SN, V,.K, .K, M)
+               => #handleSwitch-aux(SN, V, .K, M)
           ...</k>
           <curr-function> F:CId </curr-function>
           <curr-tu> Tu:String </curr-tu>
@@ -46,54 +46,51 @@ module C-STMT-SWITCH
           [structural]
 
      // K to be evaluated, val it should be, casehelper
-     syntax KItem ::= tryCase(K, Value, K)
-     context tryCase((HOLE => reval(HOLE)), _, _)
+     syntax KItem ::= tryCase(RValue, RValue, K)
 
-     syntax KItem ::= "#handleSwitch-aux" "(" Int "," Value "," K "," K "," Map ")"
+     syntax KItem ::= "#handleSwitch-aux" "(" Int "," RValue "," K "," Map ")"
 
-     rule #handleSwitch-aux(_, _, .K, _, .Map) => .K
+     rule #handleSwitch-aux(_, _, .K, .Map) => .K
           [structural]
 
-     rule #handleSwitch-aux(SN:Int, V:Value, .K, _,
-               (Key:K |-> CaseHelper:K) M:Map)
-          => #handleSwitch-aux(SN, V, Key, CaseHelper, M)
+     rule #handleSwitch-aux(SN:Int, V:RValue, .K,
+               (Key:K |-> _) M:Map)
+          => #handleSwitch-aux(SN, V, Key, M)
           [structural]
 
-     rule #handleSwitch-aux(SN:Int, V:Value, genLabel(SN, Exp:K),
-               CaseHelper:K, M:Map)
-          => (tryCase(Exp, V, CaseHelper)
-          ~> #handleSwitch-aux(SN, V, .K, .K, M))
+     rule #handleSwitch-aux(SN:Int, V:RValue, caseLabel(SN, Exp:K), M:Map)
+          => (tryCase(Exp, V, caseLabel(SN, Exp))
+          ~> #handleSwitch-aux(SN, V, .K, M))
           requires Exp =/=K l('Default)
           [structural]
 
      //  if all that's left is a default, do it
-     rule #handleSwitch-aux(SN:Int, V:Value, genLabel(SN:Int, l('Default)),
-               _:K, M:Map)
-          => (#handleSwitch-aux(SN, V, .K, .K, M)
-          ~> Goto(genLabel(SN, l('Default))))
+     rule #handleSwitch-aux(SN:Int, V:RValue, caseLabel(SN:Int, l('Default)), M:Map)
+          => (#handleSwitch-aux(SN, V, .K, M)
+          ~> Goto(caseLabel(SN, l('Default))))
           [structural]
 
-     rule #handleSwitch-aux(SN:Int, _, (genLabel(SN':Int, _:K) => .K),
-               (_ => .K), _)
+     rule #handleSwitch-aux(SN:Int, _, (caseLabel(SN':Int, _:K) => .K), _)
           requires SN =/=Int SN'
           [structural]
 
-     rule #handleSwitch-aux(_:Int, _:Value, (K:K => .K),
-               (_ => .K), _)
-          requires getKLabel(K) =/=KLabel 'genLabel
+     rule #handleSwitch-aux(_:Int, _:RValue, (K:K => .K), _)
+          requires getKLabel(K) =/=KLabel 'caseLabel
           [structural]
 
      rule tryCase(
-               (tv(V:K, T':Type) => cast(T, tv(V, T'))),
+               (tv(V:K, T':Type) => stripConstants(cast(T, tv(V, T')))),
                tv(_, T:Type), _)
-          requires T =/=K T'
+          requires T =/=Type T'
           [structural]
-     rule tryCase(tv(V':K, T:Type), tv(V:K, T:Type), _) => .K
-          requires V =/=K V'
+     rule tryCase(tv(V':K, T':Type), tv(V:K, T:Type), _) => .K
+          requires (V =/=K V') andBool (T ==Type T')
           [structural]
      //  match found in value and type, goto it
      //  don't need to erase the rest of K since we're GOTOing
-     rule tryCase(V:Value, V:Value, CaseHelper:K) => Goto(CaseHelper)
+     rule tryCase(tv(V:CValue, T':Type), tv(V:CValue, T:Type), CaseLabel:K)
+          => Goto(CaseLabel)
+          requires T ==Type T'
           [structural]
 
 endmodule

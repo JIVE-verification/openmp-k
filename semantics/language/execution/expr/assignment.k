@@ -7,84 +7,138 @@ module C-EXPR-ASSIGNMENT
      imports C-SYNTAX
      imports C-TYPING-SYNTAX
 
-     rule lval(Loc:SymLoc, T:Type) := tv(V:CValue, T)
-          => write(Loc, V, T)
+     rule nclv(Loc:SymLoc, T':Type) := tv(V:CValue, T:Type)
+          => checkOverlap(stripProv(Loc), T, T')
+          ~> write(Loc, V, T')
           ~> transferProv(Loc, tv(V, T))
           requires notBool isRestrictType(T)
-               andBool notBool #fromArrayStatic(T)
+               andBool notBool fromArrayStatic(T')
+               andBool (T ==Type T')
           [structural]
-     rule lval(Loc:SymLoc, T:Type) := tv(V:CValue, T)
-          => checkArrayStaticAssign(T, tv(V, T))
-          ~> write(Loc, V, T)
+     rule nclv(Loc:SymLoc, T':Type) := tv(V:CValue, T:Type)
+          => checkOverlap(stripProv(Loc), T, T')
+          ~> checkArrayStaticAssign(T', V)
+          ~> write(Loc, V, T')
           ~> transferProv(Loc, tv(V, T))
           requires notBool isRestrictType(T)
-               andBool #fromArrayStatic(T)
+               andBool fromArrayStatic(T')
+               andBool (T ==Type T')
           [structural]
-     rule lval(Loc:SymLoc, T:Type) := tv(V:SymLoc, T)
-          => checkRestrictAssign(getRestrictBlock(T), getRelevantTags(Loc, V))
-          ~> write(Loc, V, T)
-          ~> transferProv(Loc, tv(V, T))
-          requires isRestrictType(T)
-          [structural]
-     rule lval(Loc:SymLoc, T:Type) := tv(V:SymLoc, T)
-          => checkArrayStaticAssign(T, tv(V, T))
+     rule nclv(Loc:SymLoc, T':Type) := tv(V:SymLoc, T:Type)
+          => checkOverlap(stripProv(Loc), T, T')
           ~> checkRestrictAssign(getRestrictBlock(T), getRelevantTags(Loc, V))
-          ~> write(Loc, V, T)
+          ~> write(Loc, V, T')
           ~> transferProv(Loc, tv(V, T))
           requires isRestrictType(T)
-               andBool #fromArrayStatic(T)
+               andBool (T ==Type T')
+          [structural]
+     rule nclv(Loc:SymLoc, T':Type) := tv(V:SymLoc, T:Type)
+          => checkOverlap(stripProv(Loc), T, T')
+          ~> checkArrayStaticAssign(T', V)
+          ~> checkRestrictAssign(getRestrictBlock(T), getRelevantTags(Loc, V))
+          ~> write(Loc, V, T')
+          ~> transferProv(Loc, tv(V, T))
+          requires isRestrictType(T)
+               andBool fromArrayStatic(T')
+               andBool (T ==Type T')
+          [structural]
+
+     syntax KItem ::= checkOverlap(SymLoc, Type, Type)
+     rule checkOverlap(Loc:SymLoc, T:Type, T':Type) => .K
+          requires notBool hasReadFrom(T)
+               orBool (getReadFromLoc(T) ==K Loc
+                   andBool getReadFromLen(T) ==K byteSizeofType(T'))
+               orBool notBool sameBase(getReadFromLoc(T), Loc)
+               orBool (getReadFromLoc(T) +bytes byteSizeofType(T)) <=bytes Loc
+               orBool (Loc +bytes byteSizeofType(T)) <=bytes getReadFromLoc(T)
+          [structural]
+     rule (.K => UNDEF("EEA1",
+               "assignment from non-exactly-overlapping overlapping read.",
+               "6.5.16.2"))
+          ~> checkOverlap(Loc:SymLoc, T:Type, T':Type)
+          requires hasReadFrom(T)
+               andBool sameBase(getReadFromLoc(T), Loc)
+               andBool (getReadFromLoc(T) =/=K Loc
+                   orBool getReadFromLen(T) =/=K byteSizeofType(T'))
+               andBool (getReadFromLoc(T) +bytes byteSizeofType(T)) >bytes Loc
+               andBool (Loc +bytes byteSizeofType(T)) >bytes getReadFromLoc(T)
           [structural]
 
      syntax Set ::= getRelevantTags(SymLoc, SymLoc) [function]
      rule getRelevantTags(Loc':SymLoc, Loc:SymLoc)
-          => getRelevantTags'(stripProv(Loc'), getBases(Loc))
+          => getRelevantTags'(.K, stripProv(Loc'), getBases(Loc))
 
-     syntax Set ::= "getRelevantTags'" "(" SymLoc "," Set ")" [function]
-     // TODO(chathhorn): java port (keys).
-     // rule getRelevantTags'(loc(Base:SymBase, Offset:Int),
-     //           SetItem(basedOn(Base, _)) S:Set)
-     //      => getRelevantTags'(loc(Base, Offset), S)
-     // rule getRelevantTags'(loc(Base:SymBase, Offset:Int),
-     //           SetItem(basedOn(Base':SymBase, Tag:RestrictTag)) S:Set)
-     //      => SetItem(Tag) getRelevantTags'(loc(Base, Offset), S)
-     //      requires Base =/=K Base'
-     rule getRelevantTags'(_, .Set) => .Set
+     syntax Set ::= "getRelevantTags'" "(" K "," SymLoc "," Set ")" [function]
+     rule getRelevantTags'((.K => K), _, (SetItem(K:K) => .Set) _)
+     rule getRelevantTags'((basedOn(Base, _) => .K), loc(Base:SymBase, _), _)
+     rule getRelevantTags'(basedOn(Base':SymBase, Tag:BlockTag),
+               loc(Base:SymBase, Offset:Int), Bases:Set)
+          => SetItem(Tag) getRelevantTags'(.K, loc(Base:SymBase, Offset), Bases)
+          requires Base =/=K Base'
+     rule getRelevantTags'(.K, _, .Set) => .Set
 
-     syntax KItem ::= checkRestrictAssign(RestrictTag, Set)
-     // TODO(chathhorn): java port (keys).
-     // rule checkRestrictAssign(Tag:RestrictTag, SetItem(Tag':RestrictTag) S:Set)
-     //      => checkRestrictAssign(Tag, S)
-     //      requires Tag =/=K Tag'
-     rule checkRestrictAssign(Tag:RestrictTag, SetItem(Tag) _)
-          => UNDEF("CEA4", "Attempt to alias restrict qualified pointers associated with the same block.", "6.7.3.1:4")
+     syntax KItem ::= checkRestrictAssign(BlockTag, Set)
+     rule checkRestrictAssign(Tag:BlockTag, Tags:Set) => .K
+          requires (Tag =/=K global) andBool notBool (Tag in Tags)
+               orBool Tag ==K none
+     rule checkRestrictAssign(Tag:BlockTag, Tags:Set)
+          => UNDEF("EEA2", "Attempt to alias restrict qualified pointers associated with the same block.", "6.7.3.1:4")
+          requires Tag in Tags
+     rule checkRestrictAssign(global, .Set) => .K
      // TODO(chathhorn): more cases here we don't catch.
-     // rule checkRestrictAssign(global, SetItem(Tag:RestrictTag) _)
-     //      => UNDEF("CEA5", "Attempt to alias restrict qualified pointers associated with the incompatible blocks.", "")
-     //      requires Tag =/=K global
-     rule checkRestrictAssign(_, .Set) => .K
+     rule checkRestrictAssign(global, SetItem(_) _)
+          => UNDEF("EEA3", "Attempt to alias restrict qualified pointers associated with incompatible blocks.", "6.7.3.1:4")
 
-     syntax Bool ::= "#fromArrayStatic" "(" Type ")" [function]
-     rule #fromArrayStatic(t(SetItem(K:K) S:Set, T:SimpleType)) => getKLabel(K) ==KLabel 'arrayStatic orBool #fromArrayStatic(t(S, T))
-     rule #fromArrayStatic(_) => false [owise]
+     syntax Bool ::= fromArrayStatic(Type) [function]
+     rule fromArrayStatic(t(SetItem(K:K) S:Set, T:SimpleType))
+          => (getKLabel(K) ==KLabel 'arrayStatic) orBool fromArrayStatic(t(S, T))
+     rule fromArrayStatic(_) => false [owise]
 
-     syntax KItem ::= checkArrayStaticAssign(Type, TypedValue)
-     // TODO(chathhorn): java port (keys).
-     // rule checkArrayStaticAssign(
-     //           t(SetItem(arrayStatic(N:Int)) _, pointerType(T:Type)),
-     //           tv(loc(_, _, SetItem(fromArray(Offset:Int, Sz:Int)) _), _)) => .
-     //      requires (Sz -Int Offset) >=Int (N *Int byteSizeofType(T))
-     // rule (.K => UNDEF("CEA5",
-     //           "passing a pointer to an array object of fewer elements than required by a function parameter with a static-qualified array size.",
-     //           "6.7.6.3:7"))
-     //      ~> checkArrayStaticAssign(
-     //           t(SetItem(arrayStatic(N:Int)) _, pointerType(T:Type)),
-     //           tv(loc(_, _, SetItem(fromArray(Offset:Int, Sz:Int)) _), _))
-     //      requires (Sz -Int Offset) <Int (N *Int byteSizeofType(T))
-     rule (.K => UNDEF("CEA6",
+     syntax KItem ::= checkArrayStaticAssign(Type, CValue)
+                    | "checkArrayStaticAssign'" "(" Type "," Modifier "," Provenance ")"
+
+     rule checkArrayStaticAssign(t(Mods:Set, pointerType(T:Type)), loc(_, _, Prov:Set))
+          => checkArrayStaticAssign'(T,
+               getFirstMatch(Mods, 'arrayStatic),
+               getFirstMatch(Prov, 'fromArray))
+     rule (.K => UNDEF("EEA4",
                "passing a pointer not to an array object as a function parameter with a static-qualified array size.",
                "6.7.6.3:7"))
-          ~> checkArrayStaticAssign(_, tv(Loc:SymLoc, _))
+          ~> checkArrayStaticAssign(_, Loc:SymLoc)
           requires notBool isFromArray(Loc)
+
+     rule checkArrayStaticAssign'(T:Type,
+               arrayStatic(N:Int), fromArray(Offset:Int, Sz:Int))
+          => .K
+          requires (Sz -Int Offset) >=Int (N *Int byteSizeofType(T))
+     rule (.K => UNDEF("EEA5",
+               "passing a pointer to an array object of fewer elements than required by a function parameter with a static-qualified array size.",
+               "6.7.6.3:7"))
+          ~> checkArrayStaticAssign'(T:Type,
+               arrayStatic(N:Int), fromArray(Offset:Int, Sz:Int))
+          requires (Sz -Int Offset) <Int (N *Int byteSizeofType(T))
+
+     syntax KItem ::= getFirstMatch(Set, KLabel) [function]
+                    | "getFirstMatch'" "(" K "," Set "," KLabel ")" [function]
+
+     rule getFirstMatch(S:Set, L:KLabel) => getFirstMatch'(.K, S, L)
+
+     rule getFirstMatch'((.K => K), (SetItem(K:K) => .Set) _, _)
+     rule getFirstMatch'((K:K => .K), _, L:KLabel)
+          requires getKLabel(K) =/=KLabel L
+     rule getFirstMatch'(K:K, _, L:KLabel) => K
+          requires getKLabel(K) ==KLabel L
+     rule getFirstMatch'(.K, .Set, _) => .K
+
+     rule compoundAssign(LV:KResult, AExp:K)
+          => #compoundAssign(LV, LV, AExp)
+          [structural]
+
+     syntax KItem ::= #compoundAssign(K, K, K)
+     context #compoundAssign(_, (HOLE => reval(HOLE)), _) [result(RValue)]
+     rule #compoundAssign(LV:KResult, V:RValue, AExp:K)
+          => fillLHoles(LV, fillRHoles(V, AExp))
+          [structural]
 
 endmodule
 

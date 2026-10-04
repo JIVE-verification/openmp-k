@@ -1,17 +1,18 @@
+module C-STMT-BLOCK-SYNTAX
+     syntax KItem ::= "deleteLocals"
+endmodule
+
 module C-STMT-BLOCK
+     imports C-STMT-BLOCK-SYNTAX
+
      imports C-CHECK-LOC-SYNTAX
-     imports C-SYNTAX
      imports C-DYNAMIC-SYNTAX
+     imports C-ENV-SYNTAX
      imports C-IO-BUFFERED-SYNTAX
      imports C-SEQUENCE-POINT-SYNTAX
-     imports COMPAT-SYNTAX
+     imports C-SYNTAX
 
-     /*@ \fromStandard{\source[n1570]{\para{6.8.2}{2}}}{
-     A \emph{compound statement} is a block.
-     }*/
-     rule BlockStatement(B:K)
-          => pushBlock ~> B ~> popBlock
-          [structural]
+     imports COMPAT-SYNTAX
 
      rule <k> pushBlock => .K ...</k>
           <local>
@@ -21,34 +22,38 @@ module C-STMT-BLOCK
                <nesting-depth> N:Int => N:Int +Int 1 </nesting-depth>
           </local>
           <block-stack> .List
-               => ListItem(bag2K(C
-               <local-vars> Vars </local-vars>
-               <local-addresses> Addresses </local-addresses>
-               <nesting-depth> N </nesting-depth>))
+               => ListItem(bag2K(<local>
+                    C
+                    <local-vars> Vars </local-vars>
+                    <local-addresses> Addresses </local-addresses>
+                    <nesting-depth> N </nesting-depth>
+               </local>))
           ...</block-stack>
-          [structural]
-
-     rule <k> (.K => deleteObject(Base)) ~> popBlock ...</k>
-          <local-addresses>...
-               (SetItem(Base:SymBase) => .Set)
-          ...</local-addresses>
           [structural]
 
      rule <k> popBlock => .K ...</k>
-          <local>
-               (_ => C)
-               (<local-addresses> .Set </local-addresses> => .Bag)
-          </local>
-          <block-stack>
-               ListItem(bag2K(C:Bag)) => .List
-          ...</block-stack>
+          (<local>...
+               <local-addresses> .Set </local-addresses>
+          ...</local> => C)
+          <block-stack> ListItem(bag2K(C:Bag)) => .List ...</block-stack>
           [structural]
+     rule <k> (.K => deleteLocals) ~> popBlock ...</k>
+          <local-addresses>... SetItem(_) ...</local-addresses>
+          [structural]
+
+     rule <k> (.K => deleteObject(Base)) ~> deleteLocals ...</k>
+          <local-addresses>...
+               SetItem(Base:SymBase) => .Set
+          ...</local-addresses>
+          [structural]
+     rule <k> deleteLocals => .K ...</k>
+          <local-addresses> .Set </local-addresses>
 
      /*@ \fromStandard{\source[n1570]{\para{6.8.3}{2}}}{
      The expression in an expression statement is evaluated as a void expression
      for its side effects.
      }*/
-     rule Computation(_:KResult) => sequencePoint
+     rule Computation(_:RValue) => sequencePoint
           [structural]
 
      /*@ \fromStandard{\source[n1570]{\para{6.8.3}{3}}}{
@@ -67,11 +72,12 @@ module C-STMT-BLOCK
      were a statement, and within each declaration in the order that declarators
      appear.
      }*/
-     rule <k> Block(BlockNum:Int, _, list(Statements:List))
-               => enterRestrictScope(BlockNum)
-               ~> listToK(Statements)
-          ...</k>
-          <block-history> .List => ListItem(BlockNum) ...</block-history>
+     rule enterBlock(Tag:BlockTag)
+          => addToHistory(Tag)
+          ~> enterRestrictScope(Tag)
+          [structural]
+
+     rule exitBlock(Tag:BlockTag) => exitRestrictScope(Tag)
           [structural]
 
 endmodule

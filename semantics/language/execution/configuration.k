@@ -16,6 +16,8 @@ module C-CONFIGURATION
      // CId |-> SymBase
      <external-defs> .Map </external-defs>
 
+     <structs color="lightgray"> .Map </structs>
+
      // dummy link base |-> real base
      <linkings> .Map </linkings>
 
@@ -24,14 +26,11 @@ module C-CONFIGURATION
                <tu-id> "" </tu-id>
                <genv color="lightgray"> .Map </genv>
                <gtypes color="lightgray"> .Map </gtypes>
-               <gstructs color="lightgray"> .Map </gstructs>
 
                // kpair(CId, BlockNum) |-> SymBase
                <local-statics> .Map </local-statics>
                // kpair(CId, BlockNum) |-> Type
                <local-types> .Map </local-types>
-               // kpair(CId, BlockNum) |-> FieldInfo
-               <local-structs> .Map </local-structs>
 
                <next-unnamed color="black"> 0 </next-unnamed>
 
@@ -51,16 +50,14 @@ module C-CONFIGURATION
      // restrict-qualified pointers.
      // SymLoc |-> set(basedOns)
      <restrict> .Map </restrict>
-     // RestrictTag |-> (SymLoc |-> Int)
-     <modified> .Map </modified>
+     // BlockTag |-> activity(Int, SymLoc |-> Int)
+     <activeBlocks> .Map </activeBlocks>
 
      // stdlib
      <rand-nat color="black"> 0 </rand-nat>
      // stdlib
      <malloced color="lightgray"> .Map </malloced>
      <next-malloced> 0 @ alloc </next-malloced>
-
-     <omp-current-threads> 2 </omp-current-threads>
 
      <next-thread-id color="black"> 1 </next-thread-id>
 
@@ -69,7 +66,6 @@ module C-CONFIGURATION
           <mutexes color="yellow"> .Map </mutexes>
           <glocks color="yellow"> .List </glocks>
      </thread-info>
-     <compound-lit-map> .Map </compound-lit-map>
      <threads color="yellow">
           <thread multiplicity="*" color="yellow">
                <thread-id color="yellow"> 0 </thread-id>
@@ -83,14 +79,14 @@ module C-CONFIGURATION
                </k>
                <initializing> 0 </initializing>
 
-               <next-loc color="black"> 0 @ auto(0) </next-loc>
+               <duration color="black"> auto(0) </duration>
                <final-computation multiplicity="?" color="lightgray">
                     .K
                </final-computation>
                <thread-local>
-                    // used for tracking the parent-child threads
-                    <parent-thread> -1 </parent-thread>
-                    <child-threads> .Set </child-threads>
+                    // stack of "control" cells
+                    <call-stack color="violet"> .List </call-stack>
+                    <locks> .List </locks>
                     <control>
                          // general information
                          <curr-tu color="lightgray"> "" </curr-tu>
@@ -105,11 +101,15 @@ module C-CONFIGURATION
                          </curr-program-loc>
 
                          <control-details> // TODO(chathhorn): dumb name
+                              // stack of "local" cells
+                              <block-stack color="violet">
+                                   .List
+                              </block-stack>
                               <local>
                                    // maps from CIds
                                    <env color="red"> .Map </env>
                                    <types color="lightgray"> .Map </types>
-                                   <structs color="lightgray"> .Map </structs>
+                                   <compound-lit-map> .Map </compound-lit-map>
 
                                    // printf
                                    <formatting multiplicity="?">
@@ -145,45 +145,18 @@ module C-CONFIGURATION
                                    </local-addresses>
 
                               </local>
-                              // stack of "local" cells
-                              <block-stack color="violet">
-                                   .List
-                              </block-stack>
                               // used to control initialization when gotoing
                               <should-init color="lightgray">
                                    true
                               </should-init>
-                              // used to figure initializers
-                              <curr-object color="cyan">
-                                   .List
-                              </curr-object>
-                              <curr-subobject color="cyan">
-                                   .List
-                              </curr-subobject>
-                              <incomplete-length color="cyan">
-                                   0
-                              </incomplete-length>
-                              <saved-init color="cyan">
-                                   .K
-                              </saved-init>
                               <loop-stack color="violet">
                                    .List
                               </loop-stack>
                               <locs-written color="lightgray">
                                    .List
                               </locs-written>
-                              // used for typing expressions
-                              <type multiplicity="?" color="cyan"> .K </type>
-                              // holds the innermost type while we unroll the
-                              // type around it
-                              <decl-type-holder color="cyan">
-                                   .K
-                              </decl-type-holder>
                          </control-details>
                     </control>
-                    // stack of "control" cells
-                    <call-stack color="violet"> .List </call-stack>
-                    <locks> .List </locks>
                </thread-local>
           </thread>
      </threads>
