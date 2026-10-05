@@ -94,6 +94,29 @@ module C-SYNTAX
      syntax Statement ::= DoWhile(K, K)
      // Condition, post expression, body
      syntax Statement ::= For(K, K, K)
+
+     // @omp
+     // num of threads, clauses before block, clauses after block, block
+     syntax KItem ::= blockOmpParallel(Int, K, K, K)
+
+     /*
+     To collect all clauses
+     */
+     syntax KItem ::= ompClauseExpr(K)
+     syntax KItem ::= BeforeOmp(K)
+     syntax KItem ::= AfterOmp(K)
+     syntax KItem ::= OmpPrivateItem(CId)
+     syntax KItem ::= OmpFirstPrivateItem(CId)
+     syntax KItem ::= OmpLastPrivateItem(CId)
+     syntax KItem ::= OmpReductionItemPlus(CId)
+     syntax KItem ::= OmpReductionItemProd(CId)
+     syntax KItem ::= OmpParentVar(CId)
+     syntax KItem ::= OmpGlobalVar(CId)
+     syntax KItem ::= OmpSharedVar(CId)
+     
+     /* solely used for debugging*/
+     syntax KItem ::= "jive"
+
      /*
      | BREAK of cabsloc
      | CONTINUE of cabsloc

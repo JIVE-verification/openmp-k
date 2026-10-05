@@ -60,7 +60,8 @@ module C-CONFIGURATION
      <next-malloced> 0 @ alloc </next-malloced>
 
      <next-thread-id color="black"> 1 </next-thread-id>
-
+     <omp-current-threads> 0 </omp-current-threads>
+     
      <thread-info color="yellow">
           <thread-status color="yellow"> .Map </thread-status>
           <mutexes color="yellow"> .Map </mutexes>
@@ -84,9 +85,9 @@ module C-CONFIGURATION
                     .K
                </final-computation>
                <thread-local>
-                    // stack of "control" cells
-                    <call-stack color="violet"> .List </call-stack>
-                    <locks> .List </locks>
+                    // used for tracking the parent-child threads
+                    <parent-thread> -1 </parent-thread>
+                    <child-threads> .Set </child-threads>
                     <control>
                          // general information
                          <curr-tu color="lightgray"> "" </curr-tu>
@@ -157,6 +158,9 @@ module C-CONFIGURATION
                               </locs-written>
                          </control-details>
                     </control>
+                    // stack of "control" cells
+                    <call-stack color="violet"> .List </call-stack>
+                    <locks> .List </locks>
                </thread-local>
           </thread>
      </threads>

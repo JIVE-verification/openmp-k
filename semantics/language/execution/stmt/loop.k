@@ -4,6 +4,10 @@ module C-STMT-LOOP
      imports C-TYPING-SYNTAX
      imports C-ENV-SYNTAX
      imports COMPAT-SYNTAX
+
+     syntax KItem ::= "waitingForChild"
+     syntax KItem ::= "joinChild"
+
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.2}{1}}}{
      The statement
      \cdisplay{for ( $\textit{clause-1}$ ; $\textit{expression-2}$ ;
@@ -47,6 +51,94 @@ module C-STMT-LOOP
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
 
+     rule [extract-total-threads-omp-parallel]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOmpParallel(Th:Int, B:K, A:K, S:K)
+               ...</k>
+          ...</thread>
+          <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>
+          requires TotalThreads ==Int 0
+
+     rule [zero-threadomp-parallel]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOmpParallel(Th:Int, B:K, A:K, S:K)
+               => B ~> S ~> A ~> waitingForChild 
+               ...</k>
+          ...</thread>
+          <omp-current-threads> TotalThreads:Int</omp-current-threads>
+          requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
+
+     rule [other-thread-omp-parallel]:
+          <thread>
+          ...
+               <thread-id> Parent:Int </thread-id>
+               <thread-local> 
+                    C:Bag 
+                    <parent-thread> _ </parent-thread>
+                    <child-threads> ... .Set => SetItem(Fresh)</child-threads>
+               </thread-local>
+               <k> 
+                    blockOmpParallel(Th:Int, B:K, A:K,  S:K)
+                    => blockOmpParallel(Th -Int 1, B:K, A:K, S)
+               ...
+               </k>
+          ...
+          </thread>
+          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          (.Bag =>
+          <thread>
+          ...
+               <thread-id> Fresh:Int </thread-id>
+               <k>  
+                   B ~> S ~> A ~> joinChild
+               </k>
+               <duration> thread(Fresh:Int) </duration>
+               <thread-local>
+                    C
+                    <parent-thread> Parent </parent-thread>
+                    <child-threads> .Set </child-threads>
+               </thread-local>
+          ...
+          </thread>)
+          requires Th =/=Int 0 andBool TotalThreads =/=Int 0
+          [large, ndthread]
+
+     rule [join-if-no-child]:
+          <thread> ...
+               <k>
+                    waitingForChild => .K 
+               ...</k>
+               <child-threads> .Set </child-threads>
+          ...
+          </thread>
+
+     rule [join-child-thread]:
+          ((<thread>...
+               <thread-id> ThId:Int </thread-id>
+               <k>
+                    joinChild
+               </k>
+               <child-threads> .Set </child-threads>
+               <parent-thread> P:Int </parent-thread>
+               ...</thread>) => .Bag)
+          <thread>
+          ...
+               <thread-id> P </thread-id>
+               <child-threads> ... SetItem(ThId) => .Set ...</child-threads>
+          ...
+          </thread>
+
+     rule <k> BeforeOmp(K:K)
+               => K
+          ...</k> 
+
+     rule <k> AfterOmp(K:K)
+               => K
+          ...</k> 
+          
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.1}{1}}}{
      The evaluation of the controlling expression takes place before each
      execution of the loop body.

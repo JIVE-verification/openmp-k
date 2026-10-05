@@ -85,6 +85,7 @@ module C-IO-BUFFERED
      syntax KItem ::= checkWrite(SymLoc, Type)
      rule <k> checkWrite(loc(Base:SymBase, Offset:Int), T:Type) => .K ...</k>
           <thread-id> ThreadId:Int </thread-id>
+          <parent-thread> ParentThread::Int</parent-thread>
           <mem>... Base |-> object(ObjT:Type, Len:Int, _, _) ...</mem>
           <locs-written>
                Locs:List (.List => ListItem(loc(Base, Offset)))
@@ -101,7 +102,8 @@ module C-IO-BUFFERED
                // Cross-thread writes.
                andBool notBool ((isThreadDuration(loc(Base, Offset))
                          orBool isAutoDuration(loc(Base, Offset)))
-                    andBool (ThreadId =/=K getThreadId(loc(Base, Offset))))
+                    andBool (ThreadId =/=K getThreadId(loc(Base, Offset)))
+                    andBool (ParentThread =/=K getThreadId(loc(Base, Offset))))
           [structural]
      rule <k> checkWrite(Loc:SymLoc, _) => .K ...</k>
           <locs-written>
@@ -148,8 +150,10 @@ module C-IO-BUFFERED
                ~> checkWrite(Loc:SymLoc, _)
           ...</k>
           <thread-id> ThreadId:Int </thread-id>
+          <parent-thread> ParentThread::Int</parent-thread>
           requires (isThreadDuration(Loc) orBool isAutoDuration(Loc))
                andBool (ThreadId =/=K getThreadId(Loc))
+               andBool (ParentThread =/=K getThreadId(Loc))
           [structural]
 
      rule <k> writeByte(loc(Base:SymBase, Offset:Int), V:CValue) => .K ...</k>
@@ -193,15 +197,19 @@ module C-IO-BUFFERED
                ~> readBytes-aux(Loc, Size, .List, T)
           ...</k>
           <thread-id> ThreadId:Int </thread-id>
+          <parent-thread> ParentThread::Int</parent-thread>
           requires notBool ((isThreadDuration(Loc) orBool isAutoDuration(Loc))
                     andBool (ThreadId =/=K getThreadId(Loc)))
+                    andBool (ParentThread =/=K getThreadId(Loc))
           [structural]
      rule <k> (.K => UNSPEC("EIO6", "Attempting to access an object with thread or auto storage duration in a thread other than the one in which the object is associated.", "6.2.4:4-5"))
                ~> readBytes(Loc:SymLoc, _, _)
           ...</k>
           <thread-id> ThreadId:Int </thread-id>
+          <parent-thread> ParentThread::Int</parent-thread>
           requires (isThreadDuration(Loc) orBool isAutoDuration(Loc))
                andBool (ThreadId =/=K getThreadId(Loc))
+               andBool (ParentThread =/=K getThreadId(Loc))
           [structural]
 
      // loc, size in bytes, aux list

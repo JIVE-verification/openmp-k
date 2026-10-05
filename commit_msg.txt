@@ -1,25 +1,44 @@
-#pragma omp parallel private(i, j) num_threads(3) of test_omp_3.c program is parsed and translated  but stuck at
+test_omp_3.c and test_omp4.c programs  `#pragma omp parallel private(i, j) num_threads(3)` are parsed, translated and executed successfully
 
-<k>
-OmpParallel ( 2 , list ( 
-    ListItem ( OmpPrivateList ( list ( ListItem ( 
-      Identifier ( "i" ) ) ) ) )
-    ListItem ( OmpNumThreads ( 3 ) ) ) , BlockStatement 
-  ( Block ( 3 , list ( .List ) , list ( ListItem ( 
-  CodeLoc ( BlockStatement ( Block ( 4 , list ( .List ) 
-  , list ( ListItem ( CodeLoc ( Computation ( Call ( 
-  Identifier ( "printf" ) , list ( 
-    ListItem ( stringLiteral ( "R2: %d\n" ) )
-    ListItem ( Identifier ( "i" ) ) ) ) ) , CabsLoc ( 
-  "test_omp3.c" , 9 , 9 , 0 ) ) ) ) ) ) , CabsLoc ( 
-  "test_omp3.c" , 8 , 5 , 0 ) ) ) ) ) ) ) ~> CodeLoc ( 
-  Computation ( Call ( Identifier ( "printf" ) , list ( 
-    ListItem ( stringLiteral ( "R3: %d\n" ) )
-    ListItem ( Identifier ( "i" ) ) ) ) ) , CabsLoc ( 
-  "test_omp3.c" , 11 , 5 , 0 ) ) ~> CodeLoc ( Return ( 
-  tv ( 0 , t ( SetItem ( IntegerConstant ) , int ) ) ) ,
-   CabsLoc ( "test_omp3.c" , 12 , 5 , 0 ) ) ~> exitBlock
-   ( 1 ) ~> popBlock ~> Return ( tv ( 0 , t ( .Set , int
-   ) ) )
-</k>
+o:   semantics/language/common/syntax.k: necessary openmp related sorts are added
+o:   semantics/language/execution/configuration.k: new cells: <omp-current-threads>, <parent-thread>, <child-threads>
+o:   semantics/language/execution/io-buffered.k: child threads can access objects from parent threads
+o:   semantics/language/execution/stmt/loop.k: threads are created for #pragma omp parallel
+o:   semantics/language/translation/configuration.k: new cell: <omp-default-threads>
+o:   semantics/language/translation/process-label.k: process label rules added for #pragma omp parallel
+o:   semantics/language/translation/stmt/loop.k: clauses of #pragma omp parallel are parsed here
 
+output 1:
+-----------------------------------------------------
+root@54be01b47c51:/workspace# dist/kcc test_omp3.c 
+root@54be01b47c51:/workspace# ./a.out 
+R1: 0
+Error: CEE2
+Description: Indeterminate value used in an expression.
+Type: Undefined behavior.
+See also: C11 sec. 6.2.4, 6.7.9, 6.8
+  at main(test_omp3.c:9)
+  at <file-scope>(<unknown>)
+Error: CEE2
+Description: Indeterminate value used in an expression.
+Type: Undefined behavior.
+See also: C11 sec. 6.2.4, 6.7.9, 6.8
+  at main(test_omp3.c:9)
+  at <file-scope>(<unknown>)
+Error: CEE2
+Description: Indeterminate value used in an expression.
+Type: Undefined behavior.
+See also: C11 sec. 6.2.4, 6.7.9, 6.8
+  at main(test_omp3.c:9)
+  at <file-scope>(<unknown>)
+--------------------------------------------------------
+output 2
+--------------------------------------------------------
+root@54be01b47c51:/workspace# dist/kcc test_omp4.c 
+root@54be01b47c51:/workspace# ./a.out 
+R1: 0
+R2: 5
+R2: 5
+R2: 5
+R2: 5
+R3: 0

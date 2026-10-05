@@ -64,6 +64,9 @@ module C-CONFIGURATION
      <final-computation multiplicity="?" color="lightgray">
           .K
      </final-computation>
+     
+     // OPENMP DEFAULT THREADS: 5
+     <omp-default-threads> 4 </omp-default-threads>
 
      <goto-map-calc color="cyan">
           <goto-calc multiplicity="*" color="cyan">
