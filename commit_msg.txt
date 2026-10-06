@@ -1,3 +1,389 @@
-interleave points added
+THREADSEARCH=1 is generating many results but program got stuck
 
-o semantics/language/execution/stmt/loop.k:
+o semantics/Makefile: nd-kompiled commented
+o Makefile: Testing bypassed and nd-kompiled commented
+
+Error Log
+-------------------------------------------------------------
+root@22a2ad40663e:/workspace# THREADSEARCH=1 ./a.out 
+Searching reachable states... (with non-deterministic thread interleaving)
+krun --output pretty --output-file tmp-kcc-out-TrPuxmuAnPq.txt -cARGC=1  -cARGV="(ListItem(\"./a.out\") .List)"  --parser "kast --parser binary" tmp-kcc-in-lDFS2r5UwLp.bin --search-final  -cOPTIONS="(SetItem(NOIO) .Set)" -d /workspace/dist/c11-nd-thread-kompiled
+18 solution(s) found
+=============================================================
+Solution 1:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 69 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 69 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 2:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 12 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 12 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 3:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 75 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 75 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 4:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 14 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 14 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 5:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 74 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 74 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 6:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 16 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 16 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 7:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 73 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 73 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 8:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 18 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 18 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 9:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 72 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 72 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 10:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 20 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 20 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 11:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 71 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 71 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 12:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 22 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 22 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 13:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 70 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 70 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 14:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 24 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 24 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 15:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 67 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 67 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 16:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 40 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 40 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 17:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 41 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 41 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
+=============================================================
+Solution 18:
+
+=============================================================
+ERROR! KCC encountered an error while executing this program.
+=============================================================
+File: test_omp4.c
+Function: printf
+Line: 10
+=============================================================
+Final Computation:
+
+sizeofObject ( 66 @ auto ( 0 ) ) ~> nextvarg-aux ( 
+loc ( 66 @ auto ( 0 ) , 0 , SetItem ( align ( 16 ) ) )
+, t ( .Set , int ) , tv ( 4 , t ( .Set , 
+unsigned-long-long-int ) ) , HOLE ) ~> formatter-arg (
+HOLE ) ~> new-printf-aux ( HOLE ) ~> reval ( HOLE )
+~> Return ( HOLE )
+
+stdout:"R1: 0\n" 
+=============================================================
