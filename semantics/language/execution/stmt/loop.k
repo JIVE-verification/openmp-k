@@ -51,10 +51,24 @@ module C-STMT-LOOP
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
 
+     // @omp thread interleaving
+     ///*
+     syntax Statement ::= "interleave"
+     rule interleave => .K [threadleave]
+
+     syntax K ::= putInterleavePoints(K, K)[function]
+
+     rule putInterleavePoints(.K, .K) => .K
+     rule putInterleavePoints(.K, K1:KItem) => putInterleavePoints(interleave ~> K1, .K)
+     rule putInterleavePoints(.K, K1:KItem ~> T:K) => putInterleavePoints(interleave ~> K1, T)
+     rule putInterleavePoints(K1:K, K2:KItem ~> T:K) => putInterleavePoints(K1 ~> interleave ~> K2, T)
+     rule putInterleavePoints(K1:K, K2:KItem) => putInterleavePoints(K1 ~> interleave ~> K2, .K)
+     rule putInterleavePoints(K1:K, .K) => K1
+
      rule [extract-total-threads-omp-parallel]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
-          <k> blockOmpParallel(Th:Int, B:K, A:K, S:K)
+          <k> blockOmpParallel(Th:Int, B:K, A:K, S:K) => blockOmpParallel(Th, B, A, putInterleavePoints(.K, S)) 
                ...</k>
           ...</thread>
           <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>
@@ -138,7 +152,7 @@ module C-STMT-LOOP
      rule <k> AfterOmp(K:K)
                => K
           ...</k> 
-          
+
      /*@ \fromStandard{\source[n1570]{\para{6.8.5.1}{1}}}{
      The evaluation of the controlling expression takes place before each
      execution of the loop body.
