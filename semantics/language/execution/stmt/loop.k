@@ -52,11 +52,9 @@ module C-STMT-LOOP
           [structural] // rule so that looping programs see repetition
 
      // @omp thread interleaving
-     ///*
-     syntax Statement ::= "interleave"
      rule interleave => .K [threadleave]
 
-     syntax K ::= putInterleavePoints(K, K)[function]
+     /*syntax K ::= putInterleavePoints(K, K)[function]
 
      rule putInterleavePoints(.K, .K) => .K
      rule putInterleavePoints(.K, K1:KItem) => putInterleavePoints(interleave ~> K1, .K)
@@ -64,11 +62,12 @@ module C-STMT-LOOP
      rule putInterleavePoints(K1:K, K2:KItem ~> T:K) => putInterleavePoints(K1 ~> interleave ~> K2, T)
      rule putInterleavePoints(K1:K, K2:KItem) => putInterleavePoints(K1 ~> interleave ~> K2, .K)
      rule putInterleavePoints(K1:K, .K) => K1
-
+     */
+     
      rule [extract-total-threads-omp-parallel]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
-          <k> blockOmpParallel(Th:Int, B:K, A:K, S:K) => blockOmpParallel(Th, B, A, putInterleavePoints(.K, S)) 
+          <k> blockOmpParallel(Th:Int, B:K, A:K, S:K) => blockOmpParallel(Th, B, A, S) 
                ...</k>
           ...</thread>
           <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>

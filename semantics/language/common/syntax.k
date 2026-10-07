@@ -150,6 +150,9 @@ module C-SYNTAX
      */
      syntax Statement ::= Label(CId, K) [avoid]
 
+     // @omp thread interleaving
+     ///*
+     syntax Statement ::= "interleave"
 
      /*
      | GOTO of String * cabsloc

@@ -18,8 +18,8 @@ module C-STMT-LOOP
           => Block(Tag, list(ListItem(E1) ListItem(For(E2, E3, B))))
 
      // #pragma omp parallel [clauses]{[statements]} 
-     rule <k> OmpParallel(Tag:BlockTag, list(OMP1:List), S:K)
-              => Block(Tag, list(ListItem(blockOmpParallel(parseNumThreads(OMP1, TT), BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), S))))
+     rule <k> OmpParallel(Tag:BlockTag, list(OMP1:List), BlockStatement(Block(B1:Int, L1:K, list(ListItem(CodeLoc(BlockStatement(Block(B2:Int, L2:K, list(TList:List))), Ln:CabsLoc)) LL1:List))))
+              => Block(Tag, list(ListItem(blockOmpParallel(parseNumThreads(OMP1, TT), BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), BlockStatement(Block(B1, L1, list(ListItem(CodeLoc(BlockStatement(Block(B2, L2, list(putInterleavePoints(.List , TList)))), Ln)) LL1:List)))))))
      	...</k>
      <omp-default-threads> TT:Int </omp-default-threads>
      <types> M:Map </types>
@@ -81,6 +81,9 @@ module C-STMT-LOOP
 
      rule <k> Continue => .K ...</k>
           <elab>... .K => Continue </elab>
+     
+     rule <k> interleave => .K ...</k>
+          <elab>... .K => interleave </elab>
 
      syntax Int ::= getNumThreads(K) [function]
      rule getNumThreads(OmpNumThreads(N:Int)) => N -Int 1
@@ -124,4 +127,12 @@ module C-STMT-LOOP
      // ignore if rnum_threads()     
      rule handleOmpClausesForAfterOmp(ListItem(OmpNumThreads(N:Int)) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
 
+     syntax List ::= putInterleavePoints(List, List)[function]
+
+     rule putInterleavePoints(.List, .List) => .List
+     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc))) => putInterleavePoints(ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)) , .List)
+     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc)) L2:List) => putInterleavePoints(ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), L2)
+     rule putInterleavePoints(L1:List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc)) L2:List) => putInterleavePoints(L1 ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), L2)
+     rule putInterleavePoints(L1:List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc))) => putInterleavePoints(L1 ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), .List)
+     rule putInterleavePoints(L1:List, .List) => L1
 endmodule
