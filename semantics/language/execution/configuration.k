@@ -100,12 +100,7 @@ module C-CONFIGURATION
                          <curr-program-loc color="black">
                               .K
                          </curr-program-loc>
-
                          <control-details> // TODO(chathhorn): dumb name
-                              // stack of "local" cells
-                              <block-stack color="violet">
-                                   .List
-                              </block-stack>
                               <local>
                                    // maps from CIds
                                    <env color="red"> .Map </env>
@@ -146,6 +141,10 @@ module C-CONFIGURATION
                                    </local-addresses>
 
                               </local>
+                              // stack of "local" cells
+                              <block-stack color="violet">
+                                   .List
+                              </block-stack>
                               // used to control initialization when gotoing
                               <should-init color="lightgray">
                                    true

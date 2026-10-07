@@ -1,11 +1,7 @@
-interleave points added in translation semantics instead of execution semantics
+interleave points for non-statement such as pushblock, popblock, exnterblock, exitblock ignored
 
-o    Makefile: Testing kcc fixed
-o    scripts/program-runner: exit code problem fixed
-o    semantics/language/common/syntax.k: interleave sort added
-o    semantics/language/execution/stmt/loop.k: putting interleave points removed
-o    semantics/language/translation/process-label.k: process label for "interleave"
-o    semantics/language/translation/stmt/loop.k: interleaving points are added here
-+    test_continue.c
-+    test_omp5.c
-+    test_var_scope.c
+o    Makefile: Testing kcc cleanup fixed
+o    semantics/language/execution/configuration.k: orientation of cells changed
+o    semantics/language/translation/stmt/loop.k: interleaving points function changed
++    tmp-kcc-out-HcEt3TA.txt: contains the configuration of translation semantics of test_omp4.c
++    tmp-kcc-out-tDKJb3GhyT5.txt: contains the configurations of execution semantics of test_omp4.c when run with THREADSEARCH=1

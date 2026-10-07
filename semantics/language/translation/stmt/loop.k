@@ -18,8 +18,14 @@ module C-STMT-LOOP
           => Block(Tag, list(ListItem(E1) ListItem(For(E2, E3, B))))
 
      // #pragma omp parallel [clauses]{[statements]} 
-     rule <k> OmpParallel(Tag:BlockTag, list(OMP1:List), BlockStatement(Block(B1:Int, L1:K, list(ListItem(CodeLoc(BlockStatement(Block(B2:Int, L2:K, list(TList:List))), Ln:CabsLoc)) LL1:List))))
-              => Block(Tag, list(ListItem(blockOmpParallel(parseNumThreads(OMP1, TT), BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), BlockStatement(Block(B1, L1, list(ListItem(CodeLoc(BlockStatement(Block(B2, L2, list(putInterleavePoints(.List , TList)))), Ln)) LL1:List)))))))
+/*     rule <k> OmpParallel(Tag:BlockTag, list(OMP1:List), BlockStatement(Block(B1:Int, L1:K, list(ListItem(CodeLoc(BlockStatement(Block(B2:Int, L2:K, list(TList:List))), Ln:CabsLoc)) LL1:List))))
+              => Block(Tag, list(ListItem(blockOmpParallel(parseNumThreads(OMP1, TT), BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), BlockStatement(Block(B1, L1, list(ListItem(CodeLoc(BlockStatement(Block(B2, L2, list(putInterleavePointsAsList(.List , TList)))), Ln)) LL1:List)))))))
+     	...</k>
+     <omp-default-threads> TT:Int </omp-default-threads>
+     <types> M:Map </types>*/
+
+     rule <k> OmpParallel(Tag:BlockTag, list(OMP1:List), S:K)
+              => Block(Tag, list(ListItem(blockOmpParallel(parseNumThreads(OMP1, TT), BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), S))))
      	...</k>
      <omp-default-threads> TT:Int </omp-default-threads>
      <types> M:Map </types>
@@ -57,7 +63,7 @@ module C-STMT-LOOP
                ~> #blockOmpParallel(Th:Int, B:K, A:K,  _)
                => .K
           ...</k>
-          <elab>... .K => blockOmpParallel(Th, B, A, S) </elab>
+          <elab>... .K => blockOmpParallel(Th, B, A, putInterleavePointsAsStatements(.K, S)) </elab>
           
      context While((HOLE => reval(HOLE)), _) [result(RValue)]
      rule While(B:RValue, S:K) => #while(simplifyTruth(B), S)
@@ -127,12 +133,38 @@ module C-STMT-LOOP
      // ignore if rnum_threads()     
      rule handleOmpClausesForAfterOmp(ListItem(OmpNumThreads(N:Int)) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
 
-     syntax List ::= putInterleavePoints(List, List)[function]
+     syntax List ::= putInterleavePointsAsList(List, List)[function]
 
-     rule putInterleavePoints(.List, .List) => .List
-     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc))) => putInterleavePoints(ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)) , .List)
-     rule putInterleavePoints(.List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc)) L2:List) => putInterleavePoints(ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), L2)
-     rule putInterleavePoints(L1:List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc)) L2:List) => putInterleavePoints(L1 ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), L2)
-     rule putInterleavePoints(L1:List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc))) => putInterleavePoints(L1 ListItem(CodeLoc(Cm,Ln)) ListItem(CodeLoc(interleave, Ln)), .List)
-     rule putInterleavePoints(L1:List, .List) => L1
+     rule putInterleavePointsAsList(.List, .List) => .List
+     rule putInterleavePointsAsList(.List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc))) => putInterleavePointsAsList(ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)) , .List)
+     rule putInterleavePointsAsList(.List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc)) L2:List) => putInterleavePointsAsList(ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)), L2)
+     rule putInterleavePointsAsList(L1:List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc)) L2:List) => putInterleavePointsAsList(L1 ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)) , L2)
+     rule putInterleavePointsAsList(L1:List, ListItem(CodeLoc(Cm:Statement, Ln:CabsLoc))) => putInterleavePointsAsList(L1 ListItem(CodeLoc(interleave, Ln)) ListItem(CodeLoc(Cm,Ln)), .List)
+     rule putInterleavePointsAsList(L1:List, .List) => L1
+
+
+     syntax K ::= putInterleavePointsAsStatements(K, K)[function]
+
+     rule putInterleavePointsAsStatements(.K, .K) => .K
+     rule putInterleavePointsAsStatements(.K, K1:KItem) => putInterleavePointsAsStatements(interleave ~> K1, .K)
+     requires notBool (K1 ==K pushBlock orBool K1 ==K popBlock orBool getKLabel(K1) ==KLabel 'enterBlock orBool getKLabel(K1) ==KLabel 'exitBlock)
+
+     rule putInterleavePointsAsStatements(.K, K1:KItem) => putInterleavePointsAsStatements(K1, .K)
+     requires (K1 ==K pushBlock orBool K1 ==K popBlock orBool getKLabel(K1) ==KLabel 'enterBlock orBool getKLabel(K1) ==KLabel 'exitBlock)
+
+     rule putInterleavePointsAsStatements(.K, K1:KItem ~> T:K) => putInterleavePointsAsStatements(interleave ~> K1, T)
+     requires notBool (K1 ==K pushBlock orBool K1 ==K popBlock orBool getKLabel(K1) ==KLabel 'enterBlock orBool getKLabel(K1) ==KLabel 'exitBlock)
+     rule putInterleavePointsAsStatements(K1:K, K2:KItem ~> T:K) => putInterleavePointsAsStatements(K1 ~> interleave ~> K2, T)
+     requires notBool (K2 ==K pushBlock orBool K2 ==K popBlock orBool getKLabel(K2) ==KLabel 'enterBlock orBool getKLabel(K2) ==KLabel 'exitBlock)
+     rule putInterleavePointsAsStatements(K1:K, K2:KItem) => putInterleavePointsAsStatements(K1 ~> interleave ~> K2, .K)
+     requires notBool (K2 ==K pushBlock orBool K2 ==K popBlock orBool getKLabel(K2) ==KLabel 'enterBlock orBool getKLabel(K2) ==KLabel 'exitBlock)
+
+     rule putInterleavePointsAsStatements(.K, K1:KItem ~> T:K) => putInterleavePointsAsStatements(K1, T)
+     requires  (K1 ==K pushBlock orBool K1 ==K popBlock orBool getKLabel(K1) ==KLabel 'enterBlock orBool getKLabel(K1) ==KLabel 'exitBlock)
+     rule putInterleavePointsAsStatements(K1:K, K2:KItem ~> T:K) => putInterleavePointsAsStatements(K1 ~>  K2, T)
+     requires  (K2 ==K pushBlock orBool K2 ==K popBlock orBool getKLabel(K2) ==KLabel 'enterBlock orBool getKLabel(K2) ==KLabel 'exitBlock)
+     rule putInterleavePointsAsStatements(K1:K, K2:KItem) => putInterleavePointsAsStatements(K1 ~> K2, .K)
+     requires  (K2 ==K pushBlock orBool K2 ==K popBlock orBool getKLabel(K2) ==KLabel 'enterBlock orBool getKLabel(K2) ==KLabel 'exitBlock)
+
+     rule putInterleavePointsAsStatements(K1:K, .K) => K1
 endmodule

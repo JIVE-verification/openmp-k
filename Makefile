@@ -60,11 +60,10 @@ test-build: fast
 	@echo "Testing kcc..."
 	@perl $(SCRIPTS_DIR)/testInstall.pl $(DIST_DIR)/kcc $(DIST_DIR)/testProgram.c $(DIST_DIR)/testProgram.compiled
 	@echo "Done."
-#	@echo "Cleaning up..."
-#	@rm -f $(DIST_DIR)/testProgram.compiled
-#	@rm -f $(DIST_DIR)/testProgram.c
-# 	@echo "Bypassed." 
-# 	@echo "Done."
+	@echo "Cleaning up..."
+	@rm -f $(DIST_DIR)/testProgram.compiled
+	@rm -f $(DIST_DIR)/testProgram.c
+	@echo "Done."
 
 parser/cparser:
 	@echo "Building the C parser..."
