@@ -203,6 +203,7 @@ module C-CONFIGURATION
 
 <options> $OPTIONS:Set </options>
 
+<thread-exec-order> "" </thread-exec-order>
 </T>
 
 endmodule

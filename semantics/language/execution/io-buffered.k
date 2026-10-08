@@ -199,8 +199,8 @@ module C-IO-BUFFERED
           <thread-id> ThreadId:Int </thread-id>
           <parent-thread> ParentThread::Int</parent-thread>
           requires notBool ((isThreadDuration(Loc) orBool isAutoDuration(Loc))
-                    andBool (ThreadId =/=K getThreadId(Loc)))
-                    andBool (ParentThread =/=K getThreadId(Loc))
+                    andBool (ThreadId =/=K getThreadId(Loc))
+                    andBool (ParentThread =/=K getThreadId(Loc))) 
           [structural]
      rule <k> (.K => UNSPEC("EIO6", "Attempting to access an object with thread or auto storage duration in a thread other than the one in which the object is associated.", "6.2.4:4-5"))
                ~> readBytes(Loc:SymLoc, _, _)

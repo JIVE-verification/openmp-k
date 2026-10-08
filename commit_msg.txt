@@ -1,7 +1,6 @@
-interleave points for non-statement such as pushblock, popblock, exnterblock, exitblock ignored
+small changes and fixing
 
-o    Makefile: Testing kcc cleanup fixed
-o    semantics/language/execution/configuration.k: orientation of cells changed
-o    semantics/language/translation/stmt/loop.k: interleaving points function changed
-+    tmp-kcc-out-HcEt3TA.txt: contains the configuration of translation semantics of test_omp4.c
-+    tmp-kcc-out-tDKJb3GhyT5.txt: contains the configurations of execution semantics of test_omp4.c when run with THREADSEARCH=1
+o semantics/language/execution/configuration.k: <thread-exec-order> cell added
+o semantics/language/execution/io-buffered.k: fixed
+o semantics/language/execution/stmt/loop.k: interleave will add thread id in <thread-exec-order>
+

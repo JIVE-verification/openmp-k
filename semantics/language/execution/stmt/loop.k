@@ -52,7 +52,17 @@ module C-STMT-LOOP
           [structural] // rule so that looping programs see repetition
 
      // @omp thread interleaving
-     rule interleave => .K [threadleave]
+
+//     rule interleave => .K [threadleave]
+//   when it encounters interleave, it will order   
+     rule [record-execution-order]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> interleave => .K 
+               ...</k>
+          ...</thread>
+          <thread-exec-order> S:String => S +String "T" +String Int2String(ThId) </thread-exec-order>
+          [threadleave]
 
      /*syntax K ::= putInterleavePoints(K, K)[function]
 
