@@ -1,0 +1,14 @@
+#!/bin/bash
+if [ "$#" -eq 0 ]; then
+    echo "Usage: $0 <filename> [depth]"
+    exit 1
+fi
+
+input_file=$1
+output_file="${input_file%.c}"
+echo "compiling $input_file"
+dist/kcc $input_file -o $output_file
+sed -i 's/\r$//' $output_file
+sed -i 's/\# print \$cmd/print \$cmd/' $output_file
+THREADSEARCH=1 ./$output_file
+rm -f "$output_file"

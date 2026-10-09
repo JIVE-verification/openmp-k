@@ -55,15 +55,19 @@ module C-STMT-LOOP
 
 //     rule interleave => .K [threadleave]
 //   when it encounters interleave, it will order   
+///*
      rule [record-execution-order]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
           <k> interleave => .K 
                ...</k>
+          <curr-program-loc>
+          CabsLoc ( _ , LineNo:Int , _ , _ )
+          </curr-program-loc>
           ...</thread>
-          <thread-exec-order> S:String => S +String "T" +String Int2String(ThId) </thread-exec-order>
+          <thread-exec-order> S:String => S +String "T" +String Int2String(ThId) +String "L" +String Int2String(LineNo) </thread-exec-order>
           [threadleave]
-
+//*/
      /*syntax K ::= putInterleavePoints(K, K)[function]
 
      rule putInterleavePoints(.K, .K) => .K

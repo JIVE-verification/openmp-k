@@ -1,6 +1,13 @@
-small changes and fixing
+thread execution order <thread-no:#line-no:#> stored in configuration
 
-o semantics/language/execution/configuration.k: <thread-exec-order> cell added
-o semantics/language/execution/io-buffered.k: fixed
-o semantics/language/execution/stmt/loop.k: interleave will add thread id in <thread-exec-order>
-
+o scripts/program-runner: scripts changed to save search results
+o semantics/language/execution/configuration.k: <thread-exec-order> cell added, <dipok> for test
+o semantics/language/execution/stmt/loop.k: save thread execution order and line no when interleave
++ hello.c: a hello world .c program
++ run_execution_search: script to run threadsearch with a specific depth
++ run_execution_search_depths: script to run threadsearch with different depths
++ run_thread_search: script to run threadsearch
++ search-results-test_omp6.txt: THREADSEARCH=1 ./test_omp6.c
++ search-results-test_omp7.txt: THREADSEARCH=1 ./test_omp7.c 
++ test_omp6.c: .c having #pragma omp parallel private(i) num_threads(2)
++ test_omp7.c: .c having #pragma omp parallel num_threads(2)

@@ -1,0 +1,70 @@
+#!/bin/bash
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <filename> <depth>"
+    exit 1
+fi
+input_file=$1
+output_file="${input_file%.c}"
+execution_depth=$2
+destination_dir="experiments/exe-$input_file-search"
+output_file_path="$destination_dir/$output_file"
+
+echo "INPUT: "$input_file 
+echo "OUTPUT :"$output_file
+echo "DEPTH :"$execution_depth
+
+echo "$destination_dir"
+if [ ! -d "$destination_dir" ]; then
+    echo "$destination_dir Creating.."
+	mkdir -p "$destination_dir"
+else
+	echo "$destination_dir exists"
+	echo "Removing tmp-kcc-* file"
+	for file in "$destination_dir"/tmp-kcc-*; do
+    		if [ -f "$file" ]; then
+        		rm "$file"
+    		fi
+	done
+fi
+# 
+if [ ! -f "$output_file_path" ]; then
+	echo "$output_file outfile creating"
+	dist/kcc $input_file -o "$output_file_path"
+	sed -i 's/\r$//' $output_file_path
+	sed -i 's/if (!defined $ENV{DUMPALL}) {/if (defined $ENV{DUMPALL}) {/' "$output_file_path"
+	sed -i "s/my @krun_args = ('--output', 'pretty'/my @krun_args = ('--output', 'pretty', '--depth', '0'/" "$output_file_path"
+	sed -i "s/'--depth', '[0-9]*'/'--depth', '$execution_depth'/" "$output_file_path"
+	sed -i "s/push @krun_args , '--search-final',/push @krun_args , '--search',/" "$output_file_path"
+	sed -i "s/#push @krun_args , '--bound',/push @krun_args , '--bound',/" "$output_file_path"
+	
+	#return 883;
+	sed -i "s/#return 883;/return 883;/" "$output_file_path"
+	a="tmp-kcc-"
+	b="$destination_dir/tmp-kcc-"
+	sed -i "s|$a|$b|" "$output_file_path" 
+	echo "Executing $output_file --depth $execution_depth ..."
+	#THREADSEARCH=1./a.out
+	THREADSEARCH=1 ./$output_file_path
+	echo "Copying execution configuration file ..."
+	if [ -f $destination_dir/tmp-kcc-out-*.txt ]; then
+		cp $destination_dir/tmp-kcc-out-*.txt  "$destination_dir/$output_file-$execution_depth.txt"		
+	else
+		echo "TMP Copy ERROR!"
+	fi
+else
+	echo "$output_file.out Exists"
+	echo "Executing $output_file --depth $execution_depth ..."
+	# replacing depth in .out file first
+	sed -i "s/'--depth', '[0-9]*'/'--depth', '$execution_depth'/" "$output_file_path"
+	sed -i "s/push @krun_args , '--search-final',/push @krun_args , '--search',/" "$output_file_path"
+	# THREADSEARCH=1./a.out --depth $execution_depth
+	THREADSEARCH=1 ./$output_file_path 
+	echo "Copying execution configuration file ..."
+	if [ -f $destination_dir/tmp-kcc-out-*.txt ]; then
+		cp $destination_dir/tmp-kcc-out-*.txt "$destination_dir/$output_file-$execution_depth.txt"		
+	else
+		echo "TMP Creation ERROR!"
+	fi
+
+	echo "END"    
+fi

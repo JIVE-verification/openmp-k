@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-
+use File::Basename qw(basename);
 use File::Spec::Functions qw(catfile);
 use File::Temp;
 use File::Copy;
@@ -108,6 +108,7 @@ sub main {
       if (defined $ENV{THREADSEARCH}) {
             # push @krun_args , '--output' , 'pretty';
             push @krun_args , '--search-final', '';
+            #push @krun_args , '--bound', '10';
             # push @krun_args , '--pattern', '"<result-value> S:K </result-value>"';
             push @options, 'NOIO';
             $krun_args_kompiled_dir{'-d'}=$EXEC_ND_THREAD_DEF;
@@ -136,70 +137,78 @@ sub main {
       print $cmd . "\n" if defined $ENV{VERBOSE};
       # print $cmd . "\n";
       system($cmd);
+      # returning here when only configuration generation is enough
+      #return 883;
 
       # Print errors and/or results and exit.
       if (defined $ENV{SEARCH} || defined $ENV{THREADSEARCH}) {
-            my $graphOutputFile = "kcc-search-results.dot";
+            my $searchOutputFile = "search-results-".basename($0).".txt";
             open(my $fh, '<', $fileOutput) or die "Cannot open $fileOutput: $!";
             local $/;
             my $content = <$fh>;
-
+            my $log .= "";
             my @solutions = $content =~ /(Solution \d+:.*?)(?=Solution \d+:|\z)/gs;
-            print(scalar(@solutions) . " solution(s) found\n");
+            print scalar(@solutions) . " solution(s) found\n";
+            $log .= scalar(@solutions) . " solution(s) found\n";
             my $count = 1;
+            
             for my $solution (@solutions) {
-                  print "=============================================================\n";
-                  print("Solution $count:\n");
+                  $log .= "=============================================================\n";
+                  $log .= "Solution $count:\n";
                   my %parsed;
                   parseResultForSolutions(\%parsed, $solution);
                   # print Dumper(\%parsed);
                   if (defined $parsed{finalComp} || defined $parsed{finalCompType} 
                   || defined $parsed{errorMsg} || !defined $parsed{exitCode}) {
-                        print "\n=============================================================\n";
-                        print "ERROR! KCC encountered an error while executing this program.\n";
-
+                        $log .= "\n=============================================================\n";
+                        $log .= "ERROR! KCC encountered an error while executing this program.\n";
                         if (defined $parsed{errorMsg}) {
-                              print "=============================================================\n";
-                              print "$parsed{errorMsg}\n";
+                              $log .= "=============================================================\n";
+                              $log .= "$parsed{errorMsg}\n";
                         }
 
-                        print "=============================================================\n";
-                        print "File: $parsed{errorFile}\n" if defined $parsed{errorFile};
-                        print "Function: $parsed{errorFunc}\n" if defined $parsed{errorFunc};
-                        print "Line: $parsed{errorLine}\n" if defined $parsed{errorLine};
-
+                        $log .= "=============================================================\n";
+                        $log .= "File: $parsed{errorFile}\n" if defined $parsed{errorFile};
+                        $log .= "Function: $parsed{errorFunc}\n" if defined $parsed{errorFunc};
+                        $log .= "Line: $parsed{errorLine}\n" if defined $parsed{errorLine};
                         if (defined $parsed{finalComp}) {
-                              print "=============================================================\n";
-                              print "Final Computation:\n";
-                              print unindent(substr($parsed{finalComp}, 0, 1000));
-                              print "\n";
+                              $log .= "=============================================================\n";
+                              $log .= "Final Computation:\n";
+                              $log .= unindent(substr($parsed{finalComp}, 0, 1000));
+                              $log .= "\n";
                         }
 
                         if (defined $parsed{finalCompGoto}) {
-                              print "=============================================================\n";
-                              print "Final Goto Map Computation:\n";
-                              print unindent(substr($parsed{finalCompGoto}, 0, 1000));
-                              print "\n";
+                              $log .=  "=============================================================\n";
+                              $log .=  "Final Goto Map Computation:\n";
+                              $log .=  unindent(substr($parsed{finalCompGoto}, 0, 1000));
+                              $log .=  "\n";
                         }
 
                         if (defined $parsed{finalCompType}) {
-                              print "=============================================================\n";
-                              print "Final Type Computation:\n";
-                              print unindent(substr($parsed{finalCompType}, 0, 1000));
-                              print "\n";
+                              $log .=  "=============================================================\n";
+                              $log .=  "Final Type Computation:\n";
+                              $log .=  unindent(substr($parsed{finalCompType}, 0, 1000));
+                              $log .=  "\n";
                         }
                   }
                   if (defined $parsed{exitCode}){
-                        print("return value:". $parsed{exitCode}. "\n");
+                        $log .= "return value:". $parsed{exitCode}. "\n";
                   }
                   if (defined $parsed{testkey}){
-                        print("stdout:". $parsed{testkey}. "\n");
+                        $log .= "stdout:". $parsed{testkey}. "\n";
+                  }
+                  if (defined $parsed{execOrder}){
+                        $log .= "exec-order:". $parsed{execOrder}. "\n";
                   }
                   $count++;
-                  print "=============================================================\n";
+                  $log .=  "=============================================================\n";
             }
             close($fh);
-
+            # print($log);
+            open($fh, '>', $searchOutputFile) or die "Cannot open file: $!";
+            print {$fh} $log;
+            close($fh);
             # print "Generated $fileOutput\n" if defined $ENV{VERBOSE};
             # print "Examining the output...\n" if defined $ENV{VERBOSE};
             # my $graphOutput = graphSearch($graphOutputFile, $fileOutput);
@@ -328,6 +337,10 @@ sub parseResultForSolutions {
 
       $solution =~ /<status>\s*(.*)\s*<\/status>/ && do {
             $parsed->{status} = $1;
+      };
+
+      $solution =~ /<thread-exec-order>\s*(.*)\s*<\/thread-exec-order>/ && do {
+            $parsed->{execOrder} = $1;
       };
 
       # while($solution =~ /<done>\s*(.*)\s*<\/done>/g) {

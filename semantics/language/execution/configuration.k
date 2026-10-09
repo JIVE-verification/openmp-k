@@ -205,5 +205,7 @@ module C-CONFIGURATION
 
 <thread-exec-order> "" </thread-exec-order>
 </T>
-
+<dipok>
+     "cs.iastate.edu"
+</dipok>
 endmodule
