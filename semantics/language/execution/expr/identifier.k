@@ -23,6 +23,20 @@ module C-EXPR-IDENTIFIER
           requires isRestrictType(T)
           [structural]
 
+     rule  <thread>...
+               <k> OmpParentVar(X:CId) => lv(lnew(Base, getAlignas(T)), T)
+               ...</k>
+               <block-stack> ListItem(bag2K(
+                    <local> 
+                         C:Bag
+                         <env>... X |-> Base::SymBase ...</env>
+                         <types>... X |-> T::Type ...</types>
+                    </local>)) 
+               ...</block-stack>
+          ...</thread>
+          requires notBool isRestrictType(T)
+     
+
      rule instantiate(Loc:SymLoc, T:Type)
           => transferProv(getBases(Loc), read(Loc, T))
           requires isRestrictType(T)

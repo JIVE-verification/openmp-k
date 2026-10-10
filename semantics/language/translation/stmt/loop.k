@@ -91,6 +91,10 @@ module C-STMT-LOOP
      rule <k> interleave => .K ...</k>
           <elab>... .K => interleave </elab>
 
+     /*********************************
+     * Parsing number of threads      *
+     **********************************/
+
      syntax Int ::= getNumThreads(K) [function]
      rule getNumThreads(OmpNumThreads(N:Int)) => N -Int 1
      requires N >=Int 1
@@ -108,30 +112,73 @@ module C-STMT-LOOP
      
      rule parseNumThreads(.List, T:Int) => T
 
-//     syntax Bool ::= isOmpNumThreads(K) [function]
-//     rule isOmpNumThreads(OmpNumThreads(N:Int)) => true
-//     rule isOmpNumThreads(_) => false [owise]
-
+     /***********************************
+     * Handling OMP Clauses - BEFORE    *
+     ************************************/
      syntax K ::= handleOmpClausesForBeforeOmp(List, Map) [function]
 
      rule handleOmpClausesForBeforeOmp(.List, M:Map) => .K 
 
      rule handleOmpClausesForBeforeOmp(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handlePrivateClasueBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
 
+     rule handleOmpClausesForBeforeOmp(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) => handleFirstPrivateClauseBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
+     
      rule handleOmpClausesForBeforeOmp(ListItem(OmpNumThreads(N:Int)) L:List, M:Map) => handleOmpClausesForBeforeOmp(L,M)
 
+     /*****************************
+     * Helper Function - Before
+     *****************************/
+
      syntax K ::= handlePrivateClasueBefore(List, Map) [function]
+     syntax K ::= handleFirstPrivateClauseBefore(List, Map) [function]
+     
+
      rule handlePrivateClasueBefore(.List, M:Map) => .K
+     rule handleFirstPrivateClauseBefore(.List, M:Map) => .K
+
      rule handlePrivateClasueBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), .K)) ~> handlePrivateClasueBefore(L, M)
      requires (X in keys(M))
 
+
+     rule handleFirstPrivateClauseBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Computation(te(X := OmpParentVar(X), type(M[X]))))) ~> handleFirstPrivateClauseBefore(L, M)
+     requires (X in keys(M))
+
+
+     /*************************
+     * Handling OMP Clauses - After
+     **************************/
      syntax K ::= handleOmpClausesForAfterOmp(List, Map) [function]
      // Terminate if empty List
      rule handleOmpClausesForAfterOmp(.List, M:Map) => .K 
      // ignore if private()
      rule handleOmpClausesForAfterOmp(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
+     // ignore if firstprivate()
+     rule handleOmpClausesForAfterOmp(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) =>  handleOmpClausesForAfterOmp(L,M)
      // ignore if rnum_threads()     
      rule handleOmpClausesForAfterOmp(ListItem(OmpNumThreads(N:Int)) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
+     
+     /*****************************
+     * Helper Function - After
+     *****************************/
+
+     // IF A DOES NOT EXIST
+     /**
+     rule handlePrivateClasueBefore(ListItem(X:CId) L:List, M:Map) =>  IMPL("JIVE1", "PRIVATE:: Variable is not declared.") ~> handlePrivateClasueBefore(L, M)
+     requires notBool (X in keys(M))
+     
+     rule handleFirstPrivateClauseBefore(ListItem(X:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleFirstPrivateClauseBefore(L, M)
+     requires notBool (X in keys(M)) 
+
+     rule handleLastPrivateClause(ListItem(X:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
+     requires notBool (X in keys(M))  
+     
+     rule handleReductionClausePlus(ListItem(X:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
+     requires notBool (X in keys(M))          
+
+     rule handleReductionClauseProd(ListItem(X:CId) L:List, M:Map) =>  IMPL("JIVE1", "FIRSTPRIVATE:: Variable is not declared.") ~> handleLastPrivateClause(L, M)
+     requires notBool (X in keys(M))          
+     */
+
 
      syntax List ::= putInterleavePointsAsList(List, List)[function]
 

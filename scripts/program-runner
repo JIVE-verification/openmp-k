@@ -151,59 +151,62 @@ sub main {
             print scalar(@solutions) . " solution(s) found\n";
             $log .= scalar(@solutions) . " solution(s) found\n";
             my $count = 1;
-            
+            my %retResults = ();
             for my $solution (@solutions) {
-                  $log .= "=============================================================\n";
-                  $log .= "Solution $count:\n";
+                  my $log_solution .= "=============================================================\n";
+                  $log_solution .= "Solution $count:\n";
                   my %parsed;
+                  my $unique_solutions = scalar keys %retResults;
                   parseResultForSolutions(\%parsed, $solution);
                   # print Dumper(\%parsed);
                   if (defined $parsed{finalComp} || defined $parsed{finalCompType} 
                   || defined $parsed{errorMsg} || !defined $parsed{exitCode}) {
-                        $log .= "\n=============================================================\n";
-                        $log .= "ERROR! KCC encountered an error while executing this program.\n";
+                        $log_solution .= "\n=============================================================\n";
+                        $log_solution .= "ERROR! KCC encountered an error while executing this program.\n";
                         if (defined $parsed{errorMsg}) {
-                              $log .= "=============================================================\n";
-                              $log .= "$parsed{errorMsg}\n";
+                              $log_solution .= "=============================================================\n";
+                              $log_solution .= "$parsed{errorMsg}\n";
                         }
 
-                        $log .= "=============================================================\n";
-                        $log .= "File: $parsed{errorFile}\n" if defined $parsed{errorFile};
-                        $log .= "Function: $parsed{errorFunc}\n" if defined $parsed{errorFunc};
-                        $log .= "Line: $parsed{errorLine}\n" if defined $parsed{errorLine};
+                        $log_solution .= "=============================================================\n";
+                        $log_solution .= "File: $parsed{errorFile}\n" if defined $parsed{errorFile};
+                        $log_solution .= "Function: $parsed{errorFunc}\n" if defined $parsed{errorFunc};
+                        $log_solution .= "Line: $parsed{errorLine}\n" if defined $parsed{errorLine};
                         if (defined $parsed{finalComp}) {
-                              $log .= "=============================================================\n";
-                              $log .= "Final Computation:\n";
-                              $log .= unindent(substr($parsed{finalComp}, 0, 1000));
-                              $log .= "\n";
+                              $log_solution .= "=============================================================\n";
+                              $log_solution .= "Final Computation:\n";
+                              $log_solution .= unindent(substr($parsed{finalComp}, 0, 1000));
+                              $log_solution .= "\n";
                         }
 
                         if (defined $parsed{finalCompGoto}) {
-                              $log .=  "=============================================================\n";
-                              $log .=  "Final Goto Map Computation:\n";
-                              $log .=  unindent(substr($parsed{finalCompGoto}, 0, 1000));
-                              $log .=  "\n";
+                              $log_solution .=  "=============================================================\n";
+                              $log_solution .=  "Final Goto Map Computation:\n";
+                              $log_solution .=  unindent(substr($parsed{finalCompGoto}, 0, 1000));
+                              $log_solution .=  "\n";
                         }
 
                         if (defined $parsed{finalCompType}) {
-                              $log .=  "=============================================================\n";
-                              $log .=  "Final Type Computation:\n";
-                              $log .=  unindent(substr($parsed{finalCompType}, 0, 1000));
-                              $log .=  "\n";
+                              $log_solution .=  "=============================================================\n";
+                              $log_solution .=  "Final Type Computation:\n";
+                              $log_solution .=  unindent(substr($parsed{finalCompType}, 0, 1000));
+                              $log_solution .=  "\n";
                         }
                   }
-                  if (defined $parsed{exitCode}){
-                        $log .= "return value:". $parsed{exitCode}. "\n";
-                  }
-                  if (defined $parsed{testkey}){
-                        $log .= "stdout:". $parsed{testkey}. "\n";
-                  }
-                  if (defined $parsed{execOrder}){
-                        $log .= "exec-order:". $parsed{execOrder}. "\n";
+                  if (defined $parsed{exitCode} && defined $parsed{stdout} && defined $parsed{execOrder}){
+                        if(!exists $retResults{$parsed{exitCode}}){
+                              $log_solution .= "return value:". $parsed{exitCode}. "\n";
+                              $log_solution .= "stdout:". $parsed{stdout}. "\n";
+                              $log_solution .= "exec-order:". $parsed{execOrder}. "\n"; 
+                              $retResults{$parsed{exitCode}} = 1;                             
+                        }
                   }
                   $count++;
-                  $log .=  "=============================================================\n";
+                  $log_solution .=  "=============================================================\n";
+                  $log .= $log_solution if (scalar keys %retResults) > $unique_solutions;
             }
+            print (scalar keys %retResults). " unique solutions\n";
+            $log .= (scalar keys %retResults). " unique solutions\n";
             close($fh);
             # print($log);
             open($fh, '>', $searchOutputFile) or die "Cannot open file: $!";
@@ -349,7 +352,7 @@ sub parseResultForSolutions {
       my @done = $solution =~ /<done>\s*(.*?)\s*<\/done>/g;
       # $parsed->{testkey} = $done[1] if @done > 1;
       if (@done > 1 && $done[1] =~ /\s*ListItem\s*\(\s*(.*)\s*\)\s*/) {
-            $parsed->{testkey} = $1;
+            $parsed->{stdout} = $1;
       }
 }
 

@@ -1,13 +1,10 @@
-thread execution order <thread-no:#line-no:#> stored in configuration
+#pragma omp parallel firstprivate parsed, translated and executed
 
-o scripts/program-runner: scripts changed to save search results
-o semantics/language/execution/configuration.k: <thread-exec-order> cell added, <dipok> for test
-o semantics/language/execution/stmt/loop.k: save thread execution order and line no when interleave
-+ hello.c: a hello world .c program
-+ run_execution_search: script to run threadsearch with a specific depth
-+ run_execution_search_depths: script to run threadsearch with different depths
-+ run_thread_search: script to run threadsearch
-+ search-results-test_omp6.txt: THREADSEARCH=1 ./test_omp6.c
-+ search-results-test_omp7.txt: THREADSEARCH=1 ./test_omp7.c 
-+ test_omp6.c: .c having #pragma omp parallel private(i) num_threads(2)
-+ test_omp7.c: .c having #pragma omp parallel num_threads(2)
+o parser/xmlPrinter.ml: firstprivate clause added
+o scripts/program-runner: unique solutions recorded
+o semantics/language/execution/expr/identifier.k: OmpParentVar(X:CId) captures the value of X in the previous block
+o semantics/language/translation/stmt/loop.k: firstprivate and associated clauses are parsed using function
+o semantics/language/translation/syntax.k: sorts associated firstprivate added 
+o search-results-test_omp_firstprivate.txt: search results for running THREADSEARCH=1 ./test_omp_firstprivate
++test_decl_assgn.c: a sample translation semantics containing variable declaration, assigning values, etc.
++test_omp_firstprivate.c: .c program containing firstprivate

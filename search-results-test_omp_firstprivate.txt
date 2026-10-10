@@ -1,0 +1,8 @@
+20 solution(s) found
+=============================================================
+Solution 1:
+return value:20
+stdout:"" 
+exec-order:"T0L7T0L8T0L9T1L7T1L8T1L9"
+=============================================================
+1 unique solutions

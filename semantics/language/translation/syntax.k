@@ -264,8 +264,18 @@ module C-ABSTRACT-SYNTAX
      syntax Statement ::= For(BlockTag, K, K, K, K)
 
      syntax Statement ::= OmpParallel(BlockTag, K, K)
+
+     /*
+     and omp_clause = 
+     OMP_PRIVATE of string list
+     | OMP_FIRST_PRIVATE of string list
+     | OMP_NUM_THREADS of omp_num_threads_clause
+     | OMP_REDUCTION of string * string * string list
+     | OMP_LAST_PRIVATE of string * string list
+     */
      syntax KItem ::= OmpPrivateList(K)
      syntax KItem ::= OmpNumThreads(Int)
+     syntax KItem ::= OmpFirstPrivateList(K)
 
 
      // gcc extension
