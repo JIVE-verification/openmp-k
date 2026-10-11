@@ -896,6 +896,9 @@ statement:
 |   FOR LPAREN for_clause opt_expression
 	        SEMICOLON opt_expression RPAREN statement
 	                         {FOR ($3, $4, $6, $8, (*handleLoc*) $1)}
+|   OMPPRAGMA OMP PARALLEL FOR omp_clause FOR LPAREN for_clause opt_expression
+	        SEMICOLON opt_expression RPAREN statement
+	                         {OMPPARALLELFOR ($5, $8, $9, $11, $13, (*handleLoc*) $6)}
 |   OMPPRAGMA OMP PARALLEL omp_clause statement
 	                         {OMPPARALLEL ($4, $5, (*handleLoc*) $3)}                           
 |   IDENT COLON attribute_nocv_list statement

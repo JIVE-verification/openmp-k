@@ -65,8 +65,8 @@ module C-CONFIGURATION
           .K
      </final-computation>
      
-     // OPENMP DEFAULT THREADS: 5
-     <omp-default-threads> 4 </omp-default-threads>
+     // OPENMP DEFAULT THREADS: 2
+     <omp-default-threads> 1 </omp-default-threads>
 
      <goto-map-calc color="cyan">
           <goto-calc multiplicity="*" color="cyan">

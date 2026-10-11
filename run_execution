@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <filename> <depth>"
+if [ "$#" -eq 0 ]; then
+    echo "Usage: $0 <filename> [depth]"
     exit 1
 fi
 input_file=$1
@@ -26,6 +26,26 @@ else
     		fi
 	done
 fi
+
+if [ -z "$2"]; then
+	echo "dist/kcc $input_file -o "$output_file_path""
+	dist/kcc $input_file -o "$output_file_path"
+	sed -i 's/\r$//' $output_file_path
+	sed -i 's/if (!defined $ENV{DUMPALL}) {/if (defined $ENV{DUMPALL}) {/' "$output_file_path"
+	a="tmp-kcc-"
+	b="$destination_dir/tmp-kcc-"
+	sed -i "s|$a|$b|" "$output_file_path" 
+	echo "./$output_file_path"
+	./$output_file_path
+	echo "Copying execution configuration file ..."
+	if [ -f $destination_dir/tmp-kcc-out-*.txt ]; then
+		cp $destination_dir/tmp-kcc-out-*.txt  "$destination_dir/$input_file.txt"		
+	else
+		echo "TMP Copy ERROR!"
+	fi	
+	exit 1
+fi
+
 # 
 if [ ! -f "$output_file_path" ]; then
 	echo "$output_file outfile creating"

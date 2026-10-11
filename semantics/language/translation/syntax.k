@@ -260,10 +260,12 @@ module C-ABSTRACT-SYNTAX
 
      /*
      | FOR of for_clause * expression * expression * statement * cabsloc
+     | OMPPARALLELFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
+     | OMPPARALLEL of omp_clause list * statement * cabsloc     
      */
      syntax Statement ::= For(BlockTag, K, K, K, K)
-
      syntax Statement ::= OmpParallel(BlockTag, K, K)
+     syntax Statement ::= OmpParallelFor(BlockTag, K, K, K, K, K)
 
      /*
      and omp_clause = 
@@ -272,11 +274,12 @@ module C-ABSTRACT-SYNTAX
      | OMP_NUM_THREADS of omp_num_threads_clause
      | OMP_REDUCTION of string * string * string list
      | OMP_LAST_PRIVATE of string * string list
+     | OMP_SHARED of string list
      */
      syntax KItem ::= OmpPrivateList(K)
      syntax KItem ::= OmpNumThreads(Int)
      syntax KItem ::= OmpFirstPrivateList(K)
-
+     syntax KItem ::= OmpReduction(String, String, K)
 
      // gcc extension
      syntax Statement ::= CaseRange(K, K, K)

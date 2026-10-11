@@ -97,7 +97,11 @@ module C-SYNTAX
 
      // @omp
      // num of threads, clauses before block, clauses after block, block
-     syntax KItem ::= blockOmpParallel(Int, K, K, K)
+     syntax Statement ::= blockOmpParallel(Int, K, K, K)
+     // num of threads, clauses before block, clauses after block, Condition, post expression, body
+     syntax Statement ::= blockOmpParallelFor(Int, K, K, K, K, K)
+     // num of threads, clauses before block, clauses after block, Initial, Condition, post expression, body
+     syntax Statement ::= blockOmpParallelFor(Int, K, K, K, K, K, K)
 
      /*
      To collect all clauses

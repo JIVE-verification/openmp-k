@@ -51,6 +51,13 @@ module C-STMT-LOOP
           <block-history> ListItem(_:Int) ...</block-history>
           [structural] // rule so that looping programs see repetition
 
+     rule [include-omp-parallel-for-int-i]:
+          <k> declareInternalVariable(X:CId, _, initValue(_, T:Type, Init:K)) ~> blockOmpParallelFor(Th:Int, B:K, A:K, Control:K, Post:K, S:K)
+               => blockOmpParallelFor(Th, B:K, A:K, declareInternalVariable(X, T, initValue(X, T, Init)), Control, Post, S)
+               ...</k>
+          <env> Env::Map </env>
+          [structural]
+          
      // @omp thread interleaving
 
 //     rule interleave => .K [threadleave]
@@ -87,7 +94,16 @@ module C-STMT-LOOP
           <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>
           requires TotalThreads ==Int 0
 
-     rule [zero-threadomp-parallel]:
+     rule [extract-total-threads-omp-parallel-for]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOmpParallelFor(Th:Int, B:K, A:K, Initial:K, Control:K, Post:K, S:K)
+               ...</k>
+          ...</thread>
+          <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>
+          requires TotalThreads ==Int 0 
+
+     rule [zero-thread-omp-parallel]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
           <k> blockOmpParallel(Th:Int, B:K, A:K, S:K)
@@ -97,6 +113,69 @@ module C-STMT-LOOP
           <omp-current-threads> TotalThreads:Int</omp-current-threads>
           requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
 
+// blockOmpParallelFor ( 1 , BeforeOmp (_) , AfterOmp ( _) , declareInternalVariable ( Identifier ( "i" ) , t ( .Set , int ) , initValue ( Identifier ( "i" ) , t (.Set , int ) , Computation ( te ( Identifier ( "i" ) := tv ( 0 , t ( .Set , int ) ) , t ( .Set , int ) ) ) ) ) , te ( Identifier ( "i" ) <= tv ( 5 , t ( .Set , int ) ) != tv ( 0 , t ( SetItem ( IntegerConstant ) , int ) ) , t ( .Set , int ) ) , Post:K , S:K )
+
+/*     rule [other-thread-omp-parallel-for-test]:
+          <thread>
+          ...
+               <thread-id> Parent:Int </thread-id>
+               <k> 
+                    blockOmpParallelFor(Th:Int, B:K, A:K, declareInternalVariable(X:CId, _, initValue(_, T:Type, Computation(te(Y:KItem := V:KItem, _)))), te(I:KItem < N:KItem != CM:KItem, TT:Type), Post:K, S:K)
+                    => jive ~> Computation(te( Y := V, T))
+               ...
+               </k>
+          ...
+          </thread>
+*/
+
+///*
+     rule [zero-thread-omp-parallel-for]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> blockOmpParallelFor(Th:Int, B:K, A:K, declareInternalVariable(X:CId, _, initValue(_, T:Type, Computation(te( Y:KItem := V:KItem, _)))), te((I:KItem < N:KItem) != CM:KItem, TT:Type), Post:K, S:K)
+               => B ~> declareInternalVariable(X, T, initValue(X, T, Computation(te( Y := V, T)))) ~> For(te((I <((N % tv(TotalThreads, TT)) + ( N / tv( TotalThreads, TT) )  ) ) != CM, TT), Post, S) ~> A ~> waitingForChild
+               ...</k>
+          ...</thread>
+          <omp-current-threads> TotalThreads:Int</omp-current-threads>
+          requires Th ==Int ThId andBool Th ==Int 0 andBool TotalThreads =/=Int 0
+
+
+     rule [other-thread-omp-parallel-for]:
+          <thread>
+          ...
+               <thread-id> Parent:Int </thread-id>
+               <thread-local> 
+                    C:Bag 
+                    <parent-thread> _ </parent-thread>
+                    <child-threads> ... .Set => SetItem(Fresh)</child-threads>
+               </thread-local>
+               <k> 
+                    blockOmpParallelFor(Th:Int, B:K, A:K, declareInternalVariable(X:CId, _, initValue(_, T:Type, Computation( te(Y:KItem := V:KItem, _)))), te((I:KItem < N:KItem) != CM:KItem, TT:Type), Post:K, S:K)
+                    => blockOmpParallelFor(Th -Int 1, B:K, A:K, declareInternalVariable(X, T, initValue(X, T, Computation(te( Y := V, T)))), te((I < N) != CM, TT),  Post, S)
+               ...
+               </k>
+          ...
+          </thread>
+          <next-thread-id> Fresh:Int => Fresh +Int 1 </next-thread-id>
+          <omp-current-threads> TotalThreads:Int </omp-current-threads>
+          (.Bag =>
+          <thread>
+          ...
+               <thread-id> Fresh:Int </thread-id>
+               <k>  
+                   B ~> declareInternalVariable(X, T, initValue(X, T, Computation( te(Y := ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(TotalThreads -Int Th, TT) ) ), TT))) ) ~> For(te((I < ( (N % tv(TotalThreads, TT)) + ( (N / tv( TotalThreads, TT)) * tv(TotalThreads -Int Th +Int 1, TT) ) )) != CM, TT), Post, S) ~> A ~> joinChild
+               </k>
+               <duration> thread(Fresh:Int) </duration>
+               <thread-local>
+                    C
+                    <parent-thread> Parent </parent-thread>
+                    <child-threads> .Set </child-threads>
+               </thread-local>
+          ...
+          </thread>)
+          requires Th =/=Int 0 andBool TotalThreads =/=Int 0
+          [large, ndthread]
+//*/
      rule [other-thread-omp-parallel]:
           <thread>
           ...

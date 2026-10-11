@@ -205,7 +205,7 @@ sub main {
                   $log_solution .=  "=============================================================\n";
                   $log .= $log_solution if (scalar keys %retResults) > $unique_solutions;
             }
-            print (scalar keys %retResults). " unique solutions\n";
+            # print (scalar keys %retResults). " unique solutions\n";
             $log .= (scalar keys %retResults). " unique solutions\n";
             close($fh);
             # print($log);

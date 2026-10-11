@@ -1,10 +1,16 @@
-#pragma omp parallel firstprivate parsed, translated and executed
+`#pragma omp parallel for` with reduction parsed, translated and executed successfully, but yet to observe threadsearch result
 
-o parser/xmlPrinter.ml: firstprivate clause added
-o scripts/program-runner: unique solutions recorded
-o semantics/language/execution/expr/identifier.k: OmpParentVar(X:CId) captures the value of X in the previous block
-o semantics/language/translation/stmt/loop.k: firstprivate and associated clauses are parsed using function
-o semantics/language/translation/syntax.k: sorts associated firstprivate added 
-o search-results-test_omp_firstprivate.txt: search results for running THREADSEARCH=1 ./test_omp_firstprivate
-+test_decl_assgn.c: a sample translation semantics containing variable declaration, assigning values, etc.
-+test_omp_firstprivate.c: .c program containing firstprivate
+o parser/cabs.ml, parser/cparser.mly, parser/xmlPrinter.ml: parsing `#pragma omp parallel for`
+o run_execution: fix so that it can execute a .c program with or without depth argument
+o scripts/program-runner: negligible fix
+o semantics/language/common/syntax.k: sorts related to `#pragma omp parallel for`
+o semantics/language/execution/stmt/loop.k: handled `#pragma omp parallel for` in execution semantics
+o semantics/language/translation/configuration.k: default num_threads set to 2
+o semantics/language/translation/process-label.k: handled `#pragma omp parallel for`
+o semantics/language/translation/stmt/loop.k: handled `#pragma omp parallel for` and its clauses in translation semantics
+o semantics/language/translation/syntax.k: sorts related to `#pragma omp parallel for`
+o test_decl_assgn.c: example modified
+o test_for.c: example for loop
+- deleted:    test_omp.c
++ test_par_for_sum.c: testing `#pragma omp parallel for` without reduction
++ test_par_for_sum_red.c: testing `#pragma omp parallel for` with reduction
