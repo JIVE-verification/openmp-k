@@ -1,1 +1,4 @@
-copies .c files from https://github.com/OpenMP/Examples/tree/v5.0.0/sources
+batch for translation semantics is added
++ run_translation_batch : takes input a directory and generates the translation-semantics of .c files in that directory
++ translate-program : config of translation semantics is analyzed
++ kcc_batch_1792300312.csv: translation results of (.c files) https://github.com/OpenMP/Examples/tree/v5.0.0/sources

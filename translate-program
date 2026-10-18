@@ -135,8 +135,8 @@ sub main {
      # Reduce our objFiles down to at most two.
      mergeObjs(2, 1);
      # my $oval = $args->{'-o'} || 'a.out';
-     my $input_file = $srcFiles[0];
-     my $target_file_dir =$srcFiles[0];
+     my $input_file = basename($srcFiles[0]);
+     my $target_file_dir = basename($srcFiles[0]);
      # $target_file_dir =~ s/\.c$//;
      $target_file_dir ="experiments/trans-".$target_file_dir;
 
@@ -167,7 +167,141 @@ sub main {
      }
      copy($programConfFile, $output_file_path) or die "Pretty Config failed: $!";
      # print("krun return value <O means OK, !0 means Error> is $retval\n");     
+     
+     # Print errors and/or results and exit.
+     open(my $fh, '<', $programConfFile) or die "Cannot open $programConfFile: $!";
+     local $/;
+     my $content = <$fh>;
+     my $log = "";
+     my %parsed;
+     parseConfigFile(\%parsed, $content);
+     if (defined $parsed{errorMsg} || !defined $parsed{exitCode}) {
+                        $log .= "\n=============================================================\n";
+                        $log .= "ERROR! KCC encountered an error while translating this program.\n";
+                        if (defined $parsed{errorMsg}) {
+                              $log .= "=============================================================\n";
+                              $log .= "$parsed{errorMsg}\n";
+                        }
+
+                        $log .= "=============================================================\n";
+                        $log .= "File: $parsed{errorFile}\n" if defined $parsed{errorFile};
+                        $log .= "Function: $parsed{errorFunc}\n" if defined $parsed{errorFunc};
+                        $log .= "Line: $parsed{errorLine}\n" if defined $parsed{errorLine};
+                        if (defined $parsed{finalComp}) {
+                              $log .= "=============================================================\n";
+                              $log .= "Final Computation:\n";
+                              $log .= unindent(substr($parsed{finalComp}, 0, 1000));
+                              $log .= "\n";
+                        }
+
+                        if (defined $parsed{finalCompGoto}) {
+                              $log .=  "=============================================================\n";
+                              $log .=  "Final Goto Map Computation:\n";
+                              $log .=  unindent(substr($parsed{finalCompGoto}, 0, 1000));
+                              $log .=  "\n";
+                        }
+
+                        if (defined $parsed{finalCompType}) {
+                              $log .=  "=============================================================\n";
+                              $log .=  "Final Type Computation:\n";
+                              $log .=  unindent(substr($parsed{finalCompType}, 0, 1000));
+                              $log .=  "\n";
+                        }
+     }
+     else {
+          if($parsed{exitCode} == 1)
+          {
+               $log .= "\n=============================================================\n";
+               $log .= "ERROR! KCC got stuck while translating this program.\n";
+
+               $log .= "=============================================================\n";
+               $log .= "File: $parsed{errorFile}\n" if defined $parsed{errorFile};
+               $log .= "Function: $parsed{errorFunc}\n" if defined $parsed{errorFunc};
+               $log .= "Line: $parsed{errorLine}\n" if defined $parsed{errorLine};
+               if (defined $parsed{finalComp}) {
+                    $log .= "=============================================================\n";
+                    $log .= "Final Computation:\n";
+                    $log .= unindent(substr($parsed{finalComp}, 0, 1000));
+                    $log .= "\n";
+               }
+
+               if (defined $parsed{finalCompGoto}) {
+                    $log .=  "=============================================================\n";
+                    $log .=  "Final Goto Map Computation:\n";
+                    $log .=  unindent(substr($parsed{finalCompGoto}, 0, 1000));
+                    $log .=  "\n";
+               }
+
+               if (defined $parsed{finalCompType}) {
+                    $log .=  "=============================================================\n";
+                    $log .=  "Final Type Computation:\n";
+                    $log .=  unindent(substr($parsed{finalCompType}, 0, 1000));
+                    $log .=  "\n";
+               }
+          }
+          else{
+               $log .= "=============================================================\n";
+               $log .= "SUCCESS! KCC translated this program.\n";
+               $log .= "=============================================================\n";
+          }
+     }
+     close($fh);
+     print($log);
      return 0;
+}
+
+sub parseConfigFile {
+      my ($parsed, $solution) = (@_);
+
+      $solution =~ /<k>(.*?)<\/k>/s && do {
+            $parsed->{finalComp} = $1;
+      };
+
+      $solution =~ /<error-cell>\s*"(.*)"\s*<\/error-cell>/ && do {
+            $parsed->{haveError} = 1;
+            my $output = $1;
+            $output =~ s/\%/\%\%/g;
+            $output =~ s/`/\\`/g;
+            $output =~ s/\\\\/\\\\\\\\/g;
+            $parsed->{errorMsg} = substr(`printf "x$output"`, 1);
+      };
+
+      $solution =~ /<curr-function>\s*(Identifier \( "(.*?)" \)|(file-scope))\s*<\/curr-function>/ && do {
+            $parsed->{errorFunc} = $2;
+      };
+
+      $solution =~ /<curr-program-loc>\s*CabsLoc\s*\(\s*"(.*)"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)\s*<\/curr-program-loc>/ && do {
+            $parsed->{errorFile} = $1;
+            $parsed->{errorLine} = $2;
+      };
+
+      $solution =~ /<final-computation>(.*?)<\/final-computation>/s && do {
+            $parsed->{finalComp} = $1;
+      };
+
+      $solution =~ /<computation>(.*?)<\/computation>/s && do {
+            $parsed->{finalCompGoto} = $1;
+      };
+
+      $solution =~ /<output>\s*#buffer\s*\(\s*"(.*)"\s*\)\s*<\/output>/ && do {
+            $parsed->{output} = $1;
+      };
+
+      $solution =~ /<result-value>\s*(-?\d+)\s*<\/result-value>/ && do {
+            $parsed->{exitCode} = $1;
+      };
+
+      $solution =~ /<result-value>\s*unknown\s*<\/result-value>/ && do {
+            $parsed->{errorMsg} = "Unspecified value returned from main function.";
+      };
+
+      $solution =~ /<result-value>\s*NullPointer\s*<\/result-value>/ && do {
+            $parsed->{exitCode} = 0;
+      };
+
+      $solution =~ /<status>\s*(.*)\s*<\/status>/ && do {
+            $parsed->{status} = $1;
+      };
 }
 
 sub mergeObjs {
@@ -441,6 +575,17 @@ sub finalCleanup {
                unlink;
           }
      }
+}
+sub unindent {
+      my ($str) = (@_);
+
+      my @lines = split "\n", $str;
+
+      for (@lines) {
+            s/^\s+//;
+      }
+
+      return join "\n", @lines;
 }
 
 # This block gets run at the end of a normally terminating program, whether it

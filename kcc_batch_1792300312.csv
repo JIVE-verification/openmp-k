@@ -1,0 +1,1252 @@
+Full_Path,Ouput
+"tests/omp_examples_5.0.0//Example_SIMD.1.c","tests/omp_examples_5.0.0//Example_SIMD.1.c[11:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_SIMD.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_SIMD.2.c","tests/omp_examples_5.0.0//Example_SIMD.2.c[10:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_SIMD.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_SIMD.3.c","tests/omp_examples_5.0.0//Example_SIMD.3.c[13:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_SIMD.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_SIMD.4.c","tests/omp_examples_5.0.0//Example_SIMD.4.c[11:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_SIMD.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_SIMD.5.c","tests/omp_examples_5.0.0//Example_SIMD.5.c[12:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_SIMD.5.c to see commands run."
+"tests/omp_examples_5.0.0//Example_SIMD.6.c","tests/omp_examples_5.0.0//Example_SIMD.6.c[8:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_SIMD.6.c to see commands run."
+"tests/omp_examples_5.0.0//Example_SIMD.7.c","tests/omp_examples_5.0.0//Example_SIMD.7.c[14:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_SIMD.7.c to see commands run."
+"tests/omp_examples_5.0.0//Example_SIMD.8.c","tests/omp_examples_5.0.0//Example_SIMD.8.c[18:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_SIMD.8.c to see commands run."
+"tests/omp_examples_5.0.0//Example_acquire_release.1.c","tests/omp_examples_5.0.0//Example_acquire_release.1.c[20:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_acquire_release.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_acquire_release.2.c","tests/omp_examples_5.0.0//Example_acquire_release.2.c[20:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_acquire_release.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_acquire_release.3.c","tests/omp_examples_5.0.0//Example_acquire_release.3.c[20:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_acquire_release.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_acquire_release_broke.4.c","tests/omp_examples_5.0.0//Example_acquire_release_broke.4.c[23:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_acquire_release_broke.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_affinity.1.c","tests/omp_examples_5.0.0//Example_affinity.1.c[14:22-39] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_affinity.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_affinity.2.c","tests/omp_examples_5.0.0//Example_affinity.2.c[12:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_affinity.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_affinity.3.c","tests/omp_examples_5.0.0//Example_affinity.3.c[11:22-38] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_affinity.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_affinity.4.c","tests/omp_examples_5.0.0//Example_affinity.4.c[12:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_affinity.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_affinity.5.c","tests/omp_examples_5.0.0//Example_affinity.5.c[11:22-39] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_affinity.5.c to see commands run."
+"tests/omp_examples_5.0.0//Example_affinity.6.c","tests/omp_examples_5.0.0//Example_affinity.6.c[15:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_affinity.6.c to see commands run."
+"tests/omp_examples_5.0.0//Example_affinity_display.1.c","tests/omp_examples_5.0.0//Example_affinity_display.1.c[20:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_affinity_display.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_affinity_display.2.c","tests/omp_examples_5.0.0//Example_affinity_display.2.c:26:6: error: multi-line comment [-Werror=comment]
+      // OMP_AFFINITY_FORMAT=\
+      ^
+cc1: all warnings being treated as errors
+Fatal error: exception Errormsg.Error
+Entity: line 1: parser error : Document is empty
+Error: Cannot find input file tmp-kcc-YIH9HwM
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_affinity_display.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_affinity_display.3.c","tests/omp_examples_5.0.0//Example_affinity_display.3.c[56:30-56] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_affinity_display.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_affinity_query.1.c","tests/omp_examples_5.0.0//Example_affinity_query.1.c[16:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_affinity_query.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_allocators.1.c","tests/omp_examples_5.0.0//Example_allocators.1.c[19:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_allocators.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_array_sections.1.c","tests/omp_examples_5.0.0//Example_array_sections.1.c[11:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_array_sections.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_array_sections.2.c","tests/omp_examples_5.0.0//Example_array_sections.2.c[11:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_array_sections.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_array_sections.3.c","tests/omp_examples_5.0.0//Example_array_sections.3.c[11:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_array_sections.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_array_sections.4.c","tests/omp_examples_5.0.0//Example_array_sections.4.c[11:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_array_sections.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_array_shaping.1.c","tests/omp_examples_5.0.0//Example_array_shaping.1.c[8:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_array_shaping.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_async_target.1.c","tests/omp_examples_5.0.0//Example_async_target.1.c[8:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_async_target.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_async_target.2.c","tests/omp_examples_5.0.0//Example_async_target.2.c[10:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_async_target.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_async_target.3.c","tests/omp_examples_5.0.0//Example_async_target.3.c[24:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_async_target.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_async_target.4.c","tests/omp_examples_5.0.0//Example_async_target.4.c[19:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_async_target.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_atomic.1.c","tests/omp_examples_5.0.0//Example_atomic.1.c[24:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_atomic.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_atomic.2.c","tests/omp_examples_5.0.0//Example_atomic.2.c[14:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_atomic.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_atomic.3.c","tests/omp_examples_5.0.0//Example_atomic.3.c[15:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_atomic.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_atomic_restrict.1.c","tests/omp_examples_5.0.0//Example_atomic_restrict.1.c[14:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_atomic_restrict.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_atomic_restrict.2.c","tests/omp_examples_5.0.0//Example_atomic_restrict.2.c[19:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_atomic_restrict.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_barrier_regions.1.c","tests/omp_examples_5.0.0//Example_barrier_regions.1.c[13:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_barrier_regions.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_cancellation.2.c","tests/omp_examples_5.0.0//Example_cancellation.2.c[22:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_cancellation.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_carrays_fpriv.1.c","
+=============================================================
+ERROR! KCC got stuck while translating this program.
+=============================================================
+File: tests/omp_examples_5.0.0//Example_carrays_fpriv.1.c
+Function: f
+Line: 20
+=============================================================
+Final Computation:
+
+stabilize ( t ( .Set , variableLengthArrayType ( t (
+.Set , int ) , te ( Identifier ( "n" ) , t ( .Set , 
+int ) ) ) ) ) ~> stabilize ( t ( .Set , pointerType ( 
+t ( .Set , variableLengthArrayType ( t ( .Set , int ) 
+, te ( Identifier ( "n" ) , t ( .Set , int ) ) ) ) ) )
+) ~> stabilizeVLA ( t ( .Set , pointerType ( t ( .Set
+, variableLengthArrayType ( t ( .Set , int ) , te ( 
+Identifier ( "n" ) , t ( .Set , int ) ) ) ) ) ) ) ~> 
+sizeof ( HOLE ) ~> reval ( HOLE ) ~> HOLE == 
+SizeofType ( Specifier ( list ( ListItem ( Int ) ) ) ,
+ArrayType ( FunctionType ( PointerType ( Specifier ( 
+list ( .List ) ) , JustBase ) ) , Identifier ( "n" ) ,
+Specifier ( list ( .List ) ) ) ) ~> reval ( HOLE )"
+"tests/omp_examples_5.0.0//Example_collapse.1.c","tests/omp_examples_5.0.0//Example_collapse.1.c[17:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_collapse.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_collapse.2.c","tests/omp_examples_5.0.0//Example_collapse.2.c[15:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_collapse.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_collapse.3.c","tests/omp_examples_5.0.0//Example_collapse.3.c[16:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_collapse.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_cond_comp.1.c","=============================================================
+SUCCESS! KCC translated this program.
+============================================================="
+"tests/omp_examples_5.0.0//Example_copyin.1.c","tests/omp_examples_5.0.0//Example_copyin.1.c[14:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_copyin.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_copyprivate.1.c","tests/omp_examples_5.0.0//Example_copyprivate.1.c[10:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_copyprivate.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_copyprivate.2.c","tests/omp_examples_5.0.0//Example_copyprivate.2.c[15:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_copyprivate.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_copyprivate.3.c","tests/omp_examples_5.0.0//Example_copyprivate.3.c[16:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_copyprivate.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_critical.1.c","tests/omp_examples_5.0.0//Example_critical.1.c[17:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_critical.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_critical.2.c","tests/omp_examples_5.0.0//Example_critical.2.c[19:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_critical.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_declare_target.1.c","tests/omp_examples_5.0.0//Example_declare_target.1.c[8:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_declare_target.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_declare_target.3.c","tests/omp_examples_5.0.0//Example_declare_target.3.c[9:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_declare_target.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_declare_target.4.c","tests/omp_examples_5.0.0//Example_declare_target.4.c[9:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_declare_target.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_declare_target.5.c","tests/omp_examples_5.0.0//Example_declare_target.5.c[10:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_declare_target.5.c to see commands run."
+"tests/omp_examples_5.0.0//Example_declare_target.6.c","tests/omp_examples_5.0.0//Example_declare_target.6.c[12:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_declare_target.6.c to see commands run."
+"tests/omp_examples_5.0.0//Example_declare_variant.1.c","tests/omp_examples_5.0.0//Example_declare_variant.1.c[16:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_declare_variant.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_declare_variant.2.c","tests/omp_examples_5.0.0//Example_declare_variant.2.c[13:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_declare_variant.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_default_none.1.c","tests/omp_examples_5.0.0//Example_default_none.1.c[10:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_default_none.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_depobj.1.c","tests/omp_examples_5.0.0//Example_depobj.1.c[16:47-53] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_depobj.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_device.1.c","tests/omp_examples_5.0.0//Example_device.1.c[10:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_device.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_device.2.c","tests/omp_examples_5.0.0//Example_device.2.c[17:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_device.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_device.3.c","File: tests/omp_examples_5.0.0//Example_device.3.c
+Line: 17
+Error: TDR2
+Description: no definition for symbol with external linkage: omp_get_default_device
+Type: Undefined behavior.
+See also: C11 sec. 6.9:5
+
+=============================================================
+ERROR! KCC got stuck while translating this program.
+=============================================================
+File: tests/omp_examples_5.0.0//Example_device.3.c
+Line: 17
+=============================================================
+Final Computation:
+
+HALT ~> resolveReferences ~> reportSuccess ~> 
+cleanup"
+"tests/omp_examples_5.0.0//Example_device.4.c","tests/omp_examples_5.0.0//Example_device.4.c[36:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_device.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_doacross.1.c","tests/omp_examples_5.0.0//Example_doacross.1.c[16:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_doacross.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_doacross.2.c","tests/omp_examples_5.0.0//Example_doacross.2.c[16:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_doacross.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_doacross.3.c","tests/omp_examples_5.0.0//Example_doacross.3.c[14:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_doacross.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_doacross.4.c","tests/omp_examples_5.0.0//Example_doacross.4.c[15:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_doacross.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_doacross.5.c","tests/omp_examples_5.0.0//Example_doacross.5.c[16:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_doacross.5.c to see commands run."
+"tests/omp_examples_5.0.0//Example_flush_nolist.1.c","tests/omp_examples_5.0.0//Example_flush_nolist.1.c[13:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_flush_nolist.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_fpriv_sections.1.c","tests/omp_examples_5.0.0//Example_fpriv_sections.1.c[16:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_fpriv_sections.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_get_nthrs.1.c","tests/omp_examples_5.0.0//Example_get_nthrs.1.c[16:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_get_nthrs.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_get_nthrs.2.c","File: tests/omp_examples_5.0.0//Example_get_nthrs.2.c
+Line: 20
+Error: TDR2
+Description: no definition for symbol with external linkage: work
+Type: Undefined behavior.
+See also: C11 sec. 6.9:5
+
+=============================================================
+ERROR! KCC got stuck while translating this program.
+=============================================================
+File: tests/omp_examples_5.0.0//Example_get_nthrs.2.c
+Line: 20
+=============================================================
+Final Computation:
+
+HALT ~> resolveReferences ~> reportSuccess ~> 
+cleanup"
+"tests/omp_examples_5.0.0//Example_host_teams.1.c","tests/omp_examples_5.0.0//Example_host_teams.1.c[20:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_host_teams.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_icv.1.c","tests/omp_examples_5.0.0//Example_icv.1.c[24:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_icv.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_lastprivate.1.c","tests/omp_examples_5.0.0//Example_lastprivate.1.c[14:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_lastprivate.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_linear_in_loop.1.c","tests/omp_examples_5.0.0//Example_linear_in_loop.1.c[21:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_linear_in_loop.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_lock_owner.1.c","tests/omp_examples_5.0.0//Example_lock_owner.1.c[23:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_lock_owner.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_loop.1.c","tests/omp_examples_5.0.0//Example_loop.1.c[18:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_loop.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_master.1.c","tests/omp_examples_5.0.0//Example_master.1.c[20:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_master.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_mem_model.1.c","tests/omp_examples_5.0.0//Example_mem_model.1.c[25:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_mem_model.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_mem_model.2.c","tests/omp_examples_5.0.0//Example_mem_model.2.c[24:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_mem_model.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_mem_model.3.c","tests/omp_examples_5.0.0//Example_mem_model.3.c[19:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_mem_model.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_metadirective.1.c","tests/omp_examples_5.0.0//Example_metadirective.1.c[17:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_metadirective.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_metadirective.2.c","tests/omp_examples_5.0.0//Example_metadirective.2.c[21:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_metadirective.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_metadirective.3.c","tests/omp_examples_5.0.0//Example_metadirective.3.c[12:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_metadirective.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nestable_lock.1.c","tests/omp_examples_5.0.0//Example_nestable_lock.1.c[53:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nestable_lock.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nested_loop.1.c","tests/omp_examples_5.0.0//Example_nested_loop.1.c[13:21-21] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nested_loop.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nested_loop.2.c","tests/omp_examples_5.0.0//Example_nested_loop.2.c[14:21-21] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nested_loop.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nesting_restrict.1.c","tests/omp_examples_5.0.0//Example_nesting_restrict.1.c[14:21-21] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nesting_restrict.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nesting_restrict.2.c","tests/omp_examples_5.0.0//Example_nesting_restrict.2.c[13:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nesting_restrict.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nesting_restrict.3.c","tests/omp_examples_5.0.0//Example_nesting_restrict.3.c[11:21-21] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nesting_restrict.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nesting_restrict.4.c","tests/omp_examples_5.0.0//Example_nesting_restrict.4.c[12:21-21] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nesting_restrict.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nesting_restrict.5.c","tests/omp_examples_5.0.0//Example_nesting_restrict.5.c[13:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nesting_restrict.5.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nesting_restrict.6.c","tests/omp_examples_5.0.0//Example_nesting_restrict.6.c[13:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nesting_restrict.6.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nowait.1.c","tests/omp_examples_5.0.0//Example_nowait.1.c[15:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nowait.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nowait.2.c","tests/omp_examples_5.0.0//Example_nowait.2.c[16:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nowait.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_nthrs_dynamic.1.c","File: tests/omp_examples_5.0.0//Example_nthrs_dynamic.1.c
+Line: 17
+Error: TDR2
+Description: no definition for symbol with external linkage: omp_set_dynamic
+Type: Undefined behavior.
+See also: C11 sec. 6.9:5
+
+=============================================================
+ERROR! KCC got stuck while translating this program.
+=============================================================
+File: tests/omp_examples_5.0.0//Example_nthrs_dynamic.1.c
+Line: 17
+=============================================================
+Final Computation:
+
+HALT ~> resolveReferences ~> reportSuccess ~> 
+cleanup"
+"tests/omp_examples_5.0.0//Example_nthrs_dynamic.2.c","File: tests/omp_examples_5.0.0//Example_nthrs_dynamic.2.c
+Line: 17
+Error: TDR2
+Description: no definition for symbol with external linkage: omp_set_dynamic
+Type: Undefined behavior.
+See also: C11 sec. 6.9:5
+
+=============================================================
+ERROR! KCC got stuck while translating this program.
+=============================================================
+File: tests/omp_examples_5.0.0//Example_nthrs_dynamic.2.c
+Line: 17
+=============================================================
+Final Computation:
+
+HALT ~> resolveReferences ~> reportSuccess ~> 
+cleanup"
+"tests/omp_examples_5.0.0//Example_nthrs_nesting.1.c","tests/omp_examples_5.0.0//Example_nthrs_nesting.1.c[18:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_nthrs_nesting.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_ordered.1.c","tests/omp_examples_5.0.0//Example_ordered.1.c[12:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_ordered.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_ordered.2.c","tests/omp_examples_5.0.0//Example_ordered.2.c[13:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_ordered.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_ordered.3.c","tests/omp_examples_5.0.0//Example_ordered.3.c[12:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_ordered.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_parallel.1.c","tests/omp_examples_5.0.0//Example_parallel.1.c[22:21-21] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_parallel.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_parallel_master_taskloop.1.c","tests/omp_examples_5.0.0//Example_parallel_master_taskloop.1.c[19:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_parallel_master_taskloop.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_ploop.1.c","File: tests/omp_examples_5.0.0//Example_ploop.1.c
+Line: 15
+Error: TDR2
+Description: no definition for symbol with external linkage: main
+Type: Undefined behavior.
+See also: C11 sec. 6.9:5
+
+=============================================================
+ERROR! KCC got stuck while translating this program.
+=============================================================
+File: tests/omp_examples_5.0.0//Example_ploop.1.c
+Line: 15
+=============================================================
+Final Computation:
+
+HALT ~> resolveReferences ~> reportSuccess ~> 
+cleanup"
+"tests/omp_examples_5.0.0//Example_private.1.c","=============================================================
+SUCCESS! KCC translated this program.
+============================================================="
+"tests/omp_examples_5.0.0//Example_private.2.c","File: tests/omp_examples_5.0.0//Example_private.2.c
+Line: 25
+Error: TDR2
+Description: no definition for symbol with external linkage: main
+Type: Undefined behavior.
+See also: C11 sec. 6.9:5
+
+=============================================================
+ERROR! KCC got stuck while translating this program.
+=============================================================
+File: tests/omp_examples_5.0.0//Example_private.2.c
+Line: 25
+=============================================================
+Final Computation:
+
+HALT ~> resolveReferences ~> reportSuccess ~> 
+cleanup"
+"tests/omp_examples_5.0.0//Example_private.3.c","File: tests/omp_examples_5.0.0//Example_private.3.c
+Line: 23
+Error: TDR2
+Description: no definition for symbol with external linkage: main
+Type: Undefined behavior.
+See also: C11 sec. 6.9:5
+
+=============================================================
+ERROR! KCC got stuck while translating this program.
+=============================================================
+File: tests/omp_examples_5.0.0//Example_private.3.c
+Line: 23
+=============================================================
+Final Computation:
+
+HALT ~> resolveReferences ~> reportSuccess ~> 
+cleanup"
+"tests/omp_examples_5.0.0//Example_psections.1.c","tests/omp_examples_5.0.0//Example_psections.1.c[14:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_psections.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_reduction.1.c","tests/omp_examples_5.0.0//Example_reduction.1.c[17:80-81] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_reduction.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_reduction.2.c","tests/omp_examples_5.0.0//Example_reduction.2.c[25:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_reduction.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_reduction.3.c","tests/omp_examples_5.0.0//Example_reduction.3.c[16:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_reduction.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_reduction.6.c","tests/omp_examples_5.0.0//Example_reduction.6.c[16:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_reduction.6.c to see commands run."
+"tests/omp_examples_5.0.0//Example_reduction.7.c","tests/omp_examples_5.0.0//Example_reduction.7.c[22:36-37] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_reduction.7.c to see commands run."
+"tests/omp_examples_5.0.0//Example_set_dynamic_nthrs.1.c","Fatal error: exception Match_failure("xmlPrinter.ml", 592, 1)
+Use of uninitialized value $self in hash element at /usr/lib/x86_64-linux-gnu/perl5/5.20/XML/LibXML/Reader.pm line 143.
+cannot create XML::LibXML::Reader object
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_set_dynamic_nthrs.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_simple_lock.1.c","Fatal error: exception Match_failure("xmlPrinter.ml", 592, 1)
+Use of uninitialized value $self in hash element at /usr/lib/x86_64-linux-gnu/perl5/5.20/XML/LibXML/Reader.pm line 143.
+cannot create XML::LibXML::Reader object
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_simple_lock.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_single.1.c","tests/omp_examples_5.0.0//Example_single.1.c[17:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_single.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_standalone.1.c","tests/omp_examples_5.0.0//Example_standalone.1.c[14:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_standalone.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_standalone.2.c","tests/omp_examples_5.0.0//Example_standalone.2.c[15:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_standalone.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target.1.c","tests/omp_examples_5.0.0//Example_target.1.c[15:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target.2.c","tests/omp_examples_5.0.0//Example_target.2.c[15:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target.3.c","tests/omp_examples_5.0.0//Example_target.3.c[15:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target.4.c","tests/omp_examples_5.0.0//Example_target.4.c[14:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target.5.c","tests/omp_examples_5.0.0//Example_target.5.c[16:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target.5.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target.6.c","tests/omp_examples_5.0.0//Example_target.6.c[16:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target.6.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_data.1.c","tests/omp_examples_5.0.0//Example_target_data.1.c[14:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_data.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_data.2.c","tests/omp_examples_5.0.0//Example_target_data.2.c[15:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_data.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_data.3.c","tests/omp_examples_5.0.0//Example_target_data.3.c[15:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_data.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_data.4.c","tests/omp_examples_5.0.0//Example_target_data.4.c[20:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_data.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_data.6.c","tests/omp_examples_5.0.0//Example_target_data.6.c[16:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_data.6.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_data.7.c","tests/omp_examples_5.0.0//Example_target_data.7.c[15:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_data.7.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_mapper.1.c","tests/omp_examples_5.0.0//Example_target_mapper.1.c[17:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_mapper.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_mapper.2.c","tests/omp_examples_5.0.0//Example_target_mapper.2.c[18:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_mapper.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_mapper.3.c","tests/omp_examples_5.0.0//Example_target_mapper.3.c[19:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_mapper.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_offload_control.1.c","tests/omp_examples_5.0.0//Example_target_offload_control.1.c[69:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_offload_control.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_ptr_map.1.c","tests/omp_examples_5.0.0//Example_target_ptr_map.1.c[22:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_ptr_map.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_ptr_map.2.c","tests/omp_examples_5.0.0//Example_target_ptr_map.2.c[12:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_ptr_map.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_reverse_offload.7.c","tests/omp_examples_5.0.0//Example_target_reverse_offload.7.c[14:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_reverse_offload.7.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_struct_map.1.c","tests/omp_examples_5.0.0//Example_target_struct_map.1.c[21:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_struct_map.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_struct_map.2.c","tests/omp_examples_5.0.0//Example_target_struct_map.2.c[12:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_struct_map.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_unstructured_data.1.c","tests/omp_examples_5.0.0//Example_target_unstructured_data.1.c[18:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_unstructured_data.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_update.1.c","tests/omp_examples_5.0.0//Example_target_update.1.c[15:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_update.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_target_update.2.c","tests/omp_examples_5.0.0//Example_target_update.2.c[15:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_target_update.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_dep.1.c","tests/omp_examples_5.0.0//Example_task_dep.1.c[12:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_dep.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_dep.10.c","tests/omp_examples_5.0.0//Example_task_dep.10.c[13:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_dep.10.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_dep.11.c","tests/omp_examples_5.0.0//Example_task_dep.11.c[26:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_dep.11.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_dep.2.c","tests/omp_examples_5.0.0//Example_task_dep.2.c[13:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_dep.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_dep.3.c","tests/omp_examples_5.0.0//Example_task_dep.3.c[12:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_dep.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_dep.4.c","tests/omp_examples_5.0.0//Example_task_dep.4.c[12:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_dep.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_dep.5.c","tests/omp_examples_5.0.0//Example_task_dep.5.c[18:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_dep.5.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_dep.6.c","tests/omp_examples_5.0.0//Example_task_dep.6.c[15:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_dep.6.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_dep.7.c","tests/omp_examples_5.0.0//Example_task_dep.7.c[15:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_dep.7.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_dep.8.c","tests/omp_examples_5.0.0//Example_task_dep.8.c[15:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_dep.8.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_dep.9.c","tests/omp_examples_5.0.0//Example_task_dep.9.c[13:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_dep.9.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_priority.1.c","tests/omp_examples_5.0.0//Example_task_priority.1.c[14:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_priority.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_task_reduction.1.c","tests/omp_examples_5.0.0//Example_task_reduction.1.c[22:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_task_reduction.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_taskgroup.1.c","tests/omp_examples_5.0.0//Example_taskgroup.1.c[27:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_taskgroup.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.1.c","tests/omp_examples_5.0.0//Example_tasking.1.c[19:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.10.c","tests/omp_examples_5.0.0//Example_tasking.10.c[15:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.10.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.11.c","tests/omp_examples_5.0.0//Example_tasking.11.c[12:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.11.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.12.c","tests/omp_examples_5.0.0//Example_tasking.12.c[12:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.12.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.13.c","tests/omp_examples_5.0.0//Example_tasking.13.c[18:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.13.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.14.c","tests/omp_examples_5.0.0//Example_tasking.14.c[13:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.14.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.15.c","tests/omp_examples_5.0.0//Example_tasking.15.c[13:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.15.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.16.c","tests/omp_examples_5.0.0//Example_tasking.16.c[13:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.16.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.17.c","tests/omp_examples_5.0.0//Example_tasking.17.c[13:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.17.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.18.c","tests/omp_examples_5.0.0//Example_tasking.18.c[13:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.18.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.19.c","tests/omp_examples_5.0.0//Example_tasking.19.c[16:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.19.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.2.c","tests/omp_examples_5.0.0//Example_tasking.2.c[15:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.3.c","tests/omp_examples_5.0.0//Example_tasking.3.c[24:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.4.c","tests/omp_examples_5.0.0//Example_tasking.4.c[13:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.5.c","tests/omp_examples_5.0.0//Example_tasking.5.c[15:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.5.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.6.c","tests/omp_examples_5.0.0//Example_tasking.6.c[14:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.6.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.7.c","tests/omp_examples_5.0.0//Example_tasking.7.c[10:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.7.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.8.c","tests/omp_examples_5.0.0//Example_tasking.8.c[10:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.8.c to see commands run."
+"tests/omp_examples_5.0.0//Example_tasking.9.c","tests/omp_examples_5.0.0//Example_tasking.9.c[10:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_tasking.9.c to see commands run."
+"tests/omp_examples_5.0.0//Example_taskloop.1.c","tests/omp_examples_5.0.0//Example_taskloop.1.c[13:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_taskloop.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_taskloop.2.c","tests/omp_examples_5.0.0//Example_taskloop.2.c[16:29-47] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_taskloop.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_taskloop_reduction.1.c","tests/omp_examples_5.0.0//Example_taskloop_reduction.1.c[14:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_taskloop_reduction.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_taskloop_reduction.2.c","tests/omp_examples_5.0.0//Example_taskloop_reduction.2.c[14:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_taskloop_reduction.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_taskloop_simd_reduction.1.c","tests/omp_examples_5.0.0//Example_taskloop_simd_reduction.1.c[20:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_taskloop_simd_reduction.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_taskyield.1.c","tests/omp_examples_5.0.0//Example_taskyield.1.c[17:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_taskyield.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_teams.1.c","tests/omp_examples_5.0.0//Example_teams.1.c[14:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_teams.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_teams.2.c","tests/omp_examples_5.0.0//Example_teams.2.c[15:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_teams.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_teams.3.c","tests/omp_examples_5.0.0//Example_teams.3.c[12:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_teams.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_teams.4.c","tests/omp_examples_5.0.0//Example_teams.4.c[13:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_teams.4.c to see commands run."
+"tests/omp_examples_5.0.0//Example_teams.5.c","tests/omp_examples_5.0.0//Example_teams.5.c[14:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_teams.5.c to see commands run."
+"tests/omp_examples_5.0.0//Example_teams.6.c","tests/omp_examples_5.0.0//Example_teams.6.c[14:0-8] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_teams.6.c to see commands run."
+"tests/omp_examples_5.0.0//Example_threadprivate.1.c","tests/omp_examples_5.0.0//Example_threadprivate.1.c[9:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_threadprivate.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_threadprivate.2.c","tests/omp_examples_5.0.0//Example_threadprivate.2.c[11:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_threadprivate.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_udr.1.c","tests/omp_examples_5.0.0//Example_udr.1.c[28:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_udr.1.c to see commands run."
+"tests/omp_examples_5.0.0//Example_udr.2.c","tests/omp_examples_5.0.0//Example_udr.2.c[16:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_udr.2.c to see commands run."
+"tests/omp_examples_5.0.0//Example_udr.3.c","tests/omp_examples_5.0.0//Example_udr.3.c[25:0-0] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_udr.3.c to see commands run."
+"tests/omp_examples_5.0.0//Example_worksharing_critical.1.c","tests/omp_examples_5.0.0//Example_worksharing_critical.1.c[11:0-12] : syntax error
+Fatal error: exception Frontc.ParseError("Parse error")
+Entity: line 1: parser error : Document is empty
+Parsing error
+^
+Translation failed. Run kcc -d tests/omp_examples_5.0.0//Example_worksharing_critical.1.c to see commands run."

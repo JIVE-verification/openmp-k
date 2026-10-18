@@ -1,0 +1,57 @@
+#!/bin/bash
+if [ "$#" -eq 0 ]; then
+    echo "Usage: $0 <directory>"
+    exit 1
+fi
+
+# Get source directory from command-line argument
+SOURCE_DIR="$1"
+OUTPUT_DIR="experiments/translation-batch"
+timestamp=$(date +%s)
+
+if [ -z "$SOURCE_DIR" ]; then
+    echo "Usage: $0 <source_directory>"
+    exit 1
+fi
+
+if [ ! -d "$SOURCE_DIR" ]; then
+    echo "Error: Directory '$SOURCE_DIR' does not exist."
+    exit 1
+fi
+
+translator_script="translate-program"
+
+if [ ! -f "dist/$translator_script" ]; then
+    echo "copying $translator_script to dist"
+	cp "$translator_script" "dist"
+fi
+
+mkdir -p "$OUTPUT_DIR"
+# Create CSV header
+echo "Full_Path,Ouput" > "kcc_batch_$timestamp.csv"
+
+for file in "$SOURCE_DIR"/*.c; do
+    [ -f "$file" ] || continue
+
+    filename=$(basename "$file" .c)
+
+    echo "translating: $file"
+	echo "./run_translation $file $OUTPUT_DIR"
+	# output=$(./run_translation $file $OUTPUT_DIR)
+
+	sed -i "s|\$target_file_dir =\"experiments/trans-\"\\.\$target_file_dir;|\$target_file_dir =\"$OUTPUT_DIR\";|" "dist/$translator_script"
+	echo "perl dist/translate-program $file"
+	output=$(perl dist/translate-program "$file" 2>&1)
+    echo $output
+	sed -i "s|\$target_file_dir =\"$OUTPUT_DIR\";|\$target_file_dir =\"experiments/trans-\".\$target_file_dir;|" "dist/$translator_script"
+
+    extension="${filename##*.}"
+    # echo "OUT: ".$output
+
+    # Write one row per file
+    printf '"%s","%s"\n' \
+        "$file" "$output" >> "kcc_batch_$timestamp.csv"
+done
+
+
+
