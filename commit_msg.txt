@@ -1,4 +1,12 @@
-batch for translation semantics is added
-+ run_translation_batch : takes input a directory and generates the translation-semantics of .c files in that directory
-+ translate-program : config of translation semantics is analyzed
-+ kcc_batch_1792300312.csv: translation results of (.c files) https://github.com/OpenMP/Examples/tree/v5.0.0/sources
+working with header files omp.h and ompvv.h
+
++ Example_private.1.c: https://github.com/OpenMP/Examples/blob/v5.0.0/sources/Example_private.1.c
++ libc/includes/omp.h: modifying omp.h (https://gcc.gnu.org/onlinedocs/gcc-4.9.4/libgomp.pdf) for kcc 
++ libc/includes/ompvv.h: https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/blob/master/ompvv/ompvv.h
++ libc/src/omp.c: used to generate object code
++ test_omph.c: a test .c program that uses omp.h and ompvv.h
+root@195f2801829e:/workspace# dist/kcc test_omph.c 
+root@195f2801829e:/workspace# ./a.out 
+[OMPVV_INFO:] Working with OpenMP_VV
+Hello from thread,100
+Hello from thread,100
