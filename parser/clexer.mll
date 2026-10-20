@@ -474,6 +474,7 @@ rule initial =
 |   "taskwait"          {TASKWAIT (currentLoc ())}
 |   "barrier"          {BARRIER (currentLoc ())}
 |   "shared"          {SHARED (currentLoc ())}
+|   "thread_num" {THREAD_NUM}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}

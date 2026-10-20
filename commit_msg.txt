@@ -1,12 +1,18 @@
-working with header files omp.h and ompvv.h
+omp_get_thread_num of omp.h is defined
 
-+ Example_private.1.c: https://github.com/OpenMP/Examples/blob/v5.0.0/sources/Example_private.1.c
-+ libc/includes/omp.h: modifying omp.h (https://gcc.gnu.org/onlinedocs/gcc-4.9.4/libgomp.pdf) for kcc 
-+ libc/includes/ompvv.h: https://github.com/OpenMP-Validation-and-Verification/OpenMP_VV/blob/master/ompvv/ompvv.h
-+ libc/src/omp.c: used to generate object code
-+ test_omph.c: a test .c program that uses omp.h and ompvv.h
-root@195f2801829e:/workspace# dist/kcc test_omph.c 
-root@195f2801829e:/workspace# ./a.out 
+o libc/src/omp.c: contains the omp_get_thread_num()
+o parser/cabs.ml: parsing omp_get_thread_num()
+o parser/clexer.mll: parsing omp_get_thread_num()
+o parser/cparser.mly: parsing omp_get_thread_num()
+o parser/xmlPrinter.ml: parsing omp_get_thread_num()
+o semantics/language/common/syntax.k: sorts related omp_get_thread_num()
+o semantics/language/execution/stmt/loop.k : rules related to omp_get_thread_num()
+o semantics/language/translation/process-label.k: rules related to omp_get_thread_num()
+o semantics/language/translation/stmt/loop.k: rules related to omp_get_thread_num()
+o semantics/language/translation/syntax.k: sorts related to omp_get_thread_num()
+Test Example: 
+root@134d23f3e0d3:/workspace# dist/kcc test_omph.c 
+root@134d23f3e0d3:/workspace# ./a.out 
 [OMPVV_INFO:] Working with OpenMP_VV
-Hello from thread,100
-Hello from thread,100
+Hello from thread,0
+Hello from thread,1

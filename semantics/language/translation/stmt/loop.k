@@ -113,6 +113,9 @@ module C-STMT-LOOP
      
      rule <k> interleave => .K ...</k>
           <elab>... .K => interleave </elab>
+     
+     rule <k> OmpGetThreadNum(X:CId) => .K ...</k>
+          <elab>... .K => OmpGetThreadNum(X) </elab>
 
      /*********************************
      * Parsing number of threads      *

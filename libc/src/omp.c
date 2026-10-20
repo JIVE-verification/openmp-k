@@ -1,5 +1,7 @@
 #include <omp.h>
 
 int omp_get_thread_num(){
-    return 100;
+    int i; 
+    #pragma omp thread_num(i);
+    return i;
 }

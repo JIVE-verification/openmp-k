@@ -157,6 +157,7 @@ module C-SYNTAX
      // @omp thread interleaving
      ///*
      syntax Statement ::= "interleave"
+     syntax Statement ::= OmpGetThreadNum(K)
 
      /*
      | GOTO of String * cabsloc

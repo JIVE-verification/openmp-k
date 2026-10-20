@@ -229,6 +229,7 @@ and statement =
  | FOR of for_clause * expression * expression * statement * cabsloc
  | OMPPARALLELFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
  | OMPPARALLEL of omp_clause list * statement * cabsloc
+ | OMPTHREADNUM of string * cabsloc
  | BREAK of cabsloc
  | CONTINUE of cabsloc
  | RETURN of expression * cabsloc
@@ -310,7 +311,7 @@ and expression =
   | GNU_BODY of block
   | EXPR_PATTERN of string     (* pattern variable, and name *)
   | GENERIC of expression * (generic_association list)
-  
+
   | LTL_TRUE
   | LTL_FALSE
   | LTL_ATOM of expression

@@ -69,6 +69,7 @@ module C-PROCESS-LABEL
                orBool (L ==KLabel 'Return)
                orBool (L ==KLabel 'Goto)
                orBool (L ==KLabel 'interleave)
+               orBool (L ==KLabel 'OmpGetThreadNum)
 
      rule <computation> pushBlock => .K ...</computation>
           <goto-nesting-depth> N:Int => N +Int 1 </goto-nesting-depth>

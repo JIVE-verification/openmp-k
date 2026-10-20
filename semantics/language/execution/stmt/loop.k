@@ -85,6 +85,17 @@ module C-STMT-LOOP
      rule putInterleavePoints(K1:K, .K) => K1
      */
      
+
+//     Computation ( te ( Identifier ( "j" ) := tv ( 17 , t ( .Set , int ) ) , t ( .Set , int ) ) )
+     rule [get-thread-num]:
+          <thread>...
+          <thread-id> ThId:Int </thread-id>
+          <k> OmpGetThreadNum(X:CId) => Computation ( te ( X := ThId , t ( .Set , int ) ) )
+          ...</k>
+          ...</thread>
+          
+
+
      rule [extract-total-threads-omp-parallel]:
           <thread>...
           <thread-id> ThId:Int </thread-id>
