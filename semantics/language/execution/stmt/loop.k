@@ -94,6 +94,12 @@ module C-STMT-LOOP
           ...</k>
           ...</thread>
           
+     rule [get-num-threads]:
+          <thread>...
+          <k> OmpGetNumThreads(X:CId) => Computation ( te ( X := TotalThreads , t ( .Set , int ) ) )
+          ...</k>
+          ...</thread>
+          <omp-current-threads> TotalThreads:Int</omp-current-threads>
 
 
      rule [extract-total-threads-omp-parallel]:

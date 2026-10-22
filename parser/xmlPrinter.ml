@@ -598,6 +598,8 @@ and printOmpParallel omp1 stat =
 	wrap (newOmpIdCell :: (printNewList printOmpParallelClause omp1) :: (newBlockStatement stat) :: []) "OmpParallel"	
 and printThreadNum exp = 
 	wrap ((printIdentifier exp) :: []) "OmpGetThreadNum"
+and printNumThreads exp = 
+	wrap ((printIdentifier exp) :: []) "OmpGetNumThreads"
 and printBreak =
 	printCell "Break" [] ""
 and printContinue =
@@ -643,7 +645,8 @@ and printStatement a =
 	| FOR (fc1, exp2, exp3, stat, loc) -> printStatementLoc (printFor fc1 exp2 exp3 stat) loc
 	| OMPPARALLELFOR (omp1, fc1, exp2, exp3, stat, loc)  -> printStatementLoc (printompParallelFor omp1 fc1 exp2 exp3 stat) loc
     | OMPPARALLEL (omp1, stat, loc)  -> printStatementLoc (printOmpParallel omp1 stat) loc
-	| OMPTHREADNUM (exp, loc) -> printStatementLoc(printThreadNum exp) loc
+	| OMP_GET_THREAD_NUM (exp, loc) -> printStatementLoc(printThreadNum exp) loc
+	| OMP_GET_NUM_THREADS (exp, loc) -> printStatementLoc(printNumThreads exp) loc	
 	| BREAK (loc) -> printStatementLoc (printBreak) loc
 	| CONTINUE (loc) -> printStatementLoc (printContinue) loc
 	| RETURN (exp, loc) -> printStatementLoc (printReturn exp) loc

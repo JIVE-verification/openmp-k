@@ -229,7 +229,8 @@ and statement =
  | FOR of for_clause * expression * expression * statement * cabsloc
  | OMPPARALLELFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
  | OMPPARALLEL of omp_clause list * statement * cabsloc
- | OMPTHREADNUM of string * cabsloc
+ | OMP_GET_THREAD_NUM of string * cabsloc
+ | OMP_GET_NUM_THREADS of string * cabsloc
  | BREAK of cabsloc
  | CONTINUE of cabsloc
  | RETURN of expression * cabsloc

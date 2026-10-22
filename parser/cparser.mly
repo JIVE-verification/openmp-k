@@ -325,7 +325,7 @@ let transformOffsetOf (speclist, dtype) member =
 %token<Cabs.cabsloc> BEGINANNOTATION ENDANNOTATION
 %token<Cabs.cabsloc> PROPERTY
 %token LTL ATOM LTL_BUILTIN_TOK
-%token THREAD_NUM
+%token GET_THREAD_NUM GET_NUM_THREADS
 %token BACKTICK BACKSLASH
 
 /* sm: cabs tree transformation specification keywords */
@@ -902,8 +902,10 @@ statement:
 	                         {OMPPARALLELFOR ($5, $8, $9, $11, $13, (*handleLoc*) $6)}
 |   OMPPRAGMA OMP PARALLEL omp_clause statement
 	                         {OMPPARALLEL ($4, $5, (*handleLoc*) $3)} 
-|   OMPPRAGMA OMP THREAD_NUM LPAREN IDENT RPAREN SEMICOLON
-                           {OMPTHREADNUM(fst $5, (*handleLoc*) $1)}                                                    
+|   OMPPRAGMA OMP GET_THREAD_NUM LPAREN IDENT RPAREN SEMICOLON
+                           {OMP_GET_THREAD_NUM(fst $5, (*handleLoc*) $1)}  
+|   OMPPRAGMA OMP GET_NUM_THREADS LPAREN IDENT RPAREN SEMICOLON
+                           {OMP_GET_NUM_THREADS(fst $5, (*handleLoc*) $1)}                                                   
 |   IDENT COLON attribute_nocv_list statement
 		                 {(* The only attribute that should appear here
                                      is "unused". For now, we drop this on the

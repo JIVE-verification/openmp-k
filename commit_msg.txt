@@ -1,18 +1,19 @@
-omp_get_thread_num of omp.h is defined
+omp_get_num_threads() of omp.h is defined
 
-o libc/src/omp.c: contains the omp_get_thread_num()
-o parser/cabs.ml: parsing omp_get_thread_num()
-o parser/clexer.mll: parsing omp_get_thread_num()
-o parser/cparser.mly: parsing omp_get_thread_num()
-o parser/xmlPrinter.ml: parsing omp_get_thread_num()
-o semantics/language/common/syntax.k: sorts related omp_get_thread_num()
-o semantics/language/execution/stmt/loop.k : rules related to omp_get_thread_num()
-o semantics/language/translation/process-label.k: rules related to omp_get_thread_num()
-o semantics/language/translation/stmt/loop.k: rules related to omp_get_thread_num()
-o semantics/language/translation/syntax.k: sorts related to omp_get_thread_num()
+o libc/includes/omp.h: declares the omp_get_num_threads()
+o libc/src/omp.c: contains the omp_get_num_threads(), slightly changed omp_get_thread_num()
+o parser/cabs.ml: parsing omp_get_num_threads()
+o parser/clexer.mll: parsing omp_get_num_threads()
+o parser/cparser.mly: parsing omp_get_num_threads()
+o parser/xmlPrinter.ml: parsing omp_get_num_threads()
+o semantics/language/common/syntax.k: sorts related omp_get_num_threads()
+o semantics/language/execution/stmt/loop.k: rules related to omp_get_num_threads()
+o semantics/language/translation/process-label.k: rules related to omp_get_num_threads()
+o semantics/language/translation/stmt/loop.k: rules related to omp_get_num_threads()
+o test_omph.c: omp_get_num_threads() added in code
 Test Example: 
-root@134d23f3e0d3:/workspace# dist/kcc test_omph.c 
-root@134d23f3e0d3:/workspace# ./a.out 
+root@62ed7e8e7ff8:/workspace# dist/kcc test_omph.c 
+root@62ed7e8e7ff8:/workspace# ./a.out 
 [OMPVV_INFO:] Working with OpenMP_VV
-Hello from thread,0
-Hello from thread,1
+Hello from thread 0, while total number of threads is 2
+Hello from thread 1, while total number of threads is 2
