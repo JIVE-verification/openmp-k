@@ -106,6 +106,9 @@ module C-STMT-LOOP
           ...</k>
           <elab>... .K => blockOmpCritical(S) </elab>
 
+     rule <k> OmpBarrier => .K ...</k>
+          <elab>... .K => OmpBarrier </elab>
+
      context While((HOLE => reval(HOLE)), _) [result(RValue)]
      rule While(B:RValue, S:K) => #while(simplifyTruth(B), S)
 

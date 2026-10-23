@@ -10,6 +10,7 @@ int main(void)
     #pragma omp parallel num_threads(n)
     {
         //printf("Hello from thread %d, while total number of threads is %d\n", omp_get_thread_num(), omp_get_num_threads());
+        #pragma omp barrier
     }
 
     return 0;

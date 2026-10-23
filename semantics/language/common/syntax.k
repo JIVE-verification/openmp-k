@@ -104,7 +104,7 @@ module C-SYNTAX
      syntax Statement ::= blockOmpParallelFor(K, K, K, K, K, K, K)
      // block
      syntax Statement ::= blockOmpCritical(K)
-
+     syntax Statement ::= "lineOmpBarrier"
      /*
      To collect all clauses
      */
@@ -130,6 +130,8 @@ module C-SYNTAX
      */
      syntax Statement ::= "Break"
      syntax Statement ::= "Continue"
+
+     syntax Statement ::= "OmpBarrier"
 
      syntax Statement ::= Return(K)
      context Return(HOLE => reval(HOLE)) [result(RValue)]

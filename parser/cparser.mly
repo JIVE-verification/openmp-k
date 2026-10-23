@@ -908,6 +908,8 @@ statement:
                            {OMP_GET_NUM_THREADS(fst $5, (*handleLoc*) $1)}                                                   
 |   OMPPRAGMA OMP CRITICAL statement
                            {OMP_CRITICAL($4, (*handleLoc*) $1)} 
+|   OMPPRAGMA OMP BARRIER
+	                         {OMP_BARRIER ((*handleLoc*) $3)}
 |   IDENT COLON attribute_nocv_list statement
 		                 {(* The only attribute that should appear here
                                      is "unused". For now, we drop this on the

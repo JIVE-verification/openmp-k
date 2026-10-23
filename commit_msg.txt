@@ -1,12 +1,18 @@
-'#pragma omp critical' translated
+'#pragma omp barrier' translated
 
-o parser/cabs.ml: related to #pragma omp critical
-o parser/clexer.mll: related to #pragma omp critical
-o parser/cparser.mly: related to #pragma omp critical
-o parser/xmlPrinter.ml: related to #pragma omp critical
-o run_translation_batch: timestamp added in experiment results directory
-o semantics/language/common/syntax.k: related to #pragma omp critical
-o semantics/language/translation/process-label.k: related to #pragma omp critical
-o semantics/language/translation/stmt/loop.k: related to #pragma omp critical
-o semantics/language/translation/syntax.k: related to #pragma omp critical
-+ OpenMP_Examples_5.0.0/: adding sources for test-suits
+o parser/cabs.ml: related to #pragma omp barrier
+o parser/clexer.mll: related to #pragma omp barrier
+o parser/cparser.mly: related to #pragma omp barrier
+o parser/xmlPrinter.ml: related to #pragma omp barrier
+o semantics/language/common/syntax.k: related to #pragma omp barrier
+o semantics/language/translation/process-label.k: related to #pragma omp barrier
+o semantics/language/translation/stmt/loop.k: related to #pragma omp barrier
+o semantics/language/translation/syntax.k: related to #pragma omp barrier
+o test_omph.c: translation results
+ ~> blockOmpParallel ( Identifier ( "n" ) , BeforeOmp 
+( (.K) ) , AfterOmp ( (.K) ) , pushBlock ~> enterBlock ( 3
+ ) ~> interleave ~> CabsLoc ( "test_omph.c" , 11 , 5 , 0 )
+ ~> pushBlock ~> enterBlock ( 4 ) ~> interleave ~> CabsLoc
+ ( "test_omph.c" , 13 , 13 , 0 ) ~> interleave ~> 
+OmpBarrier ~> exitBlock ( 4 ) ~> popBlock ~> exitBlock ( 3
+ ) ~> popBlock ) ~>
