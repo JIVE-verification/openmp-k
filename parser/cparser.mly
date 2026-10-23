@@ -994,6 +994,8 @@ omp_reduction_identiifer:
 
 omp_num_threads_clause:
     CST_INT   {NT_INT (fst $1) }
+  | IDENT     {NT_IDENT (fst $1) }
+  ;
 
 declaration:                                /* ISO 6.7.*/
     decl_spec_list init_declarator_list SEMICOLON

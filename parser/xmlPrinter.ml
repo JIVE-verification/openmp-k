@@ -593,6 +593,7 @@ and printOmpParallelClause fc =
     | OMP_PRIVATE exp1  -> wrap ((printNewList printIdentifier exp1) :: []) "OmpPrivateList"
     | OMP_FIRST_PRIVATE exp1  -> wrap ((printNewList printIdentifier exp1) :: []) "OmpFirstPrivateList"
 	| OMP_NUM_THREADS NT_INT exp1 -> wrap((printRawIntString exp1):: []) "OmpNumThreads"
+	| OMP_NUM_THREADS NT_IDENT exp1 -> wrap((printIdentifier exp1):: []) "OmpNumThreads"
 and printOmpParallel omp1 stat =
 	let newOmpIdCell = printCell "OmpId" [] (printRawInt ((counter := (!counter + 1)); !counter)) in
 	wrap (newOmpIdCell :: (printNewList printOmpParallelClause omp1) :: (newBlockStatement stat) :: []) "OmpParallel"	

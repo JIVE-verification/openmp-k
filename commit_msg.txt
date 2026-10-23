@@ -1,19 +1,17 @@
-omp_get_num_threads() of omp.h is defined
+num_threads(X:Id) translated
 
-o libc/includes/omp.h: declares the omp_get_num_threads()
-o libc/src/omp.c: contains the omp_get_num_threads(), slightly changed omp_get_thread_num()
-o parser/cabs.ml: parsing omp_get_num_threads()
-o parser/clexer.mll: parsing omp_get_num_threads()
-o parser/cparser.mly: parsing omp_get_num_threads()
-o parser/xmlPrinter.ml: parsing omp_get_num_threads()
-o semantics/language/common/syntax.k: sorts related omp_get_num_threads()
-o semantics/language/execution/stmt/loop.k: rules related to omp_get_num_threads()
-o semantics/language/translation/process-label.k: rules related to omp_get_num_threads()
-o semantics/language/translation/stmt/loop.k: rules related to omp_get_num_threads()
-o test_omph.c: omp_get_num_threads() added in code
+o parser/cabs.ml
+o parser/cparser.mly
+o parser/xmlPrinter.ml
+o semantics/language/common/syntax.k
+o semantics/language/translation/process-label.k
+o semantics/language/translation/stmt/loop.k
+o semantics/language/translation/syntax.k
+o test_omph.c
++ test_rand.c: test purpose of random function in C
 Test Example: 
-root@62ed7e8e7ff8:/workspace# dist/kcc test_omph.c 
-root@62ed7e8e7ff8:/workspace# ./a.out 
-[OMPVV_INFO:] Working with OpenMP_VV
-Hello from thread 0, while total number of threads is 2
-Hello from thread 1, while total number of threads is 2
+root@62ed7e8e7ff8:/workspace# ./run_translation test_omph.c
+~> blockOmpParallel ( Identifier ( "n" ) , BeforeOmp 
+ ( (.K) ) , AfterOmp ( (.K) ) , pushBlock ~> enterBlock ( 3) ~> interleave ~> CabsLoc ( "test_omph.c" , 11 , 5 , 0 ) 
+ ~> pushBlock ~> enterBlock ( 4 ) ~> exitBlock ( 4 ) ~> 
+ popBlock ~> exitBlock ( 3 ) ~> popBlock ) ~>

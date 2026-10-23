@@ -48,19 +48,19 @@ module C-STMT-LOOP
      rule For(emptyValue, Post:RValue, S:K)
           => #for(emptyValue, Post, S)
 
-     rule blockOmpParallelFor(Th:Int, B:K, A:K, Control:RValue, Post:RValue, S:K)
+     rule blockOmpParallelFor(Th:K, B:K, A:K, Control:RValue, Post:RValue, S:K)
           => #blockOmpParallelFor(Th, B, A, simplifyTruth(Control), Post, S)
           requires Control =/=K emptyValue
 
-     rule blockOmpParallelFor(Th:Int, B:K, A:K, emptyValue, Post:RValue, S:K)
+     rule blockOmpParallelFor(Th:K, B:K, A:K, emptyValue, Post:RValue, S:K)
           => #blockOmpParallelFor(Th, B, A, emptyValue, Post, S)
 
-     rule blockOmpParallel(Th:Int, B:K, A:K, S:K)
+     rule blockOmpParallel(Th:K, B:K, A:K, S:K)
             => #blockOmpParallel(Th, B, A, S)
 
      syntax KItem ::= #for(K, RValue, K)
-     syntax KItem ::= #blockOmpParallel(Int, K, K, K) 
-     syntax KItem ::= #blockOmpParallelFor(Int, K, K, K, RValue, K) 
+     syntax KItem ::= #blockOmpParallel(K, K, K, K) 
+     syntax KItem ::= #blockOmpParallelFor(K, K, K, K, RValue, K) 
      
      context #for((HOLE => reval(HOLE)), _, _) [result(RValue)]
      context #blockOmpParallelFor(_, _, _, (HOLE => reval(HOLE)), _, _) [result(RValue)]
@@ -75,15 +75,15 @@ module C-STMT-LOOP
 
      rule (.K => elaborate(S)) ~> #blockOmpParallelFor(_, _, _, _:RValue, _, S:K)
      rule <k> elaborateDone(S:K)
-               ~> #blockOmpParallelFor(Th:Int, B:K, A:K, Control:RValue, Post:RValue, _)
+               ~> #blockOmpParallelFor(Th:K, B:K, A:K, Control:RValue, Post:RValue, _)
                => .K
           ...</k>
           <elab>... .K => blockOmpParallelFor(Th, B, A, Control, Post, putInterleavePointsAsStatements(.K, S)) </elab>
 
 
-     rule (.K => elaborate(S)) ~> #blockOmpParallel(Th:Int, B:K, A:K, S:K)
+     rule (.K => elaborate(S)) ~> #blockOmpParallel(Th:K, B:K, A:K, S:K)
      rule <k> elaborateDone(S:K)
-               ~> #blockOmpParallel(Th:Int, B:K, A:K,  _)
+               ~> #blockOmpParallel(Th:K, B:K, A:K,  _)
                => .K
           ...</k>
           <elab>... .K => blockOmpParallel(Th, B, A, putInterleavePointsAsStatements(.K, S)) </elab>
@@ -124,14 +124,17 @@ module C-STMT-LOOP
      * Parsing number of threads      *
      **********************************/
 
-     syntax Int ::= getNumThreads(K) [function]
-     rule getNumThreads(OmpNumThreads(N:Int)) => N -Int 1
-     requires N >=Int 1
+     syntax KItem ::= getNumThreads(K) [function]
+     rule getNumThreads(OmpNumThreads(N:Int)) => N
 
-     rule getNumThreads(OmpNumThreads(N:Int)) => 0
-     requires N <=Int 0
+//     requires N >=Int 1
 
-     syntax Int ::= parseNumThreads(List, Int) [function]
+     rule getNumThreads(OmpNumThreads(X:CId)) => X
+
+//     rule getNumThreads(OmpNumThreads(N:Int)) => 0
+//     requires N <=Int 0
+
+     syntax KItem ::= parseNumThreads(List, Int) [function]
 
      rule parseNumThreads(ListItem(K1:K) L:List, T:Int) => parseNumThreads(L, T)
      requires getKLabel(K1) =/=KLabel 'OmpNumThreads
@@ -158,7 +161,7 @@ module C-STMT-LOOP
      rule handleOmpClausesForBeforeOmp(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClauseProdBefore( L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
      requires S2 ==String "*"
 
-     rule handleOmpClausesForBeforeOmp(ListItem(OmpNumThreads(N:Int)) L:List, M:Map) => handleOmpClausesForBeforeOmp(L,M)
+     rule handleOmpClausesForBeforeOmp(ListItem(OmpNumThreads(N:K)) L:List, M:Map) => handleOmpClausesForBeforeOmp(L,M)
 
      /*****************************
      * Helper Function - Before
@@ -203,7 +206,7 @@ module C-STMT-LOOP
      rule handleOmpClausesForAfterOmp(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClauseProdAfter( L1, M) ~> handleOmpClausesForAfterOmp(L,M)
      requires S2 ==String "*"
      // ignore if rnum_threads()     
-     rule handleOmpClausesForAfterOmp(ListItem(OmpNumThreads(N:Int)) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
+     rule handleOmpClausesForAfterOmp(ListItem(OmpNumThreads(N:K)) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
      
      /*****************************
      * Helper Function - After

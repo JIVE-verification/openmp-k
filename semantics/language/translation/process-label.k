@@ -145,7 +145,7 @@ module C-PROCESS-LABEL
 
      rule <goto-calc>
                <computation>
-                    (blockOmpParallelFor(Th:Int, BF:K, AT:K, Control:K, Post:K, S:K) => .K)
+                    (blockOmpParallelFor(Th:K, BF:K, AT:K, Control:K, Post:K, S:K) => .K)
                     ~> K:K
                </computation>
                <computation-tail> Tail:K </computation-tail>
@@ -184,7 +184,7 @@ module C-PROCESS-LABEL
 
      rule <goto-calc>
                <computation>
-                    (blockOmpParallel(Th:Int, BF:K, AT:K, S:K) => .K)
+                    (blockOmpParallel(Th:K, BF:K, AT:K, S:K) => .K)
                     ~> K:K
                </computation>
                <computation-tail> Tail:K </computation-tail>

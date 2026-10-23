@@ -277,7 +277,7 @@ module C-ABSTRACT-SYNTAX
      | OMP_SHARED of string list
      */
      syntax KItem ::= OmpPrivateList(K)
-     syntax KItem ::= OmpNumThreads(Int)
+     syntax KItem ::= OmpNumThreads(K)
      syntax KItem ::= OmpFirstPrivateList(K)
      syntax KItem ::= OmpReduction(String, String, K)
      // gcc extension
