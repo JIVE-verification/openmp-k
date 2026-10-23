@@ -211,6 +211,34 @@ module C-PROCESS-LABEL
           )
 
      rule <goto-calc>
+               <computation>
+                    (blockOmpCritical(S:K) => .K)
+                    ~> K:K
+               </computation>
+               <computation-tail> Tail:K </computation-tail>
+               B:Bag
+               <goto-nesting-depth> N:Int </goto-nesting-depth>
+               <goto-block-history>
+                    ListItem(Num:Int) OldBlockHistory:List
+               </goto-block-history>
+          </goto-calc>
+          (.Bag =>
+               <goto-calc>
+                    <computation> S </computation>
+                    <computation-tail>
+                         Computation(.K)
+                         ~> K
+                         ~> Tail
+                    </computation-tail>
+                    B
+                    <goto-nesting-depth> N +Int 1 </goto-nesting-depth>
+                    <goto-block-history>
+                         ListItem(Num) OldBlockHistory
+                    </goto-block-history>
+               </goto-calc>
+          )
+
+     rule <goto-calc>
                <computation> (DoWhile(E:K, S:K) => .K) ~> K:K </computation>
                <computation-tail> Tail:K </computation-tail>
                B:Bag

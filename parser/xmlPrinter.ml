@@ -597,6 +597,9 @@ and printOmpParallelClause fc =
 and printOmpParallel omp1 stat =
 	let newOmpIdCell = printCell "OmpId" [] (printRawInt ((counter := (!counter + 1)); !counter)) in
 	wrap (newOmpIdCell :: (printNewList printOmpParallelClause omp1) :: (newBlockStatement stat) :: []) "OmpParallel"	
+and printOmpCritical stat =
+	let newOmpIdCell = printCell "OmpId" [] (printRawInt ((counter := (!counter + 1)); !counter)) in
+	wrap (newOmpIdCell :: (newBlockStatement stat) :: []) "OmpCritical"	
 and printThreadNum exp = 
 	wrap ((printIdentifier exp) :: []) "OmpGetThreadNum"
 and printNumThreads exp = 
@@ -646,6 +649,7 @@ and printStatement a =
 	| FOR (fc1, exp2, exp3, stat, loc) -> printStatementLoc (printFor fc1 exp2 exp3 stat) loc
 	| OMPPARALLELFOR (omp1, fc1, exp2, exp3, stat, loc)  -> printStatementLoc (printompParallelFor omp1 fc1 exp2 exp3 stat) loc
     | OMPPARALLEL (omp1, stat, loc)  -> printStatementLoc (printOmpParallel omp1 stat) loc
+	| OMP_CRITICAL (stat, loc) -> printStatementLoc (printOmpCritical stat) loc
 	| OMP_GET_THREAD_NUM (exp, loc) -> printStatementLoc(printThreadNum exp) loc
 	| OMP_GET_NUM_THREADS (exp, loc) -> printStatementLoc(printNumThreads exp) loc	
 	| BREAK (loc) -> printStatementLoc (printBreak) loc

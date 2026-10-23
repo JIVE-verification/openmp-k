@@ -266,7 +266,7 @@ module C-ABSTRACT-SYNTAX
      syntax Statement ::= For(BlockTag, K, K, K, K)
      syntax Statement ::= OmpParallel(BlockTag, K, K)
      syntax Statement ::= OmpParallelFor(BlockTag, K, K, K, K, K)
-
+     syntax Statement ::= OmpCritical(BlockTag, K)
      /*
      and omp_clause = 
      OMP_PRIVATE of string list

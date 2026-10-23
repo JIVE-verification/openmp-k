@@ -102,6 +102,8 @@ module C-SYNTAX
      syntax Statement ::= blockOmpParallelFor(K, K, K, K, K, K)
      // num of threads, clauses before block, clauses after block, Initial, Condition, post expression, body
      syntax Statement ::= blockOmpParallelFor(K, K, K, K, K, K, K)
+     // block
+     syntax Statement ::= blockOmpCritical(K)
 
      /*
      To collect all clauses

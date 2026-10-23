@@ -304,7 +304,7 @@ let transformOffsetOf (speclist, dtype) member =
 %token<Cabs.cabsloc> SWITCH CASE DEFAULT
 %token<Cabs.cabsloc> WHILE DO FOR
 %token<Cabs.cabsloc> OMPPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS REDUCTION OMP_LAST_PRIVATE OMP_LAST_PRIVATE_CONDITIONAL THREADPRIVATE
-%token<Cabs.cabsloc> SECTIONS SECTION SINGLE TASK TASKWAIT BARRIER SHARED
+%token<Cabs.cabsloc> SECTIONS SECTION SINGLE TASK TASKWAIT BARRIER SHARED CRITICAL
 %token<Cabs.cabsloc> IF TRY EXCEPT FINALLY
 %token ELSE 
 
@@ -906,6 +906,8 @@ statement:
                            {OMP_GET_THREAD_NUM(fst $5, (*handleLoc*) $1)}  
 |   OMPPRAGMA OMP GET_NUM_THREADS LPAREN IDENT RPAREN SEMICOLON
                            {OMP_GET_NUM_THREADS(fst $5, (*handleLoc*) $1)}                                                   
+|   OMPPRAGMA OMP CRITICAL statement
+                           {OMP_CRITICAL($4, (*handleLoc*) $1)} 
 |   IDENT COLON attribute_nocv_list statement
 		                 {(* The only attribute that should appear here
                                      is "unused". For now, we drop this on the

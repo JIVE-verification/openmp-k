@@ -9,6 +9,11 @@ SOURCE_DIR="$1"
 OUTPUT_DIR="experiments/translation-batch"
 timestamp=$(date +%s)
 
+OUTPUT_DIR="${OUTPUT_DIR}_${timestamp}"
+
+mkdir -p "$OUTPUT_DIR"
+echo "$OUTPUT_DIR"
+
 if [ -z "$SOURCE_DIR" ]; then
     echo "Usage: $0 <source_directory>"
     exit 1

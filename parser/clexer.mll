@@ -476,6 +476,7 @@ rule initial =
 |   "shared"          {SHARED (currentLoc ())}
 |   "get_thread_num" {GET_THREAD_NUM}
 |   "get_num_threads" {GET_NUM_THREADS}
+|   "critical" {CRITICAL (currentLoc ())}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}
 |		"-="			{MINUS_EQ}

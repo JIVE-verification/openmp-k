@@ -33,6 +33,13 @@ module C-STMT-LOOP
      <omp-default-threads> TT:Int </omp-default-threads>
      <types> M:Map </types>
 
+     rule <k> OmpCritical(Tag:BlockTag, S:K)
+              => Block(Tag, list(ListItem(blockOmpCritical(S))))
+     	...</k>
+     <omp-default-threads> TT:Int </omp-default-threads>
+     <types> M:Map </types>
+
+
      // This is the first child of the for if it's not a declaration.
      rule ForClauseExpression(K:K) => Computation(K)
 
@@ -58,10 +65,14 @@ module C-STMT-LOOP
      rule blockOmpParallel(Th:K, B:K, A:K, S:K)
             => #blockOmpParallel(Th, B, A, S)
 
+     rule blockOmpCritical(S:K)
+            => #blockOmpCritical(S)
+
      syntax KItem ::= #for(K, RValue, K)
      syntax KItem ::= #blockOmpParallel(K, K, K, K) 
      syntax KItem ::= #blockOmpParallelFor(K, K, K, K, RValue, K) 
-     
+     syntax KItem ::= #blockOmpCritical(K) 
+
      context #for((HOLE => reval(HOLE)), _, _) [result(RValue)]
      context #blockOmpParallelFor(_, _, _, (HOLE => reval(HOLE)), _, _) [result(RValue)]
 
@@ -87,7 +98,14 @@ module C-STMT-LOOP
                => .K
           ...</k>
           <elab>... .K => blockOmpParallel(Th, B, A, putInterleavePointsAsStatements(.K, S)) </elab>
-          
+     
+     rule (.K => elaborate(S)) ~> #blockOmpCritical(S:K)
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpCritical(_)
+               => .K
+          ...</k>
+          <elab>... .K => blockOmpCritical(S) </elab>
+
      context While((HOLE => reval(HOLE)), _) [result(RValue)]
      rule While(B:RValue, S:K) => #while(simplifyTruth(B), S)
 
