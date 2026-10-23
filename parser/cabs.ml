@@ -229,6 +229,7 @@ and statement =
  | FOR of for_clause * expression * expression * statement * cabsloc
  | OMPPARALLELFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
  | OMPPARALLEL of omp_clause list * statement * cabsloc
+ | OMP_SINGLE of omp_clause list * statement * cabsloc
  | OMP_CRITICAL of statement * cabsloc
  | OMP_GET_THREAD_NUM of string * cabsloc
  | OMP_GET_NUM_THREADS of string * cabsloc

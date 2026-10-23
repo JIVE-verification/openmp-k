@@ -104,6 +104,8 @@ module C-SYNTAX
      syntax Statement ::= blockOmpParallelFor(K, K, K, K, K, K, K)
      // block
      syntax Statement ::= blockOmpCritical(K)
+     // clauses, clauses, K
+     syntax Statement ::= blockOmpSingle(K, K, K)
      syntax Statement ::= "lineOmpBarrier"
      /*
      To collect all clauses

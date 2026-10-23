@@ -262,10 +262,12 @@ module C-ABSTRACT-SYNTAX
      | FOR of for_clause * expression * expression * statement * cabsloc
      | OMPPARALLELFOR of omp_clause list * for_clause * expression * expression * statement * cabsloc
      | OMPPARALLEL of omp_clause list * statement * cabsloc     
+     | OMP_SINGLE of omp_clause list * statement * cabsloc
      */
      syntax Statement ::= For(BlockTag, K, K, K, K)
      syntax Statement ::= OmpParallel(BlockTag, K, K)
      syntax Statement ::= OmpParallelFor(BlockTag, K, K, K, K, K)
+     syntax Statement ::= OmpSingle(BlockTag, K, K)
      syntax Statement ::= OmpCritical(BlockTag, K)
 
      /*

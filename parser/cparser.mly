@@ -901,7 +901,9 @@ statement:
 	        SEMICOLON opt_expression RPAREN statement
 	                         {OMPPARALLELFOR ($5, $8, $9, $11, $13, (*handleLoc*) $6)}
 |   OMPPRAGMA OMP PARALLEL omp_clause statement
-	                         {OMPPARALLEL ($4, $5, (*handleLoc*) $3)} 
+	                         {OMPPARALLEL ($4, $5, (*handleLoc*) $3)}
+|   OMPPRAGMA OMP SINGLE omp_clause statement
+	                         {OMP_SINGLE ($4, $5, (*handleLoc*) $3)} 
 |   OMPPRAGMA OMP GET_THREAD_NUM LPAREN IDENT RPAREN SEMICOLON
                            {OMP_GET_THREAD_NUM(fst $5, (*handleLoc*) $1)}  
 |   OMPPRAGMA OMP GET_NUM_THREADS LPAREN IDENT RPAREN SEMICOLON

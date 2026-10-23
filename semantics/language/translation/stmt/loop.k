@@ -33,6 +33,11 @@ module C-STMT-LOOP
      <omp-default-threads> TT:Int </omp-default-threads>
      <types> M:Map </types>
 
+     rule <k> OmpSingle(Tag:BlockTag, list(OMP1:List), S:K)
+              => Block(Tag, list(ListItem(blockOmpSingle(BeforeOmp(handleOmpClausesForBeforeOmp(OMP1, M)), AfterOmp(handleOmpClausesForAfterOmp(OMP1, M)), S))))
+          ...</k>
+     <types> M:Map </types>
+
      rule <k> OmpCritical(Tag:BlockTag, S:K)
               => Block(Tag, list(ListItem(blockOmpCritical(S))))
      	...</k>
@@ -64,6 +69,9 @@ module C-STMT-LOOP
 
      rule blockOmpParallel(Th:K, B:K, A:K, S:K)
             => #blockOmpParallel(Th, B, A, S)
+     
+     rule blockOmpSingle(B:K, A:K, S:K)
+            => #blockOmpSingle(B, A, S)
 
      rule blockOmpCritical(S:K)
             => #blockOmpCritical(S)
@@ -72,6 +80,7 @@ module C-STMT-LOOP
      syntax KItem ::= #blockOmpParallel(K, K, K, K) 
      syntax KItem ::= #blockOmpParallelFor(K, K, K, K, RValue, K) 
      syntax KItem ::= #blockOmpCritical(K) 
+     syntax KItem ::= #blockOmpSingle(K, K, K)
 
      context #for((HOLE => reval(HOLE)), _, _) [result(RValue)]
      context #blockOmpParallelFor(_, _, _, (HOLE => reval(HOLE)), _, _) [result(RValue)]
@@ -105,6 +114,13 @@ module C-STMT-LOOP
                => .K
           ...</k>
           <elab>... .K => blockOmpCritical(S) </elab>
+
+     rule (.K => elaborate(S)) ~> #blockOmpSingle(_, _, S:K)
+     rule <k> elaborateDone(S:K)
+               ~> #blockOmpSingle(B:K, A:K, _)
+               => .K
+          ...</k>
+          <elab>... .K => blockOmpSingle(B, A, S) </elab>     
 
      rule <k> OmpBarrier => .K ...</k>
           <elab>... .K => OmpBarrier </elab>
