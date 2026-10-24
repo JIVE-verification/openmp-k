@@ -101,7 +101,7 @@ module C-STMT-LOOP
           <elab>... .K => blockOmpParallelFor(Th, B, A, Control, Post, putInterleavePointsAsStatements(.K, S)) </elab>
 
 
-     rule (.K => elaborate(S)) ~> #blockOmpParallel(Th:K, B:K, A:K, S:K)
+     rule (.K => elaborate(S)) ~> #blockOmpParallel(_, _, _, S:K)
      rule <k> elaborateDone(S:K)
                ~> #blockOmpParallel(Th:K, B:K, A:K,  _)
                => .K
@@ -190,6 +190,8 @@ module C-STMT-LOOP
 
      rule handleOmpClausesForBeforeOmp(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handlePrivateClasueBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
 
+     rule handleOmpClausesForBeforeOmp(ListItem(OmpSharedList(list(L1:List))) L:List, M:Map) => handleSharedClasueBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
+     
      rule handleOmpClausesForBeforeOmp(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) => handleFirstPrivateClauseBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
 
      rule handleOmpClausesForBeforeOmp(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClausePlusBefore(L1, M) ~> handleOmpClausesForBeforeOmp(L,M)
@@ -205,11 +207,13 @@ module C-STMT-LOOP
      *****************************/
 
      syntax K ::= handlePrivateClasueBefore(List, Map) [function]
+     syntax K ::= handleSharedClasueBefore(List, Map) [function]
      syntax K ::= handleFirstPrivateClauseBefore(List, Map) [function]
      syntax K ::= handleReductionClausePlusBefore(List, Map) [function]
      syntax K ::= handleReductionClauseProdBefore(List, Map) [function]     
 
      rule handlePrivateClasueBefore(.List, M:Map) => .K
+     rule handleSharedClasueBefore(.List, M:Map) => .K
      rule handleFirstPrivateClauseBefore(.List, M:Map) => .K
      rule handleReductionClausePlusBefore(.List, M:Map) => .K
      rule handleReductionClauseProdBefore(.List, M:Map) => .K
@@ -217,6 +221,8 @@ module C-STMT-LOOP
      rule handlePrivateClasueBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), .K)) ~> handlePrivateClasueBefore(L, M)
      requires (X in keys(M))
 
+     rule handleSharedClasueBefore(ListItem(X:CId) L:List, M:Map) =>  OmpSharedVar(X) ~> handleSharedClasueBefore(L, M)
+     requires (X in keys(M))
 
      rule handleFirstPrivateClauseBefore(ListItem(X:CId) L:List, M:Map) =>  declareInternalVariable(X, type(M[X]), initValue(X, type(M[X]), Computation(te(X := OmpParentVar(X), type(M[X]))))) ~> handleFirstPrivateClauseBefore(L, M)
      requires (X in keys(M))
@@ -235,6 +241,8 @@ module C-STMT-LOOP
      rule handleOmpClausesForAfterOmp(.List, M:Map) => .K 
      // ignore if private()
      rule handleOmpClausesForAfterOmp(ListItem(OmpPrivateList(list(L1:List))) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
+     // ignore if shared
+     rule handleOmpClausesForAfterOmp(ListItem(OmpSharedList(list(L1:List))) L:List, M:Map) => handleOmpClausesForAfterOmp(L,M)
      // ignore if firstprivate()
      rule handleOmpClausesForAfterOmp(ListItem(OmpFirstPrivateList(list(L1:List))) L:List, M:Map) =>  handleOmpClausesForAfterOmp(L,M)
      rule handleOmpClausesForAfterOmp(ListItem(OmpReduction(S1:String, S2:String, list(L1:List))) L:List, M:Map) => handleReductionClausePlusAfter(L1, M) ~> handleOmpClausesForAfterOmp(L,M)

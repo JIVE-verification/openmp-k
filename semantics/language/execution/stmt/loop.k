@@ -113,8 +113,8 @@ module C-STMT-LOOP
 
      rule [extract-total-threads-omp-parallel-for]:
           <thread>...
-          <thread-id> ThId:Int </thread-id>
-          <k> blockOmpParallelFor(Th:Int, B:K, A:K, Initial:K, Control:K, Post:K, S:K)
+          <thread-id> _:Int </thread-id>
+          <k> blockOmpParallelFor(Th:Int, _:K, _:K, _:K, _:K, _:K, _:K)
                ...</k>
           ...</thread>
           <omp-current-threads> TotalThreads:Int => Th +Int 1 </omp-current-threads>

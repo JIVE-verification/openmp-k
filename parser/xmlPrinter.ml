@@ -582,6 +582,7 @@ and printForClause fc =
 and printOmpParallelForClause fc = 
 	match fc with
     | OMP_PRIVATE exp1  -> wrap ((printNewList printIdentifier exp1) :: []) "OmpPrivateList"
+	| OMP_SHARED exp1 -> wrap((printNewList printIdentifier exp1) :: []) "OmpSharedList"
     | OMP_FIRST_PRIVATE exp1  -> wrap ((printNewList printIdentifier exp1) :: []) "OmpFirstPrivateList"
  	| OMP_REDUCTION (mod1, op1, exp1) -> wrap((printRawString mod1):: (printRawString op1 ):: (printNewList printIdentifier exp1) :: []) "OmpReduction"
 	| OMP_NUM_THREADS NT_INT exp1 -> wrap((printRawIntString exp1):: []) "OmpNumThreads"
@@ -591,12 +592,14 @@ and printompParallelFor omp1 fc1 exp2 exp3 stat =
 and printOmpParallelClause fc = 
 	match fc with
     | OMP_PRIVATE exp1  -> wrap ((printNewList printIdentifier exp1) :: []) "OmpPrivateList"
-    | OMP_FIRST_PRIVATE exp1  -> wrap ((printNewList printIdentifier exp1) :: []) "OmpFirstPrivateList"
+    | OMP_SHARED exp1 -> wrap((printNewList printIdentifier exp1) :: []) "OmpSharedList"
+	| OMP_FIRST_PRIVATE exp1  -> wrap ((printNewList printIdentifier exp1) :: []) "OmpFirstPrivateList"
 	| OMP_NUM_THREADS NT_INT exp1 -> wrap((printRawIntString exp1):: []) "OmpNumThreads"
 	| OMP_NUM_THREADS NT_IDENT exp1 -> wrap((printIdentifier exp1):: []) "OmpNumThreads"
 and printOmpSingleClause fc = 
 	match fc with
     | OMP_PRIVATE exp1  -> wrap ((printNewList printIdentifier exp1) :: []) "OmpPrivateList"
+	| OMP_SHARED exp1 -> wrap((printNewList printIdentifier exp1) :: []) "OmpSharedList"
     | OMP_FIRST_PRIVATE exp1  -> wrap ((printNewList printIdentifier exp1) :: []) "OmpFirstPrivateList"
 and printOmpParallel omp1 stat =
 	let newOmpIdCell = printCell "OmpId" [] (printRawInt ((counter := (!counter + 1)); !counter)) in

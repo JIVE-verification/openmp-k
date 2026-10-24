@@ -1,29 +1,26 @@
-'#pragma omp single' translated
+'shared(Ids)' translated
 
-o parser/cabs.ml: related to #pragma omp single
-o parser/clexer.mll: related to #pragma omp single
-o parser/cparser.mly: related to #pragma omp single
-o parser/xmlPrinter.ml: related to #pragma omp single
+o parser/xmlPrinter.ml: related to shared(Ids)
 o semantics/language/common/syntax.k: related to #pragma omp single
-o semantics/language/translation/process-label.k: related to #pragma omp single
-o semantics/language/translation/stmt/loop.k: related to #pragma omp single
-o semantics/language/translation/syntax.k: related to #pragma omp single
+o semantics/language/translation/stmt/loop.k: related to shared(Ids)
+o semantics/language/translation/syntax.k: related to shared(Ids)
 o test_omph.c: translation results
- ~> blockOmpParallel ( Identifier ( "n" ) , BeforeOmp 
-( (.K) ) , AfterOmp ( (.K) ) , pushBlock ~> enterBlock ( 3
- ) ~> interleave ~> CabsLoc ( "test_omph.c" , 11 , 5 , 0 )
- ~> pushBlock ~> enterBlock ( 4 ) ~> interleave ~> CabsLoc
- ( "test_omph.c" , 13 , 13 , 0 ) ~> pushBlock ~> 
-enterBlock ( 5 ) ~> interleave ~> blockOmpSingle ( 
-BeforeOmp ( (.K) ) , AfterOmp ( (.K) ) , pushBlock ~> 
-enterBlock ( 6 ) ~> CabsLoc ( "test_omph.c" , 14 , 9 , 0 )
- ~> pushBlock ~> enterBlock ( 7 ) ~> CabsLoc ( 
-"test_omph.c" , 15 , 13 , 0 ) ~> declareInternalVariable (
- Identifier ( "i" ) , t ( .Set , int ) , initValue ( 
-Identifier ( "i" ) , t ( .Set , int ) , Computation ( te (
- Identifier ( "i" ) := tv ( 0 , t ( .Set , int ) ) , t ( 
-.Set , int ) ) ) ) ) ~> exitBlock ( 7 ) ~> popBlock ~> 
-exitBlock ( 6 ) ~> popBlock ) ~> exitBlock ( 5 ) ~> 
-popBlock ~> interleave ~> CabsLoc ( "test_omph.c" , 17 , 
-13 , 0 ) ~> interleave ~> OmpBarrier ~> exitBlock ( 4 )
- ~> popBlock ~> exitBlock ( 3 ) ~> popBlock ) ~>
+ ~> blockOmpParallel ( Identifier ( "n" ) 
+, BeforeOmp ( OmpSharedVar ( Identifier ( "s" ) ) ) , 
+AfterOmp ( (.K) ) , pushBlock ~> enterBlock ( 3 ) ~> 
+interleave ~> CabsLoc ( "test_omph.c" , 12 , 5 , 0 ) ~> 
+pushBlock ~> enterBlock ( 4 ) ~> interleave ~> CabsLoc ( 
+"test_omph.c" , 14 , 13 , 0 ) ~> pushBlock ~> enterBlock (
+ 5 ) ~> interleave ~> blockOmpSingle ( BeforeOmp ( (.K) ) 
+, AfterOmp ( (.K) ) , pushBlock ~> enterBlock ( 6 ) ~> 
+CabsLoc ( "test_omph.c" , 15 , 9 , 0 ) ~> pushBlock ~> 
+enterBlock ( 7 ) ~> CabsLoc ( "test_omph.c" , 16 , 13 , 0 
+) ~> declareInternalVariable ( Identifier ( "i" ) , t ( 
+.Set , int ) , initValue ( Identifier ( "i" ) , t ( .Set ,
+ int ) , Computation ( te ( Identifier ( "i" ) := tv ( 0 ,
+ t ( .Set , int ) ) , t ( .Set , int ) ) ) ) ) ~> 
+exitBlock ( 7 ) ~> popBlock ~> exitBlock ( 6 ) ~> popBlock
+ ) ~> exitBlock ( 5 ) ~> popBlock ~> interleave ~> CabsLoc
+ ( "test_omph.c" , 18 , 13 , 0 ) ~> interleave ~> 
+OmpBarrier ~> exitBlock ( 4 ) ~> popBlock ~> exitBlock ( 3
+ ) ~> popBlock ) ~>

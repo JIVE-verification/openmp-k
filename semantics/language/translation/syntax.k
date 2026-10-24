@@ -283,6 +283,9 @@ module C-ABSTRACT-SYNTAX
      syntax KItem ::= OmpNumThreads(K)
      syntax KItem ::= OmpFirstPrivateList(K)
      syntax KItem ::= OmpReduction(String, String, K)
+     syntax KItem ::= OmpSharedList(K)
+
+
      // gcc extension
      syntax Statement ::= CaseRange(K, K, K)
 
