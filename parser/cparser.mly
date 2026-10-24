@@ -303,7 +303,7 @@ let transformOffsetOf (speclist, dtype) member =
 %token<Cabs.cabsloc> BREAK CONTINUE GOTO RETURN
 %token<Cabs.cabsloc> SWITCH CASE DEFAULT
 %token<Cabs.cabsloc> WHILE DO FOR
-%token<Cabs.cabsloc> OMPPRAGMA OMP PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS REDUCTION OMP_LAST_PRIVATE OMP_LAST_PRIVATE_CONDITIONAL THREADPRIVATE
+%token<Cabs.cabsloc> OMPPRAGMA OMP OMPH PARALLEL PRIVATE FIRSTPRIVATE NUMTHREADS REDUCTION OMP_LAST_PRIVATE OMP_LAST_PRIVATE_CONDITIONAL THREADPRIVATE
 %token<Cabs.cabsloc> SECTIONS SECTION SINGLE TASK TASKWAIT BARRIER SHARED CRITICAL
 %token<Cabs.cabsloc> IF TRY EXCEPT FINALLY
 %token ELSE 
@@ -325,7 +325,7 @@ let transformOffsetOf (speclist, dtype) member =
 %token<Cabs.cabsloc> BEGINANNOTATION ENDANNOTATION
 %token<Cabs.cabsloc> PROPERTY
 %token LTL ATOM LTL_BUILTIN_TOK
-%token GET_THREAD_NUM GET_NUM_THREADS
+%token GET_THREAD_NUM GET_NUM_THREADS SET_NUM_THREADS
 %token BACKTICK BACKSLASH
 
 /* sm: cabs tree transformation specification keywords */
@@ -904,10 +904,12 @@ statement:
 	                         {OMPPARALLEL ($4, $5, (*handleLoc*) $3)}
 |   OMPPRAGMA OMP SINGLE omp_clause statement
 	                         {OMP_SINGLE ($4, $5, (*handleLoc*) $3)} 
-|   OMPPRAGMA OMP GET_THREAD_NUM LPAREN IDENT RPAREN SEMICOLON
+|   OMPPRAGMA OMPH GET_THREAD_NUM LPAREN IDENT RPAREN SEMICOLON
                            {OMP_GET_THREAD_NUM(fst $5, (*handleLoc*) $1)}  
-|   OMPPRAGMA OMP GET_NUM_THREADS LPAREN IDENT RPAREN SEMICOLON
-                           {OMP_GET_NUM_THREADS(fst $5, (*handleLoc*) $1)}                                                   
+|   OMPPRAGMA OMPH GET_NUM_THREADS LPAREN IDENT RPAREN SEMICOLON
+                           {OMP_GET_NUM_THREADS(fst $5, (*handleLoc*) $1)}     
+|   OMPPRAGMA OMPH SET_NUM_THREADS LPAREN IDENT RPAREN SEMICOLON
+                           {OMP_SET_NUM_THREADS(fst $5, (*handleLoc*) $1)}                                                   
 |   OMPPRAGMA OMP CRITICAL statement
                            {OMP_CRITICAL($4, (*handleLoc*) $1)} 
 |   OMPPRAGMA OMP BARRIER

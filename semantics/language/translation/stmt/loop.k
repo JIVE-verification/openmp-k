@@ -157,6 +157,9 @@ module C-STMT-LOOP
      rule <k> OmpGetNumThreads(X:CId) => .K ...</k>
           <elab>... .K => OmpGetNumThreads(X) </elab>
 
+     rule <k> OmpSetNumThreads(X:CId) => .K ...</k>
+          <elab>... .K => OmpSetNumThreads(X) </elab>
+
      /*********************************
      * Parsing number of threads      *
      **********************************/

@@ -459,6 +459,7 @@ rule initial =
 |		"!quit!"		{EOF}
 |   "#pragma"   {OMPPRAGMA (currentLoc ())}
 |   "omp"       {OMP (currentLoc ())}
+|   "omph"       {OMPH (currentLoc ())}
 |   "parallel"  {PARALLEL (currentLoc ())}
 |   "private"  {PRIVATE (currentLoc ())}
 |   "firstprivate"  {FIRSTPRIVATE (currentLoc ())}
@@ -476,6 +477,7 @@ rule initial =
 |   "shared"          {SHARED (currentLoc ())}
 |   "get_thread_num" {GET_THREAD_NUM}
 |   "get_num_threads" {GET_NUM_THREADS}
+|   "set_num_threads" {SET_NUM_THREADS}
 |   "critical" {CRITICAL (currentLoc ())}
 |		"..."			{ELLIPSIS}
 |		"+="			{PLUS_EQ}

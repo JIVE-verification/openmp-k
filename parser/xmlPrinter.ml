@@ -612,8 +612,10 @@ and printOmpCritical stat =
 	wrap (newOmpIdCell :: (newBlockStatement stat) :: []) "OmpCritical"	
 and printThreadNum exp = 
 	wrap ((printIdentifier exp) :: []) "OmpGetThreadNum"
-and printNumThreads exp = 
+and printGetNumThreads exp = 
 	wrap ((printIdentifier exp) :: []) "OmpGetNumThreads"
+and printSetNumThreads exp = 
+	wrap ((printIdentifier exp) :: []) "OmpSetNumThreads"
 and printBarrier =
 	printCell "OmpBarrier" [] ""
 and printBreak =
@@ -664,7 +666,8 @@ and printStatement a =
 	| OMP_SINGLE (omp1, stat, loc)  -> printStatementLoc (printOmpSingle omp1 stat) loc 
 	| OMP_CRITICAL (stat, loc) -> printStatementLoc (printOmpCritical stat) loc
 	| OMP_GET_THREAD_NUM (exp, loc) -> printStatementLoc(printThreadNum exp) loc
-	| OMP_GET_NUM_THREADS (exp, loc) -> printStatementLoc(printNumThreads exp) loc
+	| OMP_GET_NUM_THREADS (exp, loc) -> printStatementLoc(printGetNumThreads exp) loc
+	| OMP_SET_NUM_THREADS (exp, loc) -> printStatementLoc(printSetNumThreads exp) loc
 	| OMP_BARRIER (loc) -> 	printStatementLoc(printBarrier) loc
 	| BREAK (loc) -> printStatementLoc (printBreak) loc
 	| CONTINUE (loc) -> printStatementLoc (printContinue) loc

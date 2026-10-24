@@ -233,6 +233,7 @@ and statement =
  | OMP_CRITICAL of statement * cabsloc
  | OMP_GET_THREAD_NUM of string * cabsloc
  | OMP_GET_NUM_THREADS of string * cabsloc
+ | OMP_SET_NUM_THREADS of string * cabsloc
  | OMP_BARRIER of cabsloc
  | BREAK of cabsloc
  | CONTINUE of cabsloc

@@ -165,7 +165,7 @@ module C-SYNTAX
      syntax Statement ::= "interleave"
      syntax Statement ::= OmpGetThreadNum(K)
      syntax Statement ::= OmpGetNumThreads(K)
-
+     syntax Statement ::= OmpSetNumThreads(K)
      /*
      | GOTO of String * cabsloc
      */

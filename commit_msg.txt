@@ -1,26 +1,20 @@
-'shared(Ids)' translated
+'omp_set_num_threads(_:Int)' translated
 
-o parser/xmlPrinter.ml: related to shared(Ids)
-o semantics/language/common/syntax.k: related to #pragma omp single
-o semantics/language/translation/stmt/loop.k: related to shared(Ids)
-o semantics/language/translation/syntax.k: related to shared(Ids)
+o libc/includes/omp.h: related to omp_set_num_threads(_:Int) 
+o libc/src/omp.c: related to omp_set_num_threads(_:Int)
+o parser/cabs.ml: related to parsing omp_set_num_threads(_:Int)
+o parser/clexer.mll: related to parsing omp_set_num_threads(_:Int)
+o parser/cparser.mly: related to parsing omp_set_num_threads(_:Int)
+o parser/xmlPrinter.ml: related to parsing omp_set_num_threads(_:Int)
+o semantics/language/common/syntax.k: related to sorts of omp_set_num_threads(_:Int)
+o semantics/language/translation/process-label.k: related to rules of omp_set_num_threads(_:Int)
+o semantics/language/translation/stmt/loop.k: related to rules of omp_set_num_threads(_:Int)
++ count_freq_omp: for counting the frequencies of openmp directives/clauses
 o test_omph.c: translation results
- ~> blockOmpParallel ( Identifier ( "n" ) 
-, BeforeOmp ( OmpSharedVar ( Identifier ( "s" ) ) ) , 
-AfterOmp ( (.K) ) , pushBlock ~> enterBlock ( 3 ) ~> 
-interleave ~> CabsLoc ( "test_omph.c" , 12 , 5 , 0 ) ~> 
-pushBlock ~> enterBlock ( 4 ) ~> interleave ~> CabsLoc ( 
-"test_omph.c" , 14 , 13 , 0 ) ~> pushBlock ~> enterBlock (
- 5 ) ~> interleave ~> blockOmpSingle ( BeforeOmp ( (.K) ) 
-, AfterOmp ( (.K) ) , pushBlock ~> enterBlock ( 6 ) ~> 
-CabsLoc ( "test_omph.c" , 15 , 9 , 0 ) ~> pushBlock ~> 
-enterBlock ( 7 ) ~> CabsLoc ( "test_omph.c" , 16 , 13 , 0 
-) ~> declareInternalVariable ( Identifier ( "i" ) , t ( 
-.Set , int ) , initValue ( Identifier ( "i" ) , t ( .Set ,
- int ) , Computation ( te ( Identifier ( "i" ) := tv ( 0 ,
- t ( .Set , int ) ) , t ( .Set , int ) ) ) ) ) ~> 
-exitBlock ( 7 ) ~> popBlock ~> exitBlock ( 6 ) ~> popBlock
- ) ~> exitBlock ( 5 ) ~> popBlock ~> interleave ~> CabsLoc
- ( "test_omph.c" , 18 , 13 , 0 ) ~> interleave ~> 
-OmpBarrier ~> exitBlock ( 4 ) ~> popBlock ~> exitBlock ( 3
- ) ~> popBlock ) ~>
+ ~> Computation ( te
+  ( Call ( tv ( loc ( 24 @ link ( "test_omph.c" ) , 0 , 
+ SetItem ( align ( 1 ) ) ) , t ( .Set , pointerType ( t ( 
+ .Set , functionType ( t ( .Set , void ) , ListItem ( t ( 
+ .Set , int ) ) ) ) ) ) ) , list ( ListItem ( tv ( 10 , t (
+  SetItem ( IntegerConstant ) , int ) ) ) ) ) , t ( .Set , 
+ void ) ) ) ~>

@@ -1,0 +1,5 @@
+#!/bin/bash
+src_dir=$1
+count=$(grep -rohE 'threadprivate\(.*\)' --include='*.c' $src_dir | wc -l)
+
+echo "Total occurrences: $count"

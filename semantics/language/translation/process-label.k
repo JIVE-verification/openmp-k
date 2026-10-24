@@ -71,6 +71,7 @@ module C-PROCESS-LABEL
                orBool (L ==KLabel 'interleave)
                orBool (L ==KLabel 'OmpGetThreadNum)
                orBool (L ==KLabel 'OmpGetNumThreads)
+               orBool (L ==KLabel 'OmpSetNumThreads)
                orBool (L ==KLabel 'OmpBarrier)
 
      rule <computation> pushBlock => .K ...</computation>
